@@ -55,15 +55,15 @@ class Store {
                 MetaMask: injected,
                 MYKEY: injected,
                 WalletConnect: walletconnect,
-                WalletLink: walletlink,
-                Ledger: ledger,
-                Trezor: trezor,
-                Frame: frame,
-                Fortmatic: fortmatic,
-                Portis: portis,
-                Squarelink: squarelink,
-                Torus: torus,
-                Authereum: authereum
+                WalletLink: walletlink
+                // Ledger: ledger,
+                // Trezor: trezor,
+                // Frame: frame,
+                // Fortmatic: fortmatic,
+                // Portis: portis,
+                // Squarelink: squarelink,
+                // Torus: torus,
+                // Authereum: authereum
             },
             web3context: null,
             languages: [
