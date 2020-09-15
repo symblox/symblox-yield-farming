@@ -176,24 +176,24 @@ function onConnectionClicked(
     const connectorsByName = store.getStore("connectorsByName");
     setActivatingConnector(currentConnector);
     activate(connectorsByName[name]);
-
-    currentConnector.isAuthorized().then(isAuthorized => {
-        if (isAuthorized) {
-            currentConnector
-                .activate()
-                .then(a => {
-                    store.setStore({
-                        account: {address: a.account},
-                        web3context: {library: {provider: a.provider}}
+    if (currentConnector.isAuthorized)
+        currentConnector.isAuthorized().then(isAuthorized => {
+            if (isAuthorized) {
+                currentConnector
+                    .activate()
+                    .then(a => {
+                        store.setStore({
+                            account: {address: a.account},
+                            web3context: {library: {provider: a.provider}}
+                        });
+                        emitter.emit(CONNECTION_CONNECTED);
+                        console.log(a);
+                    })
+                    .catch(e => {
+                        console.log(e);
                     });
-                    emitter.emit(CONNECTION_CONNECTED);
-                    console.log(a);
-                })
-                .catch(e => {
-                    console.log(e);
-                });
-        }
-    });
+            }
+        });
 }
 
 function onDeactivateClicked(deactivate, connector) {
