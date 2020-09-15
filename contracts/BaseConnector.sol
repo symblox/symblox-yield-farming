@@ -1,0 +1,145 @@
+pragma solidity 0.5.17;
+
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+// import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./libs/syxOwnable.sol";
+import "./interfaces/IRewardManager.sol";
+
+contract BaseConnector is syxOwnable {
+    using SafeERC20 for IERC20;
+
+    address public lpToken;
+    IRewardManager public rewardManager;
+    uint8 public rewardPoolId;
+
+    event LogInit(
+        address indexed owner,
+        address rewardManager,
+        address lpToken,
+        uint8 poolId
+    );
+    event LogDeposit(address indexed dst, uint256 amount);
+    event LogWithdrawal(address indexed src, uint256 amount);
+    event LogStake(address indexed dst, uint256 amount);
+    event LogUnstake(address indexed src, uint256 amount);
+
+    // Empty internal constructor, to prevent people from mistakenly deploying
+    // an instance of this contract, which should be used via inheritance.
+    // solhint-disable-previous-line no-empty-blocks
+    constructor() internal {}
+
+    function() external payable {}
+
+    function initialize(
+        address _owner,
+        address _rewardManager,
+        address _lpToken,
+        uint8 _rewardPoolId
+    ) external {
+        require(_owner != address(0), "ERR_OWNER_INVALID");
+        require(_rewardManager != address(0), "ERR_REWARD_MANAGER");
+        require(_lpToken != address(0), "ERR_LP_TOKEN");
+
+        syxOwnable.initialize(_owner);
+        rewardManager = IRewardManager(_rewardManager);
+        lpToken = _lpToken;
+        rewardPoolId = _rewardPoolId;
+
+        emit LogInit(_owner, _rewardManager, _lpToken, _rewardPoolId);
+    }
+
+    function balanceOfLpToken() external view returns (uint256) {
+        (uint256 amount, ) = rewardManager.userInfo(
+            uint256(rewardPoolId),
+            address(this)
+        );
+        return amount;
+    }
+
+    function earned() external view returns (uint256) {
+        return rewardManager.pendingSyx(uint256(rewardPoolId), address(this));
+    }
+
+    function getReward() external onlyOwner {
+        IERC20 syx = IERC20(rewardManager.syx());
+        rewardManager.getReward(uint256(rewardPoolId));
+        syx.safeTransfer(msg.sender, syx.balanceOf(address(this)));
+    }
+
+    /**
+     * @dev Don't need to check onlyOwner as the caller needs to check that
+     */
+    function stakeLpToken(uint256 amount) internal {
+        (uint256 currBalance, ) = rewardManager.userInfo(
+            uint256(rewardPoolId),
+            address(this)
+        );
+        if (
+            IERC20(lpToken).allowance(address(this), address(rewardManager)) <
+            amount
+        ) {
+            IERC20(lpToken).approve(address(rewardManager), amount);
+        }
+
+        uint256 newBalance = rewardManager.deposit(
+            uint256(rewardPoolId),
+            amount
+        );
+
+        require(newBalance - currBalance == amount, "ERR_REWARD_STAKE");
+
+        emit LogStake(msg.sender, newBalance);
+    }
+
+    /**
+     * @dev Don't need to check onlyOwner as the caller needs to check that
+     */
+    function unstakeLpToken(uint256 lpTokenAmount) internal {
+        (uint256 currBalance, ) = rewardManager.userInfo(
+            uint256(rewardPoolId),
+            address(this)
+        );
+        require(currBalance >= lpTokenAmount, "ERR_NOT_ENOUGH_BAL");
+        rewardManager.withdraw(uint256(rewardPoolId), lpTokenAmount);
+
+        (uint256 newBalance, ) = rewardManager.userInfo(
+            uint256(rewardPoolId),
+            address(this)
+        );
+        require(
+            currBalance - newBalance == lpTokenAmount,
+            "ERR_REWARD_UNSTAKE"
+        );
+
+        emit LogUnstake(msg.sender, lpTokenAmount);
+    }
+
+    //
+    // Function placeholders, and need to be implemented by child contracts
+    //
+    function deposit(uint256 minAmountOut)
+        external
+        payable
+        onlyOwner
+        returns (uint256 lpTokenAmount)
+    {}
+
+    function withdraw(uint256 amount, uint256 minAmountOut)
+        external
+        payable
+        onlyOwner
+        returns (uint256 tokenAmountOut)
+    {}
+
+    function deposit(address tokenIn, uint256 tokenAmountIn)
+        external
+        onlyOwner
+        returns (uint256 lpTokenAmount)
+    {}
+
+    function withdraw(
+        address tokenOut,
+        uint256 amount,
+        uint256 tokenAmountIn
+    ) external onlyOwner returns (uint256 tokenAmountOut) {}
+}

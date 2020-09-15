@@ -1,0 +1,13 @@
+{
+    "detectors_to_exclude": "external-function, arbitrary-send",
+    "exclude_informational": true,
+    "exclude_low": true,
+    "exclude_medium": true,
+    "exclude_high": false,
+    "solc_disable_warnings": false,
+    "truffle_version": "truffle@5.1.41",
+    "truffle_ignore_compile": false,
+    "disable_color": false,
+    "filter_paths": "node_modules|contracts/mocks|contracts/balancer",
+    "legacy_ast": false
+}
