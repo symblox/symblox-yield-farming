@@ -6,11 +6,11 @@ import {WalletLinkConnector} from "@web3-react/walletlink-connector";
 const POLLING_INTERVAL = 12000;
 
 const RPC_URLS = {
-    1: "https://tn.yopta.net",
+    106: "https://explorer.velas.com/rpc",
     111: "https://tn.yopta.net"
 };
 export const injected = new InjectedConnector({
-    supportedChainIds: [1, 3, 4, 5, 42]
+    supportedChainIds: [106, 111]
 });
 
 // export const network = new NetworkConnector({
@@ -20,13 +20,13 @@ export const injected = new InjectedConnector({
 // });
 
 export const walletconnect = new WalletConnectConnector({
-    rpc: {1: RPC_URLS[1]},
+    rpc: {106: RPC_URLS[106]},
     bridge: "https://bridge.walletconnect.org",
     qrcode: true,
     pollingInterval: POLLING_INTERVAL
 });
 
 export const walletlink = new WalletLinkConnector({
-    url: RPC_URLS[1],
+    url: RPC_URLS[106],
     appName: "ygov.finance"
 });
