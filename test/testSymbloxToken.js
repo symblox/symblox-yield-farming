@@ -3,7 +3,29 @@ const SymbloxToken = artifacts.require("SymbloxToken");
 
 contract("SymbloxToken", ([alice, bob, carol]) => {
     beforeEach(async () => {
-        this.symblox = await SymbloxToken.new({from: alice});
+        this.symblox = await SymbloxToken.new(
+            "0x0000000000000000000000000000000000000000",
+            {from: alice}
+        );
+    });
+
+    it("exchange new syx", async () => {
+        newSymblox = await SymbloxToken.new(this.symblox.address, {
+            from: alice
+        });
+
+        await this.symblox.mint(bob, "1000", {from: alice});
+        const bobBal = await this.symblox.balanceOf(bob);
+        assert.equal(bobBal.valueOf(), "1000");
+
+        let newBobBal = await newSymblox.balanceOf(bob);
+        assert.equal(newBobBal.valueOf(), "0");
+
+        await this.symblox.approve(newSymblox.address, "1000", {from: bob});
+        await newSymblox.exchangeSyx("1000", {from: bob});
+
+        newBobBal = await newSymblox.balanceOf(bob);
+        assert.equal(newBobBal.valueOf(), "1000");
     });
 
     it("should have correct name and symbol and decimal", async () => {

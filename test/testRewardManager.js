@@ -5,7 +5,10 @@ const MockERC20 = artifacts.require("MockERC20");
 
 contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
     beforeEach(async () => {
-        this.symblox = await SymbloxToken.new({from: alice});
+        this.symblox = await SymbloxToken.new(
+            "0x0000000000000000000000000000000000000000",
+            {from: alice}
+        );
     });
 
     it("should set correct state variables", async () => {

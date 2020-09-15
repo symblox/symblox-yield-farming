@@ -1,18 +1,15 @@
 pragma solidity 0.5.17;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 // SymbloxToken with Governance.
 contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
-    constructor() public ERC20Detailed("Symblox", "SYX", 18) {}
+    using SafeERC20 for ERC20;
 
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (RewardManager).
-    function mint(address _to, uint256 _amount) public onlyOwner {
-        _mint(_to, _amount);
-        _moveDelegates(address(0), _delegates[_to], _amount);
-    }
+    address oldSymbloxToken;
 
     // Copied and modified from YAM code:
     // https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernanceStorage.sol
@@ -61,6 +58,34 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         uint256 previousBalance,
         uint256 newBalance
     );
+
+    constructor(address _oldSymbloxToken)
+        public
+        ERC20Detailed("Symblox", "SYX", 18)
+    {
+        oldSymbloxToken = _oldSymbloxToken;
+    }
+
+    function exchangeSyx(uint256 amount) public {
+        require(oldSymbloxToken != address(0), "oldSymbloxToken is zero");
+        require(
+            ERC20(oldSymbloxToken).allowance(msg.sender, address(this)) >=
+                amount,
+            "ERR_ALLOWANCE"
+        );
+        ERC20(oldSymbloxToken).safeTransferFrom(
+            address(msg.sender),
+            address(this),
+            amount
+        );
+        _mint(msg.sender, amount);
+    }
+
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (RewardManager).
+    function mint(address _to, uint256 _amount) public onlyOwner {
+        _mint(_to, _amount);
+        _moveDelegates(address(0), _delegates[_to], _amount);
+    }
 
     /**
      * @notice Delegate votes from `msg.sender` to `delegatee`

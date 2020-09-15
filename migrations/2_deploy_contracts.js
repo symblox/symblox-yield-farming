@@ -27,7 +27,10 @@ module.exports = async function (deployer, network, accounts) {
         }
     };
 
-    await deployer.deploy(Symblox);
+    await deployer.deploy(
+        Symblox,
+        "0x0000000000000000000000000000000000000000"
+    );
     const syx = await Symblox.deployed();
 
     const rewardMgr = await deployer.deploy(
