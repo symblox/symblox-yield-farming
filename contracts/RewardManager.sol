@@ -61,8 +61,8 @@ contract RewardManager is Ownable {
     uint256 public totalAllocPoint = 0;
     // The block number when Symblox mining starts.
     uint256 public startBlock;
-    // Maximum number of Symblox tokens
-    uint256 public rewardCap = 0;
+    // Reward deadline block
+    uint256 public rewardDeadlineBlock = 0;
 
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
@@ -78,14 +78,14 @@ contract RewardManager is Ownable {
         uint256 _syxPerBlock,
         uint256 _startBlock,
         uint256 _bonusEndBlock,
-        uint256 _rewardCap
+        uint256 _rewardDeadlineBlock
     ) public {
         syx = SymbloxToken(_syx);
         devaddr = _devaddr;
         syxPerBlock = _syxPerBlock;
         startBlock = _startBlock;
         bonusEndBlock = _bonusEndBlock;
-        rewardCap = _rewardCap;
+        rewardDeadlineBlock = _rewardDeadlineBlock;
     }
 
     /**
@@ -131,9 +131,9 @@ contract RewardManager is Ownable {
         poolInfo[_pid].allocPoint = _allocPoint;
     }
 
-    function setRewardCap(uint256 _newCap) external onlyOwner {
-        require(_newCap > rewardCap, "ERR_INVALID_CAP"); // new cap must be higher than the old one
-        rewardCap = _newCap;
+    function setRewardDeadlineBlock(uint256 _newBlock) external onlyOwner {
+        require(_newBlock > rewardDeadlineBlock, "ERR_INVALID_CAP"); // new block must be higher than the old one
+        rewardDeadlineBlock = _newBlock;
     }
 
     /**
@@ -167,10 +167,6 @@ contract RewardManager is Ownable {
 
         pool.lastRewardBlock = block.number;
 
-        if (syx.totalSupply() >= rewardCap) {
-            // Cannot exceed the defined Symblox rewardCap
-            return;
-        }
         syx.mint(devaddr, syxReward.div(10));
         syx.mint(address(this), syxReward);
         pool.accSyxPerShare = pool.accSyxPerShare.add(
@@ -275,14 +271,29 @@ contract RewardManager is Ownable {
         view
         returns (uint256)
     {
-        if (_to <= bonusEndBlock) {
-            return _to.sub(_from).mul(BONUS_MULTIPLIER);
-        } else if (_from >= bonusEndBlock) {
-            return _to.sub(_from);
+        uint256 _endBlock;
+        uint256 _startBlock;
+
+        if (_to > rewardDeadlineBlock) {
+            _endBlock = rewardDeadlineBlock;
+        } else {
+            _endBlock = _to;
+        }
+
+        if (_from > rewardDeadlineBlock) {
+            _startBlock = rewardDeadlineBlock;
+        } else {
+            _startBlock = _from;
+        }
+
+        if (_endBlock <= bonusEndBlock) {
+            return _endBlock.sub(_startBlock).mul(BONUS_MULTIPLIER);
+        } else if (_startBlock >= bonusEndBlock) {
+            return _endBlock.sub(_startBlock);
         } else {
             return
-                bonusEndBlock.sub(_from).mul(BONUS_MULTIPLIER).add(
-                    _to.sub(bonusEndBlock)
+                bonusEndBlock.sub(_startBlock).mul(BONUS_MULTIPLIER).add(
+                    _endBlock.sub(bonusEndBlock)
                 );
         }
     }

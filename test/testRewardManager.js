@@ -69,6 +69,54 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             await this.lp2.transfer(carol, "1000", {from: minter});
         });
 
+        it("reward deadline", async () => {
+            const currBlock = await time.latestBlock();
+            this.rewardMgr = await RewardManager.new(
+                this.symblox.address,
+                dev,
+                "1000",
+                "0",
+                "5",
+                currBlock.addn(10),
+                {from: alice}
+            );
+
+            await this.symblox.transferOwnership(this.rewardMgr.address, {
+                from: alice
+            });
+
+            await this.rewardMgr.add("100", this.lp.address, false, {
+                from: alice
+            });
+            await this.lp.approve(this.rewardMgr.address, "1000", {from: bob});
+            await this.rewardMgr.deposit(0, "100", {from: bob});
+
+            const pool = await this.rewardMgr.poolInfo(0);
+            const startBlock = pool.lastRewardBlock.toString();
+
+            // console.log(startBlock, currBlock.addn(5).toString());
+            console.log({
+                lastRewardBlock: startBlock
+            });
+            await time.advanceBlockTo(currBlock.addn(6));
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
+                "1000"
+            );
+
+            await time.advanceBlockTo(currBlock.addn(10));
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
+                "5000"
+            );
+
+            await time.advanceBlockTo(currBlock.addn(100));
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
+                "5000"
+            );
+        });
+
         it("should allow emergency withdraw", async () => {
             // 100 per block farming rate starting at block 100 with bonus until block 1000
             this.rewardMgr = await RewardManager.new(
@@ -134,7 +182,7 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
                 "100",
                 currBlock.addn(200),
                 currBlock.addn(1000),
-                "1000",
+                currBlock.addn(2000),
                 {from: alice}
             );
             await this.symblox.transferOwnership(this.rewardMgr.address, {
@@ -273,7 +321,7 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
                 "100",
                 currBlock.addn(400),
                 currBlock.addn(1000),
-                "1000",
+                currBlock.addn(2000),
                 {from: alice}
             );
             await this.symblox.transferOwnership(this.rewardMgr.address, {
