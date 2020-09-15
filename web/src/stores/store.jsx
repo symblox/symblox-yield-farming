@@ -240,6 +240,7 @@ class Store {
     getBalancesPerpetual = async () => {
         const pools = store.getStore("rewardPools");
         const account = store.getStore("account");
+        if (!store.getStore("web3context")) return;
         const web3 = new Web3(store.getStore("web3context").library.provider);
 
         const currentBlock = await web3.eth.getBlockNumber();
@@ -383,7 +384,7 @@ class Store {
                         pool.BPTPrice = data[7];
                         pool.totalSupply = data[8];
                         let totalBalanceForSyx;
-                        if (pool.type == "seed") {
+                        if (pool.type === "seed") {
                             totalBalanceForSyx =
                                 parseFloat(pool.totalSupply) /
                                 parseFloat(pool.price);
@@ -489,7 +490,7 @@ class Store {
               "." +
               numStr.slice(numStr.length - decimals)
             : "0." + str.slice(0, str.length - numStr.length) + numStr
-        ).replace(/(0+)$/g, ""); // res = res.slice(-1) == '.' ? res + '00' : res;
+        ).replace(/(0+)$/g, "");
 
         if (decimalPlace == 0) return res.slice(0, res.indexOf("."));
 
@@ -497,7 +498,7 @@ class Store {
         res = res
             .slice(0, length >= res.length ? res.length : length)
             .replace(/(0+)$/g, "");
-        return res.slice(-1) == "." ? res + "00" : res;
+        return res.slice(-1) === "." ? res + "00" : res;
     };
 
     _getEntryContract = async (web3, asset, account, callback) => {
@@ -535,7 +536,7 @@ class Store {
     };
 
     _getERC20Balance = async (web3, asset, account, callback) => {
-        if (asset.type == "seed" || asset.type == "swap-native") {
+        if (asset.type === "seed" || asset.type === "swap-native") {
             try {
                 let balance = await web3.eth.getBalance(account.address);
                 callback(null, this.toStringDecimals(balance, asset.decimals));
@@ -650,7 +651,7 @@ class Store {
                 .getSwapFee()
                 .call({from: account.address});
 
-            if (type == "sell") {
+            if (type === "sell") {
                 let tokenAmountOut = await bptContract.methods
                     .calcOutGivenIn(
                         balanceIn,
@@ -696,7 +697,7 @@ class Store {
                     type,
                     amount
                 });
-            } else if (type == "buyIn") {
+            } else if (type === "buyIn") {
                 let tokenAmountIn = await bptContract.methods
                     .calcInGivenOut(
                         balanceIn,
@@ -751,7 +752,7 @@ class Store {
     };
 
     _getStakeTokenPrice = async (web3, asset, account, callback) => {
-        if (asset.type == "seed") {
+        if (asset.type === "seed") {
             callback(null, "0");
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
@@ -803,7 +804,7 @@ class Store {
     };
 
     _getWeight = async (web3, asset, account, callback) => {
-        if (asset.type == "seed") {
+        if (asset.type === "seed") {
             callback(null, "0");
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
@@ -846,7 +847,7 @@ class Store {
     };
 
     _getBptTotalBalance = async (web3, asset, token, account, callback) => {
-        if (asset.type == "seed") {
+        if (asset.type === "seed") {
             callback(null, "0");
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
@@ -862,7 +863,7 @@ class Store {
     };
 
     _getBptMaxInRatio = async (web3, asset, account, callback) => {
-        if (asset.type == "seed") {
+        if (asset.type === "seed") {
             callback(null, "0");
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
@@ -878,7 +879,7 @@ class Store {
     };
 
     _getBptMaxOutRatio = async (web3, asset, account, callback) => {
-        if (asset.type == "seed") {
+        if (asset.type === "seed") {
             callback(null, "0");
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
@@ -894,7 +895,7 @@ class Store {
     };
 
     _getERC20TokenPrice = async (web3, asset, account, callback) => {
-        if (asset.type == "seed") {
+        if (asset.type === "seed") {
             callback(null, "5");
         } else {
             let contract = new web3.eth.Contract(asset.abi, asset.address);
@@ -937,8 +938,8 @@ class Store {
         if (!entryContractAddress)
             return emitter.emit(ERROR, "connector not create");
         if (
-            asset.type == "seed" ||
-            (asset.type == "swap-native" && asset.erc20Address == token)
+            asset.type === "seed" ||
+            (asset.type === "swap-native" && asset.erc20Address == token)
         ) {
             this._callDeposit(asset, account, token, amount, (err, res) => {
                 if (err) {
@@ -996,8 +997,8 @@ class Store {
 
             let args;
             if (
-                asset.type == "seed" ||
-                (asset.type == "swap-native" && asset.erc20Address == token)
+                asset.type === "seed" ||
+                (asset.type === "swap-native" && asset.erc20Address == token)
             ) {
                 args = [0];
             } else {
@@ -1008,8 +1009,8 @@ class Store {
                 .deposit(...args)
                 .send({
                     value:
-                        asset.type == "seed" ||
-                        (asset.type == "swap-native" &&
+                        asset.type === "seed" ||
+                        (asset.type === "swap-native" &&
                             asset.erc20Address == token)
                             ? amountToSend
                             : "0",
@@ -1085,8 +1086,8 @@ class Store {
 
             let args;
             if (
-                asset.type == "seed" ||
-                (asset.type == "swap-native" && asset.erc20Address == token)
+                asset.type === "seed" ||
+                (asset.type === "swap-native" && asset.erc20Address == token)
             ) {
                 args = [amountToSend, 0];
             } else {
@@ -1188,7 +1189,7 @@ class Store {
             amountToSend = (amount * Number(`1e+${asset.decimals}`)).toFixed(0);
         }
 
-        if (asset.type == "swap-native" && asset.erc20Address == token) {
+        if (asset.type === "swap-native" && asset.erc20Address == token) {
             yCurveFiContract.methods
                 .swapWTokenAmountIn(
                     token2,
@@ -1235,7 +1236,7 @@ class Store {
                     }
                 });
         } else if (
-            asset.type == "swap-native" &&
+            asset.type === "swap-native" &&
             asset.erc20Address !== token
         ) {
             yCurveFiContract.methods
@@ -1464,7 +1465,7 @@ class Store {
     _getGasPrice = async () => {
         const networkId = store.getStore("web3context").library.provider
             .networkVersion;
-        if (networkId == "1") {
+        if (networkId === "1") {
             try {
                 const url = "https://gasprice.poa.network/";
                 const priceString = await rp(url);

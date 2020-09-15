@@ -51,13 +51,13 @@ export default class App extends React.Component {
                             marginTop: "74px"
                         }}
                     >
-                        <Grid item xs={4} spacing={3}>
+                        <Grid item xs={4}>
                             Twitter
                         </Grid>
-                        <Grid item xs={4} spacing={3}>
+                        <Grid item xs={4}>
                             Terims
                         </Grid>
-                        <Grid item xs={4} spacing={3}>
+                        <Grid item xs={4}>
                             Support
                         </Grid>
                     </Grid>

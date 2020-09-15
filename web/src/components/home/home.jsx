@@ -435,8 +435,9 @@ class Home extends Component {
                             ) : (
                                 <></>
                             )}
-                            {Array.from(balanceSet).map(data => (
+                            {Array.from(balanceSet).map((data, i) => (
                                 <Balance
+                                    key={i}
                                     name={JSON.parse(data).name}
                                     balance={JSON.parse(data).erc20Balance}
                                 />
@@ -445,7 +446,7 @@ class Home extends Component {
                         <Divider />
                         <CardContent>
                             <Grid container spacing={3}>
-                                <Grid item xs={12} sm={6} spacing={3}>
+                                <Grid item xs={12} sm={6}>
                                     <Paper className={classes.paper}>
                                         <Typography
                                             className={classes.paperTitle}
@@ -484,7 +485,7 @@ class Home extends Component {
                                         </Typography>
                                     </Paper>
                                 </Grid>
-                                <Grid item xs={12} sm={6} spacing={3}>
+                                <Grid item xs={12} sm={6}>
                                     <Paper className={classes.paper}>
                                         <Typography
                                             className={classes.paperTitle}
@@ -529,8 +530,8 @@ class Home extends Component {
                         <FormattedMessage id="RP_LIST_TITLE" />
                     </div>
                     <Grid container spacing={3} className={classes.banner}>
-                        {rewardPools.map(data => (
-                            <Grid item xs={12} sm={6} md={4}>
+                        {rewardPools.map((data, i) => (
+                            <Grid item xs={12} sm={6} md={4} key={i}>
                                 <Pool
                                     data={data}
                                     onDeposit={() =>
@@ -570,10 +571,11 @@ class Home extends Component {
                                 </thead>
                                 <tbody>
                                     {this.state.pools ? (
-                                        this.state.pools.map(pool => {
+                                        this.state.pools.map((pool, i) => {
                                             if (pool.type !== "seed") {
                                                 return (
                                                     <tr
+                                                        key={i}
                                                         className={
                                                             classes.tableBody
                                                         }
