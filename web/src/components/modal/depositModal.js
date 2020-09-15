@@ -16,7 +16,6 @@ import Typography from "@material-ui/core/Typography";
 
 import Store from "../../stores";
 import {DEPOSIT} from "../../constants";
-import {PresetColorTypes} from "antd/lib/_util/colors";
 
 const dispatcher = Store.dispatcher;
 
