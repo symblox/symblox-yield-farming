@@ -21,19 +21,7 @@ import {
 } from "../constants";
 import Web3 from "web3";
 
-import {
-    injected,
-    walletconnect,
-    walletlink,
-    ledger,
-    trezor,
-    frame,
-    fortmatic,
-    portis,
-    squarelink,
-    torus,
-    authereum
-} from "./connectors";
+import {injected, walletconnect, walletlink} from "./connectors";
 
 const rp = require("request-promise");
 
@@ -56,14 +44,6 @@ class Store {
                 MYKEY: injected,
                 WalletConnect: walletconnect,
                 WalletLink: walletlink
-                // Ledger: ledger,
-                // Trezor: trezor,
-                // Frame: frame,
-                // Fortmatic: fortmatic,
-                // Portis: portis,
-                // Squarelink: squarelink,
-                // Torus: torus,
-                // Authereum: authereum
             },
             web3context: null,
             languages: [

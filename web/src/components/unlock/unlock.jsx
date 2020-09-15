@@ -280,20 +280,6 @@ function MyComponent(props) {
                     url = require("../../assets/walletConnectIcon.svg");
                 } else if (name === "MYKEY") {
                     url = require("../../assets/mykey.svg");
-                } else if (name === "Portis") {
-                    url = require("../../assets/portisIcon.png");
-                } else if (name === "Fortmatic") {
-                    url = require("../../assets/fortmaticIcon.png");
-                } else if (name === "Ledger") {
-                    url = require("../../assets/icn-ledger.svg");
-                } else if (name === "Squarelink") {
-                    url = require("../../assets/squarelink.png");
-                } else if (name === "Trezor") {
-                    url = require("../../assets/trezor.png");
-                } else if (name === "Torus") {
-                    url = require("../../assets/torus.jpg");
-                } else if (name === "Authereum") {
-                    url = require("../../assets/icn-aethereum.svg");
                 } else if (name === "WalletLink") {
                     display = "Coinbase Wallet";
                     url = require("../../assets/coinbaseWalletIcon.svg");
