@@ -584,12 +584,20 @@ class Store {
 
     calculateTokenPrice = async payload => {
         const account = store.getStore("account");
-        const {asset, tokenIn, tokenOut, type, amount} = payload.content;
+        const {
+            asset,
+            tokenIn,
+            tokenOut,
+            tokenName,
+            type,
+            amount
+        } = payload.content;
         this._calculateTokenPrice(
             asset,
             account,
             tokenIn,
             tokenOut,
+            tokenName,
             type,
             amount,
             (err, res) => {
@@ -607,6 +615,7 @@ class Store {
         account,
         tokenIn,
         tokenOut,
+        tokenName,
         type,
         amount,
         callback
@@ -675,6 +684,7 @@ class Store {
                             ? 1 / parseFloat(price)
                             : parseFloat(price),
                     type,
+                    tokenName,
                     amount
                 });
             } else if (type === "buyIn") {
@@ -721,6 +731,7 @@ class Store {
                             ? 1 / parseFloat(price)
                             : parseFloat(price),
                     type,
+                    tokenName,
                     amount
                 });
             } else {

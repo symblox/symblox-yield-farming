@@ -165,21 +165,21 @@ class TransactionModal extends Component {
     }
 
     setPrice(data) {
+        console.log({data});
         this.setState({
             price: data.price
         });
+        const price =
+            data.tokenName == "SYX"
+                ? parseFloat(data.price)
+                : 1 / parseFloat(data.price);
         if (data.type == "sell") {
             this.setState({
-                buyAmount: (
-                    parseFloat(data.amount) * parseFloat(data.price)
-                ).toFixed(4)
+                buyAmount: (parseFloat(data.amount) * price).toFixed(4)
             });
         } else if (data.type == "buyIn") {
             this.setState({
-                amount: (
-                    (parseFloat(data.amount) * 1) /
-                    parseFloat(data.price)
-                ).toFixed(4)
+                amount: ((parseFloat(data.amount) * 1) / price).toFixed(4)
             });
         }
     }
@@ -293,6 +293,7 @@ class TransactionModal extends Component {
                     asset: this.props.data,
                     amount,
                     type,
+                    tokenName: this.state.token,
                     tokenIn:
                         this.state.token == "SYX"
                             ? this.props.data.rewardsAddress
