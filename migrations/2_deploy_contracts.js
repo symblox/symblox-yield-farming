@@ -10,19 +10,19 @@ module.exports = async function (deployer, network, accounts) {
                 rewardsPerBlock: "1000000000000000000", // 1 syx
                 startBlock: "100",
                 bonusEndBlock: "100000",
-                rewardCap: web3.utils.toWei("1000")
+                rewardDeadlineBlock: "100100"
             },
             coverage: {
                 rewardsPerBlock: "1000000000000000000", // 1 syx
                 startBlock: "100",
                 bonusEndBlock: "100000",
-                rewardCap: web3.utils.toWei("1000")
+                rewardDeadlineBlock: "100100"
             },
             vlxtest: {
                 rewardsPerBlock: "74000000000000000", // 1 syx
                 startBlock: "872300",
                 bonusEndBlock: "941420",
-                rewardCap: web3.utils.toWei("1000")
+                rewardDeadlineBlock: "981420"
             }
         }
     };
@@ -40,7 +40,7 @@ module.exports = async function (deployer, network, accounts) {
         contractSettings["RewardManager"][network]["rewardsPerBlock"],
         contractSettings["RewardManager"][network]["startBlock"],
         contractSettings["RewardManager"][network]["bonusEndBlock"],
-        contractSettings["RewardManager"][network]["rewardCap"]
+        contractSettings["RewardManager"][network]["rewardDeadlineBlock"]
     );
 
     // Transfer Symblox to the RewardManager

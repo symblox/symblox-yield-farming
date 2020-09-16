@@ -11,6 +11,28 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
         );
     });
 
+    it("change reward deadline block", async () => {
+        this.rewardMgr = await RewardManager.new(
+            this.symblox.address,
+            dev,
+            "1000",
+            "0",
+            "1000",
+            "1000",
+            {from: alice}
+        );
+
+        assert.equal(
+            (await this.rewardMgr.rewardDeadlineBlock()).valueOf(),
+            "1000"
+        );
+        res = await this.rewardMgr.setRewardDeadlineBlock("2000");
+        assert.equal(
+            (await this.rewardMgr.rewardDeadlineBlock()).valueOf(),
+            "2000"
+        );
+    });
+
     it("should set correct state variables", async () => {
         this.rewardMgr = await RewardManager.new(
             this.symblox.address,
