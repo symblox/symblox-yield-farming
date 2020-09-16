@@ -28,7 +28,7 @@
     },
     "scripts": {
         "test": "scripts/test.sh",
-        "coverage": "scripts/coverage.sh && cat coverage/lcov.info | coveralls",
+        "coverage": "scripts/coverage.sh",
         "web:build": "cd web && npm run build"
     }
 }

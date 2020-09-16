@@ -1,0 +1,27 @@
+name: unit-tests
+
+on: [pull_request, push]
+
+jobs:
+    buildAndTest:
+        name: Build and Test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: 12.x
+
+            - name: Install Dependencies
+              run: yarn
+
+            - name: Run Tests
+              run: |
+                  yarn coverage
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: Coveralls
+                uses: coverallsapp/github-action@master
+                with:
+                    github-token: ${{ secrets.GITHUB_TOKEN }}

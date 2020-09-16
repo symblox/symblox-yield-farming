@@ -6,5 +6,12 @@ module.exports = {
             "myth like bonus scare over problem client lizard pioneer submit female collect"
     },
     norpc: true,
-    skipFiles: ["Migrations.sol", "mocks", "interfaces", "tokens", "libs"]
+    skipFiles: [
+        "Migrations.sol",
+        "mocks",
+        "interfaces",
+        "tokens",
+        "libs",
+        "balancer"
+    ]
 };
