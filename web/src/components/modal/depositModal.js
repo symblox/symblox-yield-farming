@@ -3,6 +3,7 @@ import {FormattedMessage} from "react-intl";
 import {withStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import InputLabel from "@material-ui/core/InputLabel";
+import InputBase from "@material-ui/core/InputBase";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
@@ -23,7 +24,7 @@ const styles = theme => ({
     root: {
         margin: 0,
         padding: theme.spacing(2),
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "28px",
@@ -35,7 +36,7 @@ const styles = theme => ({
         background:
             "linear-gradient(135deg, #42D9FE 0%, #2872FA 100%, #42D9FE)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "24px",
@@ -73,8 +74,31 @@ const styles = theme => ({
     textField: {
         flex: 1
     },
-    message: {
-        paddingTop: "12px"
+    icon: {
+        width: "24px",
+        height: "24px",
+        display: "inline-block",
+        margin: "auto 6px",
+        verticalAlign: "middle"
+    },
+    customSelect: {
+        width: "100%",
+        height: "48px",
+        lineHeight: "48px",
+        border: "1px solid #EAEAEA",
+        borderRadius: "12px",
+        padding: "0px 20px",
+        position: "relative",
+        marginBottom: "20px",
+
+        "& .MuiInput-root": {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            opacity: 0
+        }
     }
 });
 
@@ -98,14 +122,14 @@ const DialogTitle = withStyles(styles)(props => {
 
 const DialogContent = withStyles(theme => ({
     root: {
-        padding: theme.spacing(2)
+        // padding: theme.spacing(2)
     }
 }))(MuiDialogContent);
 
 const DialogActions = withStyles(theme => ({
     root: {
-        margin: 0,
-        padding: theme.spacing(1)
+        margin: 0
+        // padding: theme.spacing(1)
     }
 }))(MuiDialogActions);
 
@@ -220,18 +244,17 @@ class DepositModal extends Component {
                 </DialogTitle>
                 <DialogContent>
                     {Array.isArray(data) ? (
-                        <div className={classes.formContent}>
-                            <span className={classes.message}>
-                                <FormattedMessage id="RP_LIST_TITLE" />
-                            </span>
+                        <div className={classes.customSelect}>
+                            <FormattedMessage id="RP_LIST_TITLE" />:
+                            <img
+                                className={classes.icon}
+                                src={"/" + this.state.pool.name + ".png"}
+                                alt=""
+                            />
+                            {this.state.pool.id}
                             <Select
-                                className={classes.select}
                                 value={pool.index}
                                 onChange={this.poolHandleChange.bind(this)}
-                                inputProps={{
-                                    name: "pool",
-                                    id: "outlined-token"
-                                }}
                             >
                                 {data.map(v => {
                                     if (v.entryContractAddress) {
@@ -243,26 +266,47 @@ class DepositModal extends Component {
                                     }
                                 })}
                             </Select>
+                            <img
+                                className={classes.icon}
+                                style={{
+                                    float: "right",
+                                    marginTop: "12px",
+                                    width: "12px"
+                                }}
+                                src={"/down.svg"}
+                                alt=""
+                            />
                         </div>
                     ) : (
                         <></>
                     )}
                     <Typography gutterBottom>
-                        <FormattedMessage id="POPUP_WALLET_BALANCE" />
-                        {": "}
-                        {pool.type == "seed"
-                            ? parseFloat(pool.erc20Balance).toFixed(4) +
-                              pool.symbol
-                            : token == "SYX"
-                            ? parseFloat(pool.maxSyxIn) >
-                              parseFloat(pool.rewardsBalance)
-                                ? parseFloat(pool.rewardsBalance).toFixed(4)
-                                : parseFloat(pool.maxSyxIn).toFixed(4) + "SYX"
-                            : parseFloat(pool.maxErc20In) >
-                              parseFloat(pool.erc20Balance)
-                            ? parseFloat(pool.erc20Balance).toFixed(4)
-                            : parseFloat(pool.maxErc20In).toFixed(4) +
-                              pool.name}
+                        <span style={{color: "#ACAEBC"}}>
+                            <FormattedMessage id="POPUP_WALLET_BALANCE" />
+                            {": "}
+                        </span>
+                        <span style={{float: "right"}}>
+                            <img
+                                className={classes.icon}
+                                src={"/" + this.state.pool.name + ".png"}
+                                alt=""
+                            />
+                            {pool.type == "seed"
+                                ? parseFloat(pool.erc20Balance).toFixed(4) +
+                                  pool.symbol
+                                : token == "SYX"
+                                ? parseFloat(pool.maxSyxIn) >
+                                  parseFloat(pool.rewardsBalance)
+                                    ? parseFloat(pool.rewardsBalance).toFixed(4)
+                                    : parseFloat(pool.maxSyxIn).toFixed(4) +
+                                      " SYX"
+                                : parseFloat(pool.maxErc20In) >
+                                  parseFloat(pool.erc20Balance)
+                                ? parseFloat(pool.erc20Balance).toFixed(4)
+                                : parseFloat(pool.maxErc20In).toFixed(4) +
+                                  " " +
+                                  pool.name}
+                        </span>
                     </Typography>
                     <div className={classes.formContent}>
                         <TextField
