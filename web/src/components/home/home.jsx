@@ -191,7 +191,8 @@ const styles = theme => ({
         fontSize: "18px",
         lineHeight: "25px",
         color: "#C0C1CE",
-        overflowX: "scroll"
+        overflowX: "scroll",
+        overflowY: "hidden"
     },
     paperTitle: {
         fontFamily: "Noto Sans SC",

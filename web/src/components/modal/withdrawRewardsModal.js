@@ -313,14 +313,16 @@ class WithdrawRewardsModal extends Component {
                                   parseFloat(pool.BPTPrice)) /
                                   parseFloat(pool.price) >
                               parseFloat(pool.maxSyxOut)
-                                ? parseFloat(pool.maxSyxOut)
-                                : (parseFloat(pool.stakeAmount) *
-                                      parseFloat(pool.BPTPrice)) /
-                                  parseFloat(pool.price).toFixed(4)
+                                ? parseFloat(pool.maxSyxOut).toFixed(4)
+                                : (
+                                      (parseFloat(pool.stakeAmount) *
+                                          parseFloat(pool.BPTPrice)) /
+                                      parseFloat(pool.price)
+                                  ).toFixed(4)
                             : parseFloat(pool.stakeAmount) *
                                   parseFloat(pool.BPTPrice) >
                               parseFloat(pool.maxErc20Out)
-                            ? parseFloat(pool.maxErc20Out)
+                            ? parseFloat(pool.maxErc20Out).toFixed(4)
                             : (
                                   parseFloat(pool.stakeAmount) *
                                   parseFloat(pool.BPTPrice)
