@@ -40,7 +40,6 @@ contract WvlxConnector is BaseConnector {
 
     function withdraw(uint256 amount, uint256)
         external
-        payable
         onlyOwner
         returns (uint256 tokenAmountOut)
     {

@@ -100,12 +100,12 @@ contract BaseConnector is syxOwnable {
             address(this)
         );
         require(currBalance >= lpTokenAmount, "ERR_NOT_ENOUGH_BAL");
-        rewardManager.withdraw(uint256(rewardPoolId), lpTokenAmount);
 
-        (uint256 newBalance, ) = rewardManager.userInfo(
+        uint256 newBalance = rewardManager.withdraw(
             uint256(rewardPoolId),
-            address(this)
+            lpTokenAmount
         );
+
         require(
             currBalance - newBalance == lpTokenAmount,
             "ERR_REWARD_UNSTAKE"
@@ -126,7 +126,6 @@ contract BaseConnector is syxOwnable {
 
     function withdraw(uint256 amount, uint256 minAmountOut)
         external
-        payable
         onlyOwner
         returns (uint256 tokenAmountOut)
     {}

@@ -108,7 +108,6 @@ contract BptConnector is BaseConnector {
      */
     function withdraw(uint256 amount, uint256 minAmountOut)
         external
-        payable
         onlyOwner
         returns (uint256 tokenAmountOut)
     {
@@ -123,6 +122,10 @@ contract BptConnector is BaseConnector {
         tokenAmountOut = IBPool(lpToken).exitswapPoolAmountInWTokenOut(
             amount,
             minAmountOut
+        );
+        require(
+            address(this).balance >= tokenAmountOut,
+            "ERR_BAL_INSUFFICIENT"
         );
         msg.sender.transfer(tokenAmountOut);
 
