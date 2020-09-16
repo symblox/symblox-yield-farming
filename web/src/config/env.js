@@ -2,12 +2,12 @@ import abis from "./abis";
 
 function env() {
     return {
-        bpt: "0x2ad4BedDB6Afa3C12160FE2606464ef4b8436b33",
-        syx: "0x4251d3FEB080eF35479eF1253F24b23906F61B1F",
+        bpt: "0x7e2BCdB60c49cC6c65664D18b555D1d796BeD323",
+        syx: "0xc25deE29c896CCF9CE4E2DB88995Ce4181d44981",
         wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f",
-        rewardPool: "0x4695561d2D0512813cFc539dc5cC4059DF609C39",
-        connectorFactory: "0xC16dfA7E2585C05B51684877956afb42e0798EEC",
-        wvlxConnector: "0x8EdaBcef0b259812C3D699Bd3010847a6CE4F0Ef",
+        rewardPool: "0x0C02A2b0e291334aD348c4eF61BB5d0e444ea53B",
+        connectorFactory: "0xcfFdD3919C3f0b783BE706d196895F22A573E6cd",
+        wvlxConnector: "0xCe8521591651ac54e8002fb6843C126c45812aA0",
         bptConnector: "0xe38D0284c88618a2F59aaf4D33F1f023374c487F",
         erc20ABI: abis.erc20ABI,
         rewardPoolABI: abis.rewardPoolABI,
