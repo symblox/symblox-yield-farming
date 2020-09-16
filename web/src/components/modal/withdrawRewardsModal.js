@@ -30,7 +30,7 @@ const styles = theme => ({
         background:
             "linear-gradient(135deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
@@ -47,7 +47,7 @@ const styles = theme => ({
         background:
             "linear-gradient(135deg, #41587A 0%, #0B2243 93.26%, #41587A)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",

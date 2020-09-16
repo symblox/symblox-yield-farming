@@ -52,7 +52,11 @@ export default class App extends React.Component {
 
                     <div
                         className={"header__menu"}
-                        style={{verticalAlign: "top", float: "right"}}
+                        style={{
+                            height: "36px",
+                            maginTop: "3px",
+                            float: "right"
+                        }}
                     >
                         {this.props.address && this.props.show && (
                             <a className={"header__menu_wallet"}>

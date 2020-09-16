@@ -29,7 +29,7 @@ const styles = theme => ({
     root: {
         margin: 0,
         padding: theme.spacing(2),
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "28px",
@@ -41,7 +41,7 @@ const styles = theme => ({
         background:
             "linear-gradient(135deg, #42D9FE 0%, #2872FA 100%, #42D9FE)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
@@ -80,7 +80,7 @@ const styles = theme => ({
         flex: 1
     },
     text: {
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
         fontSize: "18px",
@@ -89,7 +89,7 @@ const styles = theme => ({
     },
     rightText: {
         float: "right",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "18px",
@@ -124,7 +124,7 @@ const DialogTitle = withStyles(styles)(props => {
 const DialogContent = withStyles(theme => ({
     root: {
         padding: theme.spacing(2),
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
         fontSize: "18px",

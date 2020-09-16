@@ -26,7 +26,8 @@ import WithdrawRewardsModal from "../modal/withdrawRewardsModal";
 
 import Loader from "../loader";
 import Store from "../../stores";
-import holdIcon from "../../assets/hold.png";
+// import holdLeftIcon from "../../assets/hold-left.png";
+// import holdRightIcon from "../../assets/hold-Right.png";
 import "./home.scss";
 
 import {injected} from "../../stores/connectors";
@@ -61,7 +62,6 @@ const styles = theme => ({
         }
     },
     title: {
-        fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "500",
         fontSize: "32px",
@@ -71,7 +71,7 @@ const styles = theme => ({
         margin: "45px auto"
     },
     headerTitle: {
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "bold",
         fontSize: "60px",
@@ -80,9 +80,8 @@ const styles = theme => ({
         color: "#FFFFFF"
     },
     headerTitleSecondary: {
-        fontFamily: "Noto Sans SC",
         fontStyle: "normal",
-        fontWeight: "500",
+        fontWeight: "300",
         fontSize: "24px",
         lineHeight: "29px",
         textAlign: "center",
@@ -94,7 +93,7 @@ const styles = theme => ({
     tableHeader: {
         height: "80px",
         "& td": {
-            fontFamily: "Noto Sans SC",
+            // fontFamily: "Noto Sans SC",
             fontStyle: "normal",
             fontWeight: "300 !important",
             fontSize: "20px",
@@ -106,7 +105,7 @@ const styles = theme => ({
     tableBody: {
         height: "100px",
         "& td": {
-            fontFamily: "Noto Sans SC",
+            // fontFamily: "Noto Sans SC",
             fontStyle: "normal",
             fontWeight: "500",
             fontSize: "20px",
@@ -119,7 +118,9 @@ const styles = theme => ({
         width: "36px",
         height: "36px",
         marginTop: "-6px",
-        marginRight: "8px"
+        marginRight: "8px",
+        display: "inline-block",
+        verticalAlign: "middle"
     },
     walletIcon: {
         width: "24px",
@@ -135,7 +136,7 @@ const styles = theme => ({
         background:
             "linear-gradient(135deg, #42D9FE 0%, #2872FA 100%, #42D9FE)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
@@ -156,7 +157,7 @@ const styles = theme => ({
         background:
             "linear-gradient(135deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
@@ -185,7 +186,7 @@ const styles = theme => ({
     actions: {
         height: "79px",
         padding: "46px 36px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "18px",
@@ -195,7 +196,7 @@ const styles = theme => ({
         overflowY: "hidden"
     },
     paperTitle: {
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
         fontSize: "20px",
@@ -203,7 +204,7 @@ const styles = theme => ({
         color: "#ACAEBC"
     },
     paperTitleSecondary: {
-        fontFamily: "Noto Sans SC",
+        fontFamily: "Oswald",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "46px",
@@ -218,7 +219,7 @@ const styles = theme => ({
         }
     },
     paperTip: {
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
         fontSize: "16px",
@@ -226,6 +227,12 @@ const styles = theme => ({
         textAlign: "center",
         color: "#ACAEBC",
         margin: "24px auto 0px auto"
+    },
+    divider: {
+        position: "absolute",
+        height: "50%",
+        left: "50%",
+        top: "25%"
     }
 });
 
@@ -446,7 +453,11 @@ class Home extends Component {
                         </CardActions>
                         <Divider />
                         <CardContent>
-                            <Grid container spacing={3}>
+                            <Grid
+                                container
+                                spacing={3}
+                                style={{position: "relative"}}
+                            >
                                 <Grid item xs={12} sm={6}>
                                     <Paper className={classes.paper}>
                                         <Typography
@@ -486,6 +497,12 @@ class Home extends Component {
                                         </Typography>
                                     </Paper>
                                 </Grid>
+                                <Hidden xsDown>
+                                    <Divider
+                                        className={classes.divider}
+                                        orientation="vertical"
+                                    />
+                                </Hidden>
                                 <Grid item xs={12} sm={6}>
                                     <Paper className={classes.paper}>
                                         <Typography
@@ -582,23 +599,26 @@ class Home extends Component {
                                                         }
                                                     >
                                                         <td>
-                                                            <Hidden smUp>
-                                                                SYX/{pool.name}
-                                                            </Hidden>
-                                                            <Hidden xsDown>
-                                                                <img
-                                                                    className={
-                                                                        classes.icon
-                                                                    }
-                                                                    src={
-                                                                        "/" +
-                                                                        pool.name +
-                                                                        ".png"
-                                                                    }
-                                                                    alt=""
-                                                                />
-                                                                SYX/{pool.name}
-                                                                {/* {pool.stakeAmount >
+                                                            <div
+                                                                className={
+                                                                    "hold-left"
+                                                                }
+                                                            >
+                                                                <FormattedMessage id="HOLD" />
+                                                            </div>
+                                                            <img
+                                                                className={
+                                                                    classes.icon
+                                                                }
+                                                                src={
+                                                                    "/" +
+                                                                    pool.name +
+                                                                    ".png"
+                                                                }
+                                                                alt=""
+                                                            />
+                                                            SYX/{pool.name}
+                                                            {/* {pool.stakeAmount >
                                                                 0.0001 ? (
                                                                     <img
                                                                         className={
@@ -612,7 +632,6 @@ class Home extends Component {
                                                                 ) : (
                                                                     <></>
                                                                 )} */}
-                                                            </Hidden>
                                                         </td>
                                                         <td>
                                                             {parseFloat(

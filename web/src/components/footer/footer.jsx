@@ -40,7 +40,6 @@ export default class App extends React.Component {
                         style={{
                             width: "304px",
                             float: "right",
-                            fontFamily: "Noto Sans SC",
                             fontStyle: "normal",
                             fontWeight: "300",
                             fontSize: "20px",
@@ -52,13 +51,13 @@ export default class App extends React.Component {
                         }}
                     >
                         <Grid item xs={4}>
-                            Twitter
+                            <a href="Twitter:@SymbloxDeFi">Twitter</a>
                         </Grid>
                         <Grid item xs={4}>
-                            Terims
+                            <a href="https://t.me/symblox">Terims</a>
                         </Grid>
                         <Grid item xs={4}>
-                            Support
+                            <a href="mailto:symbloxsyx@gmail.com">Support</a>
                         </Grid>
                     </Grid>
                 </Container>

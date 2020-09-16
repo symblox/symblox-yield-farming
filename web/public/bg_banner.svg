@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1270px" height="665px" viewBox="0 0 1270 665" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59 (86127) - https://sketch.com -->
+    <title>Bitmap</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="40.912064%" y1="14.866026%" x2="57.632345%" y2="83.2817826%" id="linearGradient-1">
+            <stop stop-color="#1F314C" offset="0%"></stop>
+            <stop stop-color="#051731" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="54.8466385%" y1="16.0278521%" x2="43.6191838%" y2="50%" id="linearGradient-2">
+            <stop stop-color="#294266" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#051731" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="51.6864016%" y1="0%" x2="47.8116247%" y2="95.06358%" id="linearGradient-3">
+            <stop stop-color="#1F314C" stop-opacity="0.750928759" offset="0%"></stop>
+            <stop stop-color="#051731" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="52.6265651%" y1="20.3730494%" x2="47.9498732%" y2="48.4418872%" id="linearGradient-4">
+            <stop stop-color="#1F314C" offset="0%"></stop>
+            <stop stop-color="#051731" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50.7621011%" y1="0%" x2="48.7822667%" y2="48.4418872%" id="linearGradient-5">
+            <stop stop-color="#2D4363" offset="0%"></stop>
+            <stop stop-color="#051731" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="60.1461648%" y1="-5.25872882%" x2="52.3476595%" y2="85.6577932%" id="linearGradient-6">
+            <stop stop-color="#294266" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#192B45" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Symblox_首页" transform="translate(-318.000000, -50.000000)">
+            <g id="Bitmap">
+                <polygon id="Rectangle" fill="url(#linearGradient-1)" opacity="0.5" points="1410 50 1588 114.723307 1588 435.650407 1410 555"></polygon>
+                <polygon id="Rectangle" fill="url(#linearGradient-2)" opacity="0.699999988" points="1332 296.767442 1467 212 1467 613.232558 1332 698"></polygon>
+                <polygon id="Rectangle" fill="url(#linearGradient-3)" opacity="0.699999988" transform="translate(519.500000, 423.500000) scale(-1, 1) translate(-519.500000, -423.500000) " points="441 176.441656 598 81 598 646.523256 441 766"></polygon>
+                <polygon id="Rectangle" fill="url(#linearGradient-4)" opacity="0.5" points="947 254.441656 1104 159 1104 724.523256 947 844"></polygon>
+                <polygon id="Rectangle" fill="url(#linearGradient-5)" opacity="0.400000006" transform="translate(910.500000, 629.500000) scale(-1, 1) translate(-910.500000, -629.500000) " points="850 324.711303 971 287 971 852.523256 850 972"></polygon>
+                <polygon id="Rectangle" fill="url(#linearGradient-6)" opacity="0.800000012" transform="translate(396.500000, 471.000000) scale(-1, 1) translate(-396.500000, -471.000000) " points="318 312.767442 475 228 475 629.232558 318 714"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

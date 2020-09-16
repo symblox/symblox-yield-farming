@@ -14,7 +14,7 @@ const useStyles = makeStyles({
         // minWidth: 373,
         borderRadius: "12px",
         textAlign: "center",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
         fontSize: "20px",
@@ -26,7 +26,6 @@ const useStyles = makeStyles({
     featuredRoot: {
         borderRadius: "12px",
         textAlign: "center",
-        fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
         fontSize: "20px",
@@ -40,7 +39,7 @@ const useStyles = makeStyles({
     icon: {
         width: "36px",
         height: "36px",
-        marginTop: "-6px",
+
         marginRight: "8px"
     },
     iconSecondary: {
@@ -50,17 +49,18 @@ const useStyles = makeStyles({
     },
     title: {
         paddingTop: "17px",
-        fontFamily: "Noto Sans SC",
+        fontFamily: "Oswald",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "28px",
         lineHeight: "34px",
         color: props =>
-            props.data && props.data.featured ? "#FFFFFF" : "#1E304B"
+            props.data && props.data.featured ? "#FFFFFF" : "#1E304B",
+        "& span": {display: "inline-block", verticalAlign: "top"}
     },
     text: {
         paddingTop: "26px",
-        fontFamily: "Noto Sans SC",
+        fontFamily: "Oswald",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "46px",
@@ -81,7 +81,7 @@ const useStyles = makeStyles({
         background:
             "linear-gradient(135deg, #42D9FE 0%, #2872FA 100%, #42D9FE)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
@@ -97,7 +97,7 @@ const useStyles = makeStyles({
         background:
             "linear-gradient(135deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)",
         borderRadius: "26px",
-        fontFamily: "Noto Sans SC",
+        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
@@ -126,7 +126,7 @@ export default function Pool(props) {
             <CardContent>
                 <Typography className={classes.title} gutterBottom>
                     <img className={classes.icon} src={tokenIcon} alt="" />
-                    {data.id}
+                    <span>{data.id}</span>
                     {/* {data.stakeAmount > 0.0001 ? (
                         <img
                             className={classes.iconSecondary}
