@@ -370,6 +370,16 @@ class TransactionModal extends Component {
         const {classes, type, data, closeModal, modalOpen} = this.props;
         const fullScreen = window.innerWidth < 450;
 
+        const availableAmount = parseFloat(
+            this.state.token == data.tokens[0]
+                ? parseFloat(data.maxSyxIn) > parseFloat(data.rewardsBalance)
+                    ? parseFloat(data.rewardsBalance)
+                    : parseFloat(data.maxSyxIn).toFixed(4)
+                : parseFloat(data.maxErc20In) > parseFloat(data.erc20Balance)
+                ? parseFloat(data.erc20Balance)
+                : parseFloat(data.maxErc20In)
+        );
+
         return (
             <Dialog
                 onClose={closeModal}
@@ -418,6 +428,11 @@ class TransactionModal extends Component {
                     <div className={classes.formContent}>
                         <FormControl variant="outlined" style={{flex: "4"}}>
                             <OutlinedInput
+                                error={
+                                    parseFloat(this.state.amount) >
+                                    availableAmount
+                                }
+                                helperText="Incorrect entry."
                                 className={classes.customInput}
                                 id="outlined-adornment-password"
                                 type={"text"}
@@ -434,6 +449,13 @@ class TransactionModal extends Component {
                                     </InputAdornment>
                                 }
                             />
+                            {parseFloat(this.state.amount) > availableAmount ? (
+                                <span style={{color: "red"}}>
+                                    <FormattedMessage id="TRADE_ERROR_BALANCE" />
+                                </span>
+                            ) : (
+                                <></>
+                            )}
                         </FormControl>
                         <FormControl
                             variant="outlined"

@@ -57,6 +57,7 @@ const zh_CN = {
     JOIN: "加入",
     TOTAL_SUPPLY: "总量",
     HOLD: "持有",
-    TOTAL_STAKE_AFTER_DEPOSIT: "存入后总金额"
+    TOTAL_STAKE_AFTER_DEPOSIT: "存入后总金额",
+    TRADE_ERROR_BALANCE: "可用余额不足"
 };
 export default zh_CN;

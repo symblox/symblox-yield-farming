@@ -58,6 +58,7 @@ const en_US = {
     JOIN: "Join",
     TOTAL_SUPPLY: "Total supply",
     HOLD: "hold",
-    TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit"
+    TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
+    TRADE_ERROR_BALANCE: "Available balance not enough"
 };
 export default en_US;
