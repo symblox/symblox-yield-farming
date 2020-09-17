@@ -6,13 +6,16 @@ import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
-import Divider from "@material-ui/core/Divider";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 
 import Store from "../../stores";
@@ -25,6 +28,46 @@ const styles = theme => ({
         margin: 0,
         padding: theme.spacing(2),
         textAlign: "center"
+    },
+    icon: {
+        width: "24px",
+        height: "24px",
+        display: "inline-block",
+        margin: "auto 6px",
+        verticalAlign: "middle"
+    },
+    customSelect: {
+        width: "100%",
+        height: "48px",
+        lineHeight: "48px",
+        border: "1px solid #EAEAEA",
+        borderRadius: "6px",
+        padding: "0px 20px",
+        position: "relative",
+        marginBottom: "20px",
+
+        "& .MuiInput-root": {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            opacity: 0
+        }
+    },
+    customInput: {
+        border: "1px solid #EAEAEA",
+        borderRadius: "6px",
+        paddingRight: "0px",
+        marginRight: "5px",
+
+        "& button": {
+            borderRadius: "0px",
+            margin: "0",
+            fontSize: "20px",
+            lineHeight: "23px",
+            color: "#ACAEBC"
+        }
     },
     button: {
         background:
@@ -93,6 +136,39 @@ const styles = theme => ({
     }
 });
 
+const StyledTabs = withStyles({
+    indicator: {
+        display: "flex",
+        justifyContent: "center",
+        backgroundColor: "transparent",
+        "& > span": {
+            maxWidth: 40,
+            width: "100%",
+            backgroundColor: "#635ee7"
+        }
+    }
+})(props => <Tabs {...props} TabIndicatorProps={{children: <span />}} />);
+
+const StyledTab = withStyles(theme => ({
+    root: {
+        flex: "1",
+        textTransform: "none",
+        color: "#ACAEBC",
+        fontWeight: theme.typography.fontWeightRegular,
+        fontSize: "20px",
+        lineHeight: "20px",
+        textAlign: "center",
+        "&:focus": {
+            opacity: 1,
+            color: "#1E304B"
+        },
+        "&.Mui-selected": {
+            opacity: 1,
+            color: "#1E304B"
+        }
+    }
+}))(props => <Tab disableRipple {...props} />);
+
 const DialogTitle = withStyles(styles)(props => {
     const {children, classes, onClose, ...other} = props;
     return (
@@ -135,11 +211,19 @@ class WithdrawRewardsModal extends Component {
             }
         });
         this.state = {
+            curTab: 0,
             pool: curPool,
             token: curPool.tokens[0],
             amount: "0"
         };
     }
+
+    tapHandleChange = (event, newValue) => {
+        this.setState({
+            curTab: newValue
+        });
+        console.log(this.state.curTab);
+    };
 
     handleChange = event => {
         const token = event.target.name;
@@ -150,7 +234,8 @@ class WithdrawRewardsModal extends Component {
 
     poolHandleChange = event => {
         this.setState({
-            pool: this.props.data[event.target.value]
+            pool: this.props.data[event.target.value],
+            token: this.props.data[event.target.value].tokens[0]
         });
     };
 
@@ -262,7 +347,6 @@ class WithdrawRewardsModal extends Component {
 
     render() {
         const {classes, data, closeModal, modalOpen} = this.props;
-        const {pool} = this.state;
         const fullScreen = window.innerWidth < 450;
 
         return (
@@ -274,116 +358,260 @@ class WithdrawRewardsModal extends Component {
                 fullScreen={fullScreen}
             >
                 <DialogTitle id="customized-dialog-title" onClose={closeModal}>
-                    <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                    <StyledTabs
+                        value={this.state.curTab}
+                        onChange={this.tapHandleChange.bind(this)}
+                        aria-label=""
+                    >
+                        <StyledTab
+                            label={
+                                <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                            }
+                        />
+                        <StyledTab
+                            label={
+                                <FormattedMessage id="POPUP_TITLE_UNSTAKE" />
+                            }
+                        />
+                    </StyledTabs>
                 </DialogTitle>
                 <DialogContent>
-                    <Typography gutterBottom>
-                        <FormattedMessage id="WITHDRAWABLE_REWARDS" />
-                        {": "}
-                        {parseFloat(pool.rewardsAvailable).toFixed(4) + "SYX"}
-                    </Typography>
-                    <div className={classes.formContent}>
-                        <span className={classes.message}>
-                            <FormattedMessage id="RP_LIST_TITLE" />
-                        </span>
-                        <Select
-                            className={classes.select}
-                            value={pool.index}
-                            onChange={this.poolHandleChange.bind(this)}
-                            inputProps={{
-                                name: "pool",
-                                id: "outlined-token"
-                            }}
-                        >
-                            {data.map(v => {
-                                if (v.entryContractAddress) {
-                                    return (
-                                        <option value={v.index}>{v.id}</option>
-                                    );
-                                }
-                            })}
-                        </Select>
-                    </div>
-                    <Typography gutterBottom>
-                        <FormattedMessage id="POPUP_WALLET_BALANCE" />
-                        {pool.type == "seed"
-                            ? parseFloat(pool.stakeAmount)
-                            : this.state.token == "SYX"
-                            ? (parseFloat(pool.stakeAmount) *
-                                  parseFloat(pool.BPTPrice)) /
-                                  parseFloat(pool.price) >
-                              parseFloat(pool.maxSyxOut)
-                                ? parseFloat(pool.maxSyxOut).toFixed(4)
-                                : (
-                                      (parseFloat(pool.stakeAmount) *
-                                          parseFloat(pool.BPTPrice)) /
-                                      parseFloat(pool.price)
-                                  ).toFixed(4)
-                            : parseFloat(pool.stakeAmount) *
-                                  parseFloat(pool.BPTPrice) >
-                              parseFloat(pool.maxErc20Out)
-                            ? parseFloat(pool.maxErc20Out).toFixed(4)
-                            : (
-                                  parseFloat(pool.stakeAmount) *
-                                  parseFloat(pool.BPTPrice)
-                              ).toFixed(4)}
-                        {this.state.token}
-                    </Typography>
-                    <div className={classes.formContent}>
-                        <TextField
-                            className={classes.textField}
-                            value={this.state.amount}
-                            onChange={this.amountChange}
-                            id="outlined-basic"
-                            label={<FormattedMessage id="POPUP_INPUT_AMOUNT" />}
-                            variant="outlined"
-                        />
-                        <Button
-                            className={classes.containedButton}
-                            variant="contained"
-                            onClick={this.max}
-                        >
-                            <FormattedMessage id="POPUP_INPUT_MAX" />
-                        </Button>
-                        <Select
-                            className={classes.select}
-                            value={this.state.token}
-                            onChange={this.handleChange.bind(this)}
-                            label="Token"
-                            inputProps={{
-                                name: "token",
-                                id: "outlined-token"
-                            }}
-                        >
-                            {pool.tokens.map(v => (
-                                <option value={v}>{v}</option>
-                            ))}
-                        </Select>
-                    </div>
+                    {this.state.curTab === 1 ? (
+                        <>
+                            <div className={classes.customSelect}>
+                                <FormattedMessage id="RP_LIST_TITLE" />:
+                                <img
+                                    className={classes.icon}
+                                    src={"/" + this.state.pool.name + ".png"}
+                                    alt=""
+                                />
+                                {this.state.pool.id}
+                                <Select
+                                    value={this.state.pool.index}
+                                    onChange={this.poolHandleChange.bind(this)}
+                                >
+                                    {data.map(v => {
+                                        if (v.entryContractAddress) {
+                                            return (
+                                                <option value={v.index}>
+                                                    {v.id}
+                                                </option>
+                                            );
+                                        }
+                                    })}
+                                </Select>
+                                <img
+                                    className={classes.icon}
+                                    style={{
+                                        float: "right",
+                                        marginTop: "12px",
+                                        width: "12px"
+                                    }}
+                                    src={"/down.svg"}
+                                    alt=""
+                                />
+                            </div>
+                            <Typography gutterBottom>
+                                <span style={{color: "#ACAEBC"}}>
+                                    <FormattedMessage id="POPUP_WALLET_BALANCE" />
+                                </span>
+                                <span style={{float: "right"}}>
+                                    {this.state.token == "SYX" ? (
+                                        <img
+                                            className={classes.icon}
+                                            src={"/SYX.png"}
+                                            alt=""
+                                        />
+                                    ) : (
+                                        <img
+                                            className={classes.icon}
+                                            src={
+                                                "/" +
+                                                this.state.pool.name +
+                                                ".png"
+                                            }
+                                            alt=""
+                                        />
+                                    )}
+                                    {this.state.pool.type == "seed"
+                                        ? parseFloat(
+                                              this.state.pool.stakeAmount
+                                          )
+                                        : this.state.token == "SYX"
+                                        ? (parseFloat(
+                                              this.state.pool.stakeAmount
+                                          ) *
+                                              parseFloat(
+                                                  this.state.pool.BPTPrice
+                                              )) /
+                                              parseFloat(
+                                                  this.state.pool.price
+                                              ) >
+                                          parseFloat(this.state.pool.maxSyxOut)
+                                            ? parseFloat(
+                                                  this.state.pool.maxSyxOut
+                                              ).toFixed(4)
+                                            : (
+                                                  (parseFloat(
+                                                      this.state.pool
+                                                          .stakeAmount
+                                                  ) *
+                                                      parseFloat(
+                                                          this.state.pool
+                                                              .BPTPrice
+                                                      )) /
+                                                  parseFloat(
+                                                      this.state.pool.price
+                                                  )
+                                              ).toFixed(4)
+                                        : parseFloat(
+                                              this.state.pool.stakeAmount
+                                          ) *
+                                              parseFloat(
+                                                  this.state.pool.BPTPrice
+                                              ) >
+                                          parseFloat(
+                                              this.state.pool.maxErc20Out
+                                          )
+                                        ? parseFloat(
+                                              this.state.pool.maxErc20Out
+                                          ).toFixed(4)
+                                        : (
+                                              parseFloat(
+                                                  this.state.pool.stakeAmount
+                                              ) *
+                                              parseFloat(
+                                                  this.state.pool.BPTPrice
+                                              )
+                                          ).toFixed(4)}
+                                    {" " + this.state.token}
+                                </span>
+                            </Typography>
+                            <div className={classes.formContent}>
+                                <FormControl
+                                    variant="outlined"
+                                    style={{flex: "4"}}
+                                >
+                                    <OutlinedInput
+                                        className={classes.customInput}
+                                        id="outlined-adornment-password"
+                                        type={"text"}
+                                        value={this.state.amount}
+                                        onChange={this.amountChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={this.max}
+                                                >
+                                                    <FormattedMessage id="POPUP_INPUT_MAX" />
+                                                </Button>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </FormControl>
+                                <FormControl
+                                    variant="outlined"
+                                    className={classes.formControl}
+                                    style={{flex: "1"}}
+                                >
+                                    <Select
+                                        className={classes.select}
+                                        value={this.state.token}
+                                        onChange={this.handleChange.bind(this)}
+                                        inputProps={{
+                                            name: "token",
+                                            id: "outlined-token"
+                                        }}
+                                    >
+                                        {this.state.pool.tokens.map(v => (
+                                            <MenuItem value={v}>
+                                                <img
+                                                    className={classes.icon}
+                                                    src={"/" + v + ".png"}
+                                                    alt=""
+                                                />
+                                                {v}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <Typography gutterBottom>
+                                <span style={{color: "#ACAEBC"}}>
+                                    <FormattedMessage id="WITHDRAWABLE_REWARDS" />
+                                    {": "}
+                                </span>
+                                <span style={{float: "right"}}>
+                                    <img
+                                        className={classes.icon}
+                                        src={"/SYX.png"}
+                                        alt=""
+                                    />{" "}
+                                    {parseFloat(
+                                        this.state.pool.rewardsAvailable
+                                    ).toFixed(4) + " SYX"}
+                                </span>
+                            </Typography>
+                            <div className={classes.customSelect}>
+                                <FormattedMessage id="RP_LIST_TITLE" />:
+                                <img
+                                    className={classes.icon}
+                                    src={"/" + this.state.pool.name + ".png"}
+                                    alt=""
+                                />
+                                {this.state.pool.id}
+                                <Select
+                                    value={this.state.pool.index}
+                                    onChange={this.poolHandleChange.bind(this)}
+                                >
+                                    {data.map(v => {
+                                        if (v.entryContractAddress) {
+                                            return (
+                                                <option value={v.index}>
+                                                    {v.id}
+                                                </option>
+                                            );
+                                        }
+                                    })}
+                                </Select>
+                                <img
+                                    className={classes.icon}
+                                    style={{
+                                        float: "right",
+                                        marginTop: "12px",
+                                        width: "12px"
+                                    }}
+                                    src={"/down.svg"}
+                                    alt=""
+                                />
+                            </div>
+                        </>
+                    )}
                 </DialogContent>
                 <DialogActions>
-                    <Grid container>
-                        <Grid item xs={6}>
-                            <Button
-                                className={classes.button}
-                                autoFocus
-                                onClick={this.onClaim}
-                                fullWidth={true}
-                            >
-                                <FormattedMessage id="RP_WITHDRAW_REWARDS" />
-                            </Button>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Button
-                                className={classes.buttonSecondary}
-                                autoFocus
-                                onClick={this.confirm}
-                                fullWidth={true}
-                            >
-                                <FormattedMessage id="LP_WITHDRAW" />
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    {this.state.curTab === 1 ? (
+                        <Button
+                            className={classes.buttonSecondary}
+                            autoFocus
+                            onClick={this.confirm}
+                            fullWidth={true}
+                        >
+                            <FormattedMessage id="LP_WITHDRAW" />
+                        </Button>
+                    ) : (
+                        <Button
+                            className={classes.button}
+                            autoFocus
+                            onClick={this.onClaim}
+                            fullWidth={true}
+                        >
+                            <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                        </Button>
+                    )}
                 </DialogActions>
             </Dialog>
         );

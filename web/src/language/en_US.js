@@ -57,6 +57,7 @@ const en_US = {
         "Symblox is an open derivatives issuance and trading protocol",
     JOIN: "Join",
     TOTAL_SUPPLY: "Total supply",
-    HOLD: "hold"
+    HOLD: "hold",
+    TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit"
 };
 export default en_US;

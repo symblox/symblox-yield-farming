@@ -2,8 +2,9 @@ import React, {Component} from "react";
 import {FormattedMessage} from "react-intl";
 import {withStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputBase from "@material-ui/core/InputBase";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
@@ -12,7 +13,6 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
 import Store from "../../stores";
@@ -50,10 +50,6 @@ const styles = theme => ({
                 "linear-gradient(315deg, #4DB5FF 0%, #57E2FF 100%, #4DB5FF)"
         }
     },
-    containedButton: {
-        borderRadius: "6px",
-        margin: "0 6px"
-    },
     select: {
         borderRadius: "6px"
     },
@@ -86,7 +82,7 @@ const styles = theme => ({
         height: "48px",
         lineHeight: "48px",
         border: "1px solid #EAEAEA",
-        borderRadius: "12px",
+        borderRadius: "6px",
         padding: "0px 20px",
         position: "relative",
         marginBottom: "20px",
@@ -98,6 +94,20 @@ const styles = theme => ({
             width: "100%",
             height: "100%",
             opacity: 0
+        }
+    },
+    customInput: {
+        border: "1px solid #EAEAEA",
+        borderRadius: "6px",
+        paddingRight: "0px",
+        marginRight: "5px",
+
+        "& button": {
+            borderRadius: "0px",
+            margin: "0",
+            fontSize: "20px",
+            lineHeight: "23px",
+            color: "#ACAEBC"
         }
     }
 });
@@ -286,11 +296,20 @@ class DepositModal extends Component {
                             {": "}
                         </span>
                         <span style={{float: "right"}}>
-                            <img
-                                className={classes.icon}
-                                src={"/" + this.state.pool.name + ".png"}
-                                alt=""
-                            />
+                            {token == "SYX" ? (
+                                <img
+                                    className={classes.icon}
+                                    src={"/SYX.png"}
+                                    alt=""
+                                />
+                            ) : (
+                                <img
+                                    className={classes.icon}
+                                    src={"/" + this.state.pool.name + ".png"}
+                                    alt=""
+                                />
+                            )}
+
                             {pool.type == "seed"
                                 ? parseFloat(pool.erc20Balance).toFixed(4) +
                                   pool.symbol
@@ -309,44 +328,90 @@ class DepositModal extends Component {
                         </span>
                     </Typography>
                     <div className={classes.formContent}>
-                        <TextField
-                            className={classes.textField}
-                            value={amount}
-                            onChange={this.amountChange}
-                            id="outlined-basic"
-                            label={<FormattedMessage id="POPUP_INPUT_AMOUNT" />}
-                            variant="outlined"
-                        />
-                        <Button
-                            className={classes.containedButton}
-                            variant="contained"
-                            onClick={this.max}
-                        >
-                            <FormattedMessage id="POPUP_INPUT_MAX" />
-                        </Button>
+                        <FormControl variant="outlined" style={{flex: "4"}}>
+                            <OutlinedInput
+                                className={classes.customInput}
+                                id="outlined-adornment-password"
+                                type={"text"}
+                                value={amount}
+                                onChange={this.amountChange}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <Button
+                                            variant="outline"
+                                            onClick={this.max}
+                                        >
+                                            <FormattedMessage id="POPUP_INPUT_MAX" />
+                                        </Button>
+                                    </InputAdornment>
+                                }
+                            />
+                        </FormControl>
                         <FormControl
                             variant="outlined"
                             className={classes.formControl}
+                            style={{flex: "1"}}
                         >
-                            <InputLabel htmlFor="age-native-simple">
-                                <FormattedMessage id="POPUP_INPUT_TOKEN" />
-                            </InputLabel>
                             <Select
                                 className={classes.select}
                                 value={token}
                                 onChange={this.handleChange.bind(this)}
-                                label="Token"
                                 inputProps={{
                                     name: "token",
                                     id: "outlined-token"
                                 }}
                             >
                                 {pool.tokens.map(v => (
-                                    <option value={v}>{v}</option>
+                                    <MenuItem value={v}>
+                                        <img
+                                            className={classes.icon}
+                                            src={"/" + v + ".png"}
+                                            alt=""
+                                        />
+                                        {v}
+                                    </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </div>
+                    <Typography gutterBottom>
+                        <span style={{color: "#ACAEBC"}}>
+                            <FormattedMessage id="TOTAL_STAKE_AFTER_DEPOSIT" />
+                            {": "}
+                        </span>
+                        <span style={{float: "right"}}>
+                            {token == "SYX" ? (
+                                <img
+                                    className={classes.icon}
+                                    src={"/SYX.png"}
+                                    alt=""
+                                />
+                            ) : (
+                                <img
+                                    className={classes.icon}
+                                    src={"/" + this.state.pool.name + ".png"}
+                                    alt=""
+                                />
+                            )}
+                            {pool.type == "seed"
+                                ? parseFloat(pool.stakeAmount).toFixed(4) +
+                                  pool.symbol
+                                : token == "SYX"
+                                ? (
+                                      (parseFloat(pool.stakeAmount) *
+                                          parseFloat(pool.BPTPrice)) /
+                                          parseFloat(pool.price) +
+                                      parseFloat(this.state.amount || 0)
+                                  ).toFixed(4) + " SYX"
+                                : (
+                                      parseFloat(pool.stakeAmount) *
+                                          parseFloat(pool.BPTPrice) +
+                                      parseFloat(this.state.amount || 0)
+                                  ).toFixed(4) +
+                                  " " +
+                                  pool.name}
+                        </span>
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button

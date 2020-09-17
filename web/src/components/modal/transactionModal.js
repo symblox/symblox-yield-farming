@@ -6,7 +6,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
-import Divider from "@material-ui/core/Divider";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import MenuItem from "@material-ui/core/MenuItem";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -100,6 +102,27 @@ const styles = theme => ({
     textPrimy: {
         fontWeight: 500,
         color: "#4E5B70"
+    },
+    icon: {
+        width: "24px",
+        height: "24px",
+        display: "inline-block",
+        margin: "auto 6px",
+        verticalAlign: "middle"
+    },
+    customInput: {
+        border: "1px solid #EAEAEA",
+        borderRadius: "6px",
+        paddingRight: "0px",
+        marginRight: "5px",
+
+        "& button": {
+            borderRadius: "0px",
+            margin: "0",
+            fontSize: "20px",
+            lineHeight: "23px",
+            color: "#ACAEBC"
+        }
     }
 });
 
@@ -369,6 +392,19 @@ class TransactionModal extends Component {
                             <FormattedMessage id="POPUP_LABEL_FROM" />
                         </span>
                         <span className={classes.textPrimy}>
+                            {this.state.token == "SYX" ? (
+                                <img
+                                    className={classes.icon}
+                                    src={"/SYX.png"}
+                                    alt=""
+                                />
+                            ) : (
+                                <img
+                                    className={classes.icon}
+                                    src={"/" + data.name + ".png"}
+                                    alt=""
+                                />
+                            )}
                             <FormattedMessage id="POPUP_WALLET_BALANCE" />
                             {": "}
                             {this.state.token == data.tokens[0]
@@ -385,49 +421,80 @@ class TransactionModal extends Component {
                         </span>
                     </Typography>
                     <div className={classes.formContent}>
-                        <TextField
-                            className={classes.textField}
-                            value={this.state.amount}
-                            onChange={this.amountChange}
-                            id="outlined-basic"
-                            label={<FormattedMessage id="POPUP_INPUT_AMOUNT" />}
-                            variant="outlined"
-                        />
-                        <Button
-                            className={classes.containedButton}
-                            variant="contained"
-                            onClick={this.max}
-                        >
-                            <FormattedMessage id="POPUP_INPUT_MAX" />
-                        </Button>
+                        <FormControl variant="outlined" style={{flex: "4"}}>
+                            <OutlinedInput
+                                className={classes.customInput}
+                                id="outlined-adornment-password"
+                                type={"text"}
+                                value={this.state.amount}
+                                onChange={this.amountChange}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <Button
+                                            variant="outline"
+                                            onClick={this.max}
+                                        >
+                                            <FormattedMessage id="POPUP_INPUT_MAX" />
+                                        </Button>
+                                    </InputAdornment>
+                                }
+                            />
+                        </FormControl>
                         <FormControl
                             variant="outlined"
                             className={classes.formControl}
+                            style={{flex: "1"}}
                         >
-                            <InputLabel htmlFor="age-native-simple">
-                                <FormattedMessage id="POPUP_INPUT_TOKEN" />
-                            </InputLabel>
                             <Select
                                 className={classes.select}
                                 value={this.state.token}
                                 onChange={this.handleChange.bind(this)}
-                                label="Token"
                                 inputProps={{
                                     name: "token",
                                     id: "outlined-token"
                                 }}
                             >
-                                {this.state.tokens.map(v => (
-                                    <option value={v}>{v}</option>
+                                {data.tokens.map(v => (
+                                    <MenuItem value={v}>
+                                        <img
+                                            className={classes.icon}
+                                            src={"/" + v + ".png"}
+                                            alt=""
+                                        />
+                                        {v}
+                                    </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
+                    </div>
+                    <div style={{textAlign: "center", marginBottom: "16px"}}>
+                        <img
+                            className={classes.icon}
+                            style={{
+                                width: "20px"
+                            }}
+                            src={"/down2.svg"}
+                            alt=""
+                        />
                     </div>
                     <Typography gutterBottom align="right">
                         <span style={{float: "left"}}>
                             <FormattedMessage id="POPUP_LABEL_TO" />
                         </span>{" "}
                         <span className={classes.textPrimy}>
+                            {this.state.buyToken == "SYX" ? (
+                                <img
+                                    className={classes.icon}
+                                    src={"/SYX.png"}
+                                    alt=""
+                                />
+                            ) : (
+                                <img
+                                    className={classes.icon}
+                                    src={"/" + data.name + ".png"}
+                                    alt=""
+                                />
+                            )}
                             <FormattedMessage id="POPUP_WALLET_BALANCE" />
                             {": "}
                             {this.state.token == data.tokens[1]
@@ -444,33 +511,38 @@ class TransactionModal extends Component {
                         </span>
                     </Typography>
                     <div className={classes.formContent}>
-                        <TextField
-                            className={classes.textField}
-                            value={this.state.buyAmount}
-                            onChange={this.buyAmountChange}
-                            id="outlined-basic"
-                            label={<FormattedMessage id="POPUP_INPUT_AMOUNT" />}
-                            variant="outlined"
-                        />
+                        <FormControl variant="outlined" style={{flex: "4"}}>
+                            <OutlinedInput
+                                className={classes.customInput}
+                                id="outlined-adornment-password"
+                                type={"text"}
+                                value={this.state.buyAmount}
+                                onChange={this.buyAmountChange}
+                            />
+                        </FormControl>
                         <FormControl
                             variant="outlined"
                             className={classes.formControl}
+                            style={{flex: "1"}}
                         >
-                            <InputLabel htmlFor="age-native-simple">
-                                <FormattedMessage id="POPUP_INPUT_TOKEN" />
-                            </InputLabel>
                             <Select
                                 className={classes.select}
                                 value={this.state.buyToken}
                                 onChange={this.buyHandleChange.bind(this)}
-                                label="Token"
                                 inputProps={{
                                     name: "buyToken",
                                     id: "outlined-token"
                                 }}
                             >
-                                {this.state.tokens.map(v => (
-                                    <option value={v}>{v}</option>
+                                {data.tokens.map(v => (
+                                    <MenuItem value={v}>
+                                        <img
+                                            className={classes.icon}
+                                            src={"/" + v + ".png"}
+                                            alt=""
+                                        />
+                                        {v}
+                                    </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>

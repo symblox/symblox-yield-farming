@@ -56,6 +56,7 @@ const zh_CN = {
     HOME_SUBTITLE: "Symblox是一个区块链合成资产发行和交易协议",
     JOIN: "加入",
     TOTAL_SUPPLY: "总量",
-    HOLD: "持有"
+    HOLD: "持有",
+    TOTAL_STAKE_AFTER_DEPOSIT: "存入后总金额"
 };
 export default zh_CN;
