@@ -274,21 +274,3 @@
         }
     }
 }
-
-.hold-left {
-    background: linear-gradient(135deg, #42d9fe 0%, #2872fa 100%);
-    font-size: 16px;
-    line-height: 19px;
-    color: #ffffff;
-    transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    position: absolute;
-    top: 8px;
-    left: -22px;
-    width: 80px;
-    text-align: center;
-    padding: 2px;
-}

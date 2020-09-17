@@ -12,6 +12,7 @@ import holdIcon from "../../assets/hold.png";
 const useStyles = makeStyles({
     root: {
         // minWidth: 373,
+        position: "relative",
         borderRadius: "12px",
         textAlign: "center",
         // fontFamily: "Noto Sans SC",
@@ -24,6 +25,7 @@ const useStyles = makeStyles({
         height: "100%"
     },
     featuredRoot: {
+        position: "relative",
         borderRadius: "12px",
         textAlign: "center",
         fontStyle: "normal",
@@ -34,7 +36,18 @@ const useStyles = makeStyles({
         background:
             "linear-gradient(130.49deg, #253C5C 0%, #051731 93.26%, #253C5C)",
         mixBlendMode: "normal",
-        boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)"
+        boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
+        "& p": {
+            opacity: 0.8
+        },
+        "&::after": {
+            content: "''",
+            backgroundImage: "url('/bg_pool.svg')",
+            backgroundSize: "auto",
+            // backgroundPosition: "top center",
+            backgroundRepeat: "no-repeat",
+            padding: "100%"
+        }
     },
     icon: {
         width: "36px",
@@ -54,6 +67,7 @@ const useStyles = makeStyles({
         fontWeight: 500,
         fontSize: "28px",
         lineHeight: "34px",
+        opacity: "1 !important",
         color: props =>
             props.data && props.data.featured ? "#FFFFFF" : "#1E304B",
         "& span": {display: "inline-block", verticalAlign: "top"}
@@ -65,7 +79,8 @@ const useStyles = makeStyles({
         fontWeight: 500,
         fontSize: "46px",
         lineHeight: "56px",
-        color: "#36B685"
+        color: "#36B685",
+        opacity: "1 !important"
     },
     textSecondary: {
         paddingTop: "8px"
@@ -124,18 +139,32 @@ export default function Pool(props) {
     return (
         <Card className={data.featured ? classes.featuredRoot : classes.root}>
             <CardContent>
+                {data.stakeAmount > 0.0001 ? (
+                    <div className={"hold-right"}>
+                        <FormattedMessage id="HOLD" />
+                    </div>
+                ) : (
+                    <></>
+                )}
                 <Typography className={classes.title} gutterBottom>
-                    <img className={classes.icon} src={tokenIcon} alt="" />
-                    <span>{data.id}</span>
-                    {/* {data.stakeAmount > 0.0001 ? (
-                        <img
-                            className={classes.iconSecondary}
-                            src={holdIcon}
-                            alt=""
-                        />
+                    {data.type == "seed" ? (
+                        <img className={classes.icon} src={tokenIcon} alt="" />
                     ) : (
-                        <></>
-                    )} */}
+                        <>
+                            <img
+                                className={classes.icon}
+                                src={tokenIcon}
+                                alt=""
+                            />
+                            <img
+                                className={classes.icon}
+                                style={{marginLeft: "-22px"}}
+                                src={"/SYX.png"}
+                                alt=""
+                            />
+                        </>
+                    )}
+                    <span>{data.id}</span>
                 </Typography>
                 <Typography className={classes.text}>
                     {data.rewardApr}%

@@ -26,8 +26,6 @@ import WithdrawRewardsModal from "../modal/withdrawRewardsModal";
 
 import Loader from "../loader";
 import Store from "../../stores";
-// import holdLeftIcon from "../../assets/hold-left.png";
-// import holdRightIcon from "../../assets/hold-Right.png";
 import "./home.scss";
 
 import {injected} from "../../stores/connectors";
@@ -599,13 +597,18 @@ class Home extends Component {
                                                         }
                                                     >
                                                         <td>
-                                                            <div
-                                                                className={
-                                                                    "hold-left"
-                                                                }
-                                                            >
-                                                                <FormattedMessage id="HOLD" />
-                                                            </div>
+                                                            {pool.stakeAmount >
+                                                            0.0001 ? (
+                                                                <div
+                                                                    className={
+                                                                        "hold-left"
+                                                                    }
+                                                                >
+                                                                    <FormattedMessage id="HOLD" />
+                                                                </div>
+                                                            ) : (
+                                                                <></>
+                                                            )}
                                                             <img
                                                                 className={
                                                                     classes.icon
@@ -617,21 +620,7 @@ class Home extends Component {
                                                                 }
                                                                 alt=""
                                                             />
-                                                            SYX/{pool.name}
-                                                            {/* {pool.stakeAmount >
-                                                                0.0001 ? (
-                                                                    <img
-                                                                        className={
-                                                                            classes.iconSecondary
-                                                                        }
-                                                                        src={
-                                                                            holdIcon
-                                                                        }
-                                                                        alt=""
-                                                                    />
-                                                                ) : (
-                                                                    <></>
-                                                                )} */}
+                                                            {pool.id}
                                                         </td>
                                                         <td>
                                                             {parseFloat(

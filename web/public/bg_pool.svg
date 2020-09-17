@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="373px" height="374px" viewBox="0 0 373 374" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59 (86127) - https://sketch.com -->
+    <title>Oval</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="125.659711%" y1="20.1317713%" x2="19.3234939%" y2="106.463262%" id="linearGradient-1">
+            <stop stop-color="#3A5985" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#192B45" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-27.6073423%" y1="100%" x2="58.0691106%" y2="0%" id="linearGradient-2">
+            <stop stop-color="#3A5985" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#192B45" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.900000036">
+        <g id="Symblox_首页" transform="translate(-360.000000, -1083.000000)">
+            <g id="Group-6" transform="translate(360.000000, 1083.000000)">
+                <g id="Oval">
+                    <rect id="Rectangle" fill="url(#linearGradient-1)" opacity="0.800000012" transform="translate(20.813041, 248.264435) rotate(-39.000000) translate(-20.813041, -248.264435) " x="-84.6869594" y="142.764435" width="211" height="211" rx="8"></rect>
+                    <rect id="Rectangle" fill="url(#linearGradient-2)" opacity="0.300000012" transform="translate(397.500000, 89.500000) rotate(-39.000000) translate(-397.500000, -89.500000) " x="292" y="-16" width="211" height="211" rx="8"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
