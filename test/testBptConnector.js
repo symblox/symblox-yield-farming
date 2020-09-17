@@ -51,6 +51,61 @@ contract("BptConnector", ([alice, bob, carol]) => {
             lpToken: lpTokenMock.address
         });
     });
+    it("should get balance of lpToken", async () => {
+        const balance = ether("1");
+
+        const userInfoMethod = this.rewardMgr.contract.methods
+            .userInfo(0, constants.ZERO_ADDRESS)
+            .encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            userInfoMethod,
+            abi.rawEncode(["uint256", "uint256"], [balance, 0])
+        );
+        const bal = await this.bptConn.balanceOfLpToken();
+        expect(bal).to.be.bignumber.equals(balance);
+    });
+    it("should see the claimable reward amount", async () => {
+        const rewardAmount = ether("1");
+        // Mock function calls
+        const pendingSyxMethod = this.rewardMgr.contract.methods
+            .pendingSyx(0, constants.ZERO_ADDRESS)
+            .encodeABI();
+        await this.rewardManagerMock.givenMethodReturnUint(
+            pendingSyxMethod,
+            rewardAmount
+        );
+        const reward = await this.bptConn.earned();
+        expect(reward).to.be.bignumber.equals(rewardAmount);
+    });
+    it("should get rewards", async () => {
+        const rewardAmount = ether("1");
+        symbloxMock = await MockERC20.new("Symblox", "SYX", 18, rewardAmount);
+
+        const getSyxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
+        await this.rewardManagerMock.givenMethodReturnUint(
+            getSyxMethod,
+            symbloxMock.address
+        );
+        const getRewardMethod = this.rewardMgr.contract.methods
+            .getReward(0)
+            .encodeABI();
+        await this.rewardManagerMock.givenMethodReturnUint(
+            getRewardMethod,
+            rewardAmount
+        );
+
+        const getRewardFailTx = this.bptConn.getReward();
+
+        await expectRevert(getRewardFailTx, "ERR_BAL_INSUFFICIENT");
+
+        await symbloxMock.transfer(this.bptConn.address, rewardAmount);
+
+        const getRewardTx = await this.bptConn.getReward();
+
+        expectEvent(getRewardTx, "LogReward", {
+            amount: rewardAmount
+        });
+    });
     it("should deposit erc20 token to BptConnector", async () => {
         const depositAmount = ether("1");
         // Mock function calls
