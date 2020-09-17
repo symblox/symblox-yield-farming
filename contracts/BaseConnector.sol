@@ -22,6 +22,7 @@ contract BaseConnector is syxOwnable {
     event LogWithdrawal(address indexed src, uint256 amount);
     event LogStake(address indexed dst, uint256 amount);
     event LogUnstake(address indexed src, uint256 amount);
+    event LogReward(address indexed src, uint256 amount);
 
     // Empty internal constructor, to prevent people from mistakenly deploying
     // an instance of this contract, which should be used via inheritance.
@@ -62,8 +63,14 @@ contract BaseConnector is syxOwnable {
 
     function getReward() external onlyOwner {
         IERC20 syx = IERC20(rewardManager.syx());
-        rewardManager.getReward(uint256(rewardPoolId));
-        syx.safeTransfer(msg.sender, syx.balanceOf(address(this)));
+        uint256 rewardAmount = rewardManager.getReward(uint256(rewardPoolId));
+        require(
+            syx.balanceOf(address(this)) >= rewardAmount,
+            "ERR_BAL_INSUFFICIENT"
+        );
+        syx.safeTransfer(msg.sender, rewardAmount);
+
+        emit LogReward(msg.sender, rewardAmount);
     }
 
     /**
