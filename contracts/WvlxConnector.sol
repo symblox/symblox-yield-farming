@@ -52,9 +52,11 @@ contract WvlxConnector is BaseConnector {
         // Withdraw VLX from wvlx (lptoken)
         //
         IWvlx(lpToken).withdraw(amount);
+
         require(address(this).balance == amount, "ERR_VLX_RECEIVED");
 
-        msg.sender.transfer(amount);
+        tokenAmountOut = address(this).balance;
+        msg.sender.transfer(tokenAmountOut);
 
         emit LogWithdrawal(msg.sender, tokenAmountOut);
     }

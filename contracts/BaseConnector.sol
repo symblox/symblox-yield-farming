@@ -86,7 +86,7 @@ contract BaseConnector is syxOwnable {
             amount
         );
 
-        require(newBalance - currBalance == amount, "ERR_REWARD_STAKE");
+        require(newBalance - currBalance == amount, "ERR_STAKE_REWARD");
 
         emit LogStake(msg.sender, newBalance);
     }
@@ -108,7 +108,7 @@ contract BaseConnector is syxOwnable {
 
         require(
             currBalance - newBalance == lpTokenAmount,
-            "ERR_REWARD_UNSTAKE"
+            "ERR_UNSTAKE_REWARD"
         );
 
         emit LogUnstake(msg.sender, lpTokenAmount);

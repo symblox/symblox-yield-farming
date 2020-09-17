@@ -120,9 +120,9 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             const startBlock = pool.lastRewardBlock.toString();
 
             // console.log(startBlock, currBlock.addn(5).toString());
-            console.log({
-                lastRewardBlock: startBlock
-            });
+            // console.log({
+            //     lastRewardBlock: startBlock
+            // });
             await time.advanceBlockTo(currBlock.addn(6));
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),

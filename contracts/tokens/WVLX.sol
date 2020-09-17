@@ -23,7 +23,7 @@ contract WVLX {
     }
 
     function withdraw(uint256 wad) public {
-        require(balanceOf[msg.sender] >= wad);
+        require(balanceOf[msg.sender] >= wad, "wvlx: insufficient balance");
         balanceOf[msg.sender] -= wad;
         msg.sender.transfer(wad);
         emit Withdrawal(msg.sender, wad);

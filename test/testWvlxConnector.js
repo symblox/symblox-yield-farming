@@ -14,9 +14,7 @@ const RewardManager = artifacts.require("RewardManager");
 contract("WvlxConnector", ([alice, bob, carol]) => {
     beforeEach(async () => {
         this.rewardManagerMock = await MockContract.new();
-        this.RewardManager = await RewardManager.at(
-            this.rewardManagerMock.address
-        );
+        this.rewardMgr = await RewardManager.at(this.rewardManagerMock.address);
         // create the lpToken contract
         this.wvlx = await WVLX.new();
 
@@ -52,14 +50,14 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
     it("should deposit to WVLX connector", async () => {
         const depositAmount = ether("1");
         // Mock function calls
-        const userInfoMethod = this.RewardManager.contract.methods
+        const userInfoMethod = this.rewardMgr.contract.methods
             .userInfo(0, constants.ZERO_ADDRESS)
             .encodeABI();
         await this.rewardManagerMock.givenMethodReturn(
             userInfoMethod,
             abi.rawEncode(["uint256", "uint256"], [0, 0])
         );
-        const depositMethod = this.RewardManager.contract.methods
+        const depositMethod = this.rewardMgr.contract.methods
             .deposit(0, 0)
             .encodeABI();
         await this.rewardManagerMock.givenMethodReturnUint(
@@ -80,5 +78,41 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
         });
     });
 
-    it("should withdraw from WVLX connector", async () => {});
+    it("should withdraw from WVLX connector", async () => {
+        const amount = ether("1");
+        // Deposit first
+        const userInfoMethod = this.rewardMgr.contract.methods
+            .userInfo(0, constants.ZERO_ADDRESS)
+            .encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            userInfoMethod,
+            abi.rawEncode(["uint256", "uint256"], [0, 0])
+        );
+        const depositMethod = this.rewardMgr.contract.methods
+            .deposit(0, 0)
+            .encodeABI();
+        await this.rewardManagerMock.givenMethodReturnUint(
+            depositMethod,
+            amount
+        );
+        await this.wvlxConn.methods["deposit(uint256)"](0, {
+            value: amount
+        });
+
+        // Withdraw
+        await this.rewardManagerMock.givenMethodReturn(
+            userInfoMethod,
+            abi.rawEncode(["uint256", "uint256"], [ether("1"), 0])
+        );
+        const withdrawMethod = this.rewardMgr.contract.methods
+            .withdraw(0, 0)
+            .encodeABI();
+        await this.rewardManagerMock.givenMethodReturnUint(withdrawMethod, 0);
+
+        const withdrawTx = await this.wvlxConn.withdraw(amount, 0);
+
+        expectEvent(withdrawTx, "LogWithdrawal", {
+            amount: amount
+        });
+    });
 });
