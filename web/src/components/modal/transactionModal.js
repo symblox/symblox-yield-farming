@@ -328,12 +328,7 @@ class TransactionModal extends Component {
                 }
             });
         } else {
-            const price = this.props.data.price;
-            if (this.state.token == "SYX") {
-                this.setState({price: parseFloat(parseFloat(price))});
-            } else {
-                this.setState({price: parseFloat(1 / parseFloat(price))});
-            }
+            this.setState({price: this.props.data.price});
         }
     };
 

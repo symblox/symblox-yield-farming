@@ -394,8 +394,10 @@ class DepositModal extends Component {
                                 />
                             )}
                             {pool.type == "seed"
-                                ? parseFloat(pool.stakeAmount).toFixed(4) +
-                                  pool.symbol
+                                ? (
+                                      parseFloat(pool.stakeAmount) +
+                                      parseFloat(this.state.amount || 0)
+                                  ).toFixed(4) + pool.symbol
                                 : token == "SYX"
                                 ? (
                                       (parseFloat(pool.stakeAmount) *
