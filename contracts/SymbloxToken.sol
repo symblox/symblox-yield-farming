@@ -87,6 +87,24 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         _moveDelegates(address(0), _delegates[_to], _amount);
     }
 
+    function transfer(address recipient, uint256 amount) public returns (bool) {
+        _transfer(msg.sender, recipient, amount);
+        _moveDelegates(_delegates[msg.sender], _delegates[recipient], amount);
+        return true;
+    }
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public returns (bool) {
+        _transfer(sender, recipient, amount);
+        require(allowance(sender, msg.sender) >= amount, "ERR_ALLOWANCE");
+        _approve(sender, msg.sender, allowance(sender, msg.sender).sub(amount));
+        _moveDelegates(_delegates[sender], _delegates[recipient], amount);
+        return true;
+    }
+
     /**
      * @notice Delegate votes from `msg.sender` to `delegatee`
      * @param delegator The address to get delegatee for
