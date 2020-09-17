@@ -10,7 +10,7 @@ interface IRewardManager {
 
     function withdraw(uint256 _pid, uint256 _amount) external returns (uint256);
 
-    function getReward(uint256 _pid) external;
+    function getReward(uint256 _pid) external returns (uint256);
 
     function pendingSyx(uint256 _pid, address account)
         external

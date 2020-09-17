@@ -226,7 +226,7 @@ contract RewardManager is Ownable {
         return user.amount;
     }
 
-    function getReward(uint256 _pid) public {
+    function getReward(uint256 _pid) public returns (uint256) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
@@ -235,6 +235,7 @@ contract RewardManager is Ownable {
         );
         safeSyxTransfer(msg.sender, pending);
         user.rewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        return pending;
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
