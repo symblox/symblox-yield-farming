@@ -1,4 +1,5 @@
-const {expectRevert, BN, time} = require("@openzeppelin/test-helpers");
+const {expectRevert, time} = require("@openzeppelin/test-helpers");
+const {expect} = require("chai");
 const SymbloxToken = artifacts.require("SymbloxToken");
 const RewardManager = artifacts.require("RewardManager");
 const MockERC20 = artifacts.require("MockERC20");
@@ -8,28 +9,6 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
         this.symblox = await SymbloxToken.new(
             "0x0000000000000000000000000000000000000000",
             {from: alice}
-        );
-    });
-
-    it("change reward deadline block", async () => {
-        this.rewardMgr = await RewardManager.new(
-            this.symblox.address,
-            dev,
-            "1000",
-            "0",
-            "1000",
-            "1000",
-            {from: alice}
-        );
-
-        assert.equal(
-            (await this.rewardMgr.rewardDeadlineBlock()).valueOf(),
-            "1000"
-        );
-        res = await this.rewardMgr.setRewardDeadlineBlock("2000");
-        assert.equal(
-            (await this.rewardMgr.rewardDeadlineBlock()).valueOf(),
-            "2000"
         );
     });
 
@@ -94,15 +73,18 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             await this.lp2.transfer(carol, "1000", {from: minter});
         });
 
-        it("reward deadline", async () => {
-            const currBlock = await time.latestBlock();
+        it("should stop giving out rewards after the deadline", async () => {
+            const rewardPerBlock = 1000;
+            const startBlock = await time.latestBlock();
+            const endBlock = startBlock.addn(10);
+            const bonusEndBlock = 5;
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
-                "1000",
-                "0",
-                "5",
-                currBlock.addn(10),
+                rewardPerBlock,
+                startBlock,
+                startBlock.addn(bonusEndBlock),
+                endBlock,
                 {from: alice}
             );
 
@@ -114,31 +96,34 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
                 from: alice
             });
             await this.lp.approve(this.rewardMgr.address, "1000", {from: bob});
-            await this.rewardMgr.deposit(0, "100", {from: bob});
+            const depositTx = await this.rewardMgr.deposit(0, "100", {
+                from: bob
+            });
 
             const pool = await this.rewardMgr.poolInfo(0);
-            const startBlock = pool.lastRewardBlock.toString();
-
-            // console.log(startBlock, currBlock.addn(5).toString());
-            // console.log({
-            //     lastRewardBlock: startBlock
-            // });
-            await time.advanceBlockTo(currBlock.addn(6));
-            assert.equal(
-                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
-                "1000"
+            expect(pool.lastRewardBlock).to.be.bignumber.equals(
+                depositTx.receipt.blockNumber.toString()
             );
 
-            await time.advanceBlockTo(currBlock.addn(10));
+            // Jump to the block height that bonus reward finished
+            await time.advanceBlockTo(startBlock.addn(6));
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
-                "5000"
+                rewardPerBlock *
+                    ((await time.latestBlock()) - depositTx.receipt.blockNumber)
             );
 
-            await time.advanceBlockTo(currBlock.addn(100));
+            await time.advanceBlockTo(startBlock.addn(10));
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
-                "5000"
+                rewardPerBlock *
+                    ((await time.latestBlock()) - depositTx.receipt.blockNumber)
+            );
+
+            await time.advanceBlockTo(startBlock.addn(100));
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
+                rewardPerBlock * (endBlock - depositTx.receipt.blockNumber)
             );
         });
 

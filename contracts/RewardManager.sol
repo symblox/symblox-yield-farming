@@ -62,7 +62,7 @@ contract RewardManager is Ownable {
     // The block number when Symblox mining starts.
     uint256 public startBlock;
     // Reward deadline block
-    uint256 public rewardDeadlineBlock = 0;
+    uint256 public endBlock = 0;
 
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
@@ -78,14 +78,14 @@ contract RewardManager is Ownable {
         uint256 _syxPerBlock,
         uint256 _startBlock,
         uint256 _bonusEndBlock,
-        uint256 _rewardDeadlineBlock
+        uint256 _endBlock
     ) public {
         syx = SymbloxToken(_syx);
         devaddr = _devaddr;
         syxPerBlock = _syxPerBlock;
         startBlock = _startBlock;
         bonusEndBlock = _bonusEndBlock;
-        rewardDeadlineBlock = _rewardDeadlineBlock;
+        endBlock = _endBlock;
     }
 
     /**
@@ -129,11 +129,6 @@ contract RewardManager is Ownable {
             _allocPoint
         );
         poolInfo[_pid].allocPoint = _allocPoint;
-    }
-
-    function setRewardDeadlineBlock(uint256 _newBlock) external onlyOwner {
-        require(_newBlock > rewardDeadlineBlock, "ERR_INVALID_CAP"); // new block must be higher than the old one
-        rewardDeadlineBlock = _newBlock;
     }
 
     /**
@@ -275,14 +270,14 @@ contract RewardManager is Ownable {
         uint256 _endBlock;
         uint256 _startBlock;
 
-        if (_to > rewardDeadlineBlock) {
-            _endBlock = rewardDeadlineBlock;
+        if (_to > endBlock) {
+            _endBlock = endBlock;
         } else {
             _endBlock = _to;
         }
 
-        if (_from > rewardDeadlineBlock) {
-            _startBlock = rewardDeadlineBlock;
+        if (_from > endBlock) {
+            _startBlock = endBlock;
         } else {
             _startBlock = _from;
         }
