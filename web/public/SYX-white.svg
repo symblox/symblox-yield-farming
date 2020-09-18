@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>syx-icon-color-white-bg</title>
+    <defs>
+        <linearGradient x1="-39.629257%" y1="121.026014%" x2="91.1756391%" y2="19.382888%" id="linearGradient-1">
+            <stop stop-color="#FF3A33" offset="0%"></stop>
+            <stop stop-color="#FC06C6" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="88.2185711%" x2="71.1639852%" y2="28.9869203%" id="linearGradient-2">
+            <stop stop-color="#42D9FE" offset="0%"></stop>
+            <stop stop-color="#2872FA" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="syx-icon-color-white-bg" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" stroke="#0E1845" stroke-width="6" fill="#FFFFFF" cx="256" cy="256" r="253"></circle>
+        <g id="Group-19" transform="translate(96.000000, 118.000000)">
+            <polygon id="Path-9" fill="url(#linearGradient-1)" points="138.425747 0 2.09480581e-12 174.376812 130.957166 174.376812 268.985507 0"></polygon>
+            <polygon id="Path-9" fill="url(#linearGradient-2)" points="189.440239 102.028986 51.0144928 276.405797 181.971658 276.405797 320 102.028986"></polygon>
+        </g>
+    </g>
+</svg>

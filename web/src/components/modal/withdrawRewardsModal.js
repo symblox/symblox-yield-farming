@@ -100,7 +100,7 @@ const styles = theme => ({
         margin: "16px 0px 32px 0px",
         "&:hover": {
             background:
-                "linear-gradient(315deg, #41587A 0%, #0B2243 93.26%, #41587A)"
+                "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)"
         }
     },
     containedButton: {

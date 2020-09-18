@@ -59,6 +59,7 @@ const en_US = {
     TOTAL_SUPPLY: "Total supply",
     HOLD: "hold",
     TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
-    TRADE_ERROR_BALANCE: "Available balance not enough"
+    TRADE_ERROR_BALANCE: "Available balance not enough",
+    SEE_DETAIL: "See detail"
 };
 export default en_US;

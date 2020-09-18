@@ -6,8 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-
-import holdIcon from "../../assets/hold.png";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles({
     root: {
@@ -22,7 +21,7 @@ const useStyles = makeStyles({
         lineHeight: "28px",
         color: "#ACAEBC",
         boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
-        height: "100%"
+        height: "380px%"
     },
     featuredRoot: {
         position: "relative",
@@ -37,6 +36,7 @@ const useStyles = makeStyles({
             "linear-gradient(130.49deg, #253C5C 0%, #051731 93.26%, #253C5C)",
         mixBlendMode: "normal",
         boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
+        height: "380px",
         "& p": {
             opacity: 0.8
         },
@@ -46,14 +46,13 @@ const useStyles = makeStyles({
             backgroundSize: "auto",
             // backgroundPosition: "top center",
             backgroundRepeat: "no-repeat",
-            padding: "100%"
+            padding: "100%",
+            pointerEvents: "none"
         }
     },
     icon: {
-        width: "36px",
-        height: "36px",
-
-        marginRight: "8px"
+        width: "48px",
+        height: "48px"
     },
     iconSecondary: {
         width: "51px",
@@ -73,24 +72,28 @@ const useStyles = makeStyles({
         "& span": {display: "inline-block", verticalAlign: "top"}
     },
     text: {
-        paddingTop: "26px",
         fontFamily: "Oswald",
         fontStyle: "normal",
         fontWeight: 500,
-        fontSize: "46px",
-        lineHeight: "56px",
-        color: "#36B685",
+        fontSize: "20px",
+        lineHeight: "20px",
+        color: "#2872fa",
         opacity: "1 !important"
     },
     textSecondary: {
-        paddingTop: "8px"
+        fontSize: "20px",
+        paddingTop: "24px",
+        textAlign: "left"
     },
     textThird: {
-        paddingTop: "34px"
+        fontSize: "20px",
+        paddingTop: "8px",
+        textAlign: "left"
     },
-    textThirdColor: {
-        color: props =>
-            props.data && props.data.featured ? "#FFFFFF" : "#1E304B"
+    textSecondaryColor: {
+        color: "#36B685"
+        // color: props =>
+        //     props.data && props.data.featured ? "#FFFFFF" : "#1E304B"
     },
     button: {
         background:
@@ -110,7 +113,7 @@ const useStyles = makeStyles({
     },
     buttonSecondary: {
         background:
-            "linear-gradient(135deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)",
+            "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)",
         borderRadius: "26px",
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
@@ -158,35 +161,45 @@ export default function Pool(props) {
                             />
                             <img
                                 className={classes.icon}
-                                style={{marginLeft: "-22px"}}
+                                style={{marginLeft: "-2px"}}
                                 src={"/SYX.png"}
                                 alt=""
                             />
                         </>
                     )}
-                    <span>{data.id}</span>
+                    <div style={{padding: "8px 0 8px"}}>{data.id}</div>
                 </Typography>
-                <Typography className={classes.text}>
-                    {data.rewardApr}%
-                </Typography>
+                <Tooltip
+                    title={
+                        <React.Fragment>
+                            <FormattedMessage id="TOTAL_SUPPLY" />:
+                            {data.type == "seed"
+                                ? parseFloat(data.totalSupply || 0).toFixed(4)
+                                : (
+                                      parseFloat(data.totalSupply || 0) *
+                                      parseFloat(data.BPTPrice || 0)
+                                  ).toFixed(4) + data.name}
+                        </React.Fragment>
+                    }
+                >
+                    <Typography className={classes.text}>
+                        <FormattedMessage id="SEE_DETAIL" />
+                    </Typography>
+                </Tooltip>
+
                 <Typography className={classes.textSecondary}>
-                    <FormattedMessage id="TOTAL_STAKING_APR" />
-                </Typography>
-                <Typography className={classes.textThird}>
-                    <FormattedMessage id="TOTAL_SUPPLY" />:{" "}
-                    <span className={classes.textThirdColor}>
-                        {data.type == "seed"
-                            ? parseFloat(data.totalSupply || 0).toFixed(4)
-                            : (
-                                  parseFloat(data.totalSupply || 0) *
-                                  parseFloat(data.BPTPrice || 0)
-                              ).toFixed(4)}
-                        {data.name}
+                    <FormattedMessage id="TOTAL_STAKING_APR" />:{" "}
+                    <span
+                        className={classes.textSecondaryColor}
+                        style={{float: "right"}}
+                    >
+                        {data.rewardApr}%
                     </span>
                 </Typography>
+
                 <Typography className={classes.textThird}>
                     <FormattedMessage id="WITHDRAWABLE_REWARDS" />:{" "}
-                    <span className={classes.textThirdColor}>
+                    <span style={{float: "right"}}>
                         {parseFloat(data.rewardsAvailable).toFixed(4)}{" "}
                         {data.rewardsSymbol}
                     </span>

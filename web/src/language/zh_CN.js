@@ -58,6 +58,7 @@ const zh_CN = {
     TOTAL_SUPPLY: "总量",
     HOLD: "持有",
     TOTAL_STAKE_AFTER_DEPOSIT: "存入后总金额",
-    TRADE_ERROR_BALANCE: "可用余额不足"
+    TRADE_ERROR_BALANCE: "可用余额不足",
+    SEE_DETAIL: "查看详情"
 };
 export default zh_CN;

@@ -164,7 +164,7 @@ const styles = theme => ({
         marginTop: "-15px",
         "&:hover": {
             background:
-                "linear-gradient(315deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)"
+                "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)"
         },
         "&.Mui-disabled": {
             background:
@@ -618,6 +618,17 @@ class Home extends Component {
                                                                     pool.name +
                                                                     ".png"
                                                                 }
+                                                                style={{
+                                                                    marginRight:
+                                                                        "-2px"
+                                                                }}
+                                                                alt=""
+                                                            />
+                                                            <img
+                                                                className={
+                                                                    classes.icon
+                                                                }
+                                                                src={"/SYX.png"}
                                                                 alt=""
                                                             />
                                                             {pool.id}
