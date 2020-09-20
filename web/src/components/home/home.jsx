@@ -105,10 +105,8 @@ const styles = theme => ({
         "& td": {
             // fontFamily: "Noto Sans SC",
             fontStyle: "normal",
-            fontWeight: "500",
             fontSize: "20px",
             lineHeight: "24px",
-            color: "#1E304B",
             padding: "38px 25px"
         }
     },

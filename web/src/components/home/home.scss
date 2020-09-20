@@ -30,7 +30,8 @@
                     td {
                         position: relative;
                         font-weight: normal;
-                        // background: #fff;
+                        font-family: "Roboto", "PingFangSC-Regular",
+                            "Microsoft Yahei", "sans-serif";
                     }
                     color: #a4a7be;
                     font-weight: normal;
@@ -67,7 +68,6 @@
             tr {
                 display: flex;
                 font-size: 18px;
-                font-weight: bold;
                 color: rgba(67, 73, 118, 1);
                 line-height: 90px;
                 position: relative;
@@ -107,6 +107,7 @@
                     text-align: left;
                     padding-left: 25px;
                     font-weight: 500;
+                    font-family: "Oswald";
                 }
 
                 &:nth-child(2) {
@@ -165,7 +166,8 @@
                         td {
                             position: relative;
                             font-weight: normal;
-                            // background: #fff;
+                            font-family: "Roboto", "PingFangSC-Regular",
+                                "Microsoft Yahei", "sans-serif";
                         }
                         color: #a4a7be;
                         font-weight: normal;
@@ -204,7 +206,6 @@
                 tr {
                     display: flex;
                     font-size: 18px;
-                    font-weight: bold;
                     color: rgba(67, 73, 118, 1);
                     line-height: 90px;
                     position: relative;
@@ -243,6 +244,7 @@
                         text-align: left;
                         font-weight: 500;
                         padding-left: 25px;
+                        font-family: "Oswald";
                     }
 
                     &:nth-child(2) {
