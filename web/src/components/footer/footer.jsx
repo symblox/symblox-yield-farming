@@ -38,7 +38,7 @@ export default class App extends React.Component {
                         container
                         spacing={3}
                         style={{
-                            width: "304px",
+                            maxWidth: "500px",
                             float: "right",
                             fontStyle: "normal",
                             fontWeight: "300",
@@ -50,14 +50,18 @@ export default class App extends React.Component {
                             marginTop: "74px"
                         }}
                     >
-                        <Grid item xs={4}>
-                            <a href="Twitter:@SymbloxDeFi">Twitter</a>
+                        <Grid item xs="auto">
+                            <a href="https://twitter.com/symbloxdefi">
+                                Twitter
+                            </a>
                         </Grid>
-                        <Grid item xs={4}>
-                            <a href="https://t.me/symblox">Terims</a>
+                        <Grid item xs="auto">
+                            <a href="https://t.me/symblox">Telegram</a>
                         </Grid>
-                        <Grid item xs={4}>
-                            <a href="mailto:symbloxsyx@gmail.com">Support</a>
+                        <Grid item xs="auto">
+                            <a href="mailto:symbloxsyx@gmail.com">
+                                E-mail: symbloxsyx@gmail.com
+                            </a>
                         </Grid>
                     </Grid>
                 </Container>

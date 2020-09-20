@@ -1,17 +1,10 @@
 import createBreakpoints from "@material-ui/core/styles/createBreakpoints";
 
-import WorkSansTTF from "../assets/fonts/WorkSans-VariableFont_wght.ttf";
-
 const WorkSans = {
-    fontFamily: "Noto Sans",
+    fontFamily: "Roboto",
     fontStyle: "normal",
     fontDisplay: "swap",
-    fontWeight: 500,
-    src: `
-    local('Work Sans Thin'),
-    local('Work Sans Thin'),
-    url(${WorkSansTTF}) format('truetype')
-  `,
+    fontWeight: 400,
     unicodeRange:
         "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF"
 };
@@ -54,7 +47,7 @@ const breakpoints = createBreakpoints({
 const iswapTheme = {
     typography: {
         fontFamily: [
-            '"Noto Sans"',
+            '"Roboto"',
             '"PingFangSC-Regular"',
             '"Microsoft Yahei"',
             '"sans-serif"'
@@ -96,13 +89,7 @@ const iswapTheme = {
         },
         body1: {
             fontSize: "16px",
-            fontWeight: "500",
-            WebkitFontSmoothing: "antialiased",
-            MozOsxFontSmoothing: "grayscale"
-        },
-        body2: {
-            fontSize: "16px",
-            fontWeight: "500",
+            fontWeight: "400",
             WebkitFontSmoothing: "antialiased",
             MozOsxFontSmoothing: "grayscale"
         }

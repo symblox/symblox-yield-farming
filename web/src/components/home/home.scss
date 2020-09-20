@@ -1,13 +1,9 @@
 @media screen and (min-width: 768px) {
     .table-wrap {
         -moz-user-select: none;
-        /*火狐*/
         -webkit-user-select: none;
-        /*webkit浏览器*/
         -ms-user-select: none;
-        /*IE10*/
         -khtml-user-select: none;
-        /*早期浏览器*/
         user-select: none;
 
         margin: 0 auto;
@@ -19,7 +15,6 @@
             width: 100%;
             text-align: right;
             margin-bottom: 36px;
-            font-family: "Oswald";
             border-collapse: collapse;
             // thead
             .table-head {
@@ -144,13 +139,9 @@
         margin-bottom: 36px !important;
         .table-wrap {
             -moz-user-select: none;
-            /*火狐*/
             -webkit-user-select: none;
-            /*webkit浏览器*/
             -ms-user-select: none;
-            /*IE10*/
             -khtml-user-select: none;
-            /*早期浏览器*/
             user-select: none;
 
             margin: 0 auto;

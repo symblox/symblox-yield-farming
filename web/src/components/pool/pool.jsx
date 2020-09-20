@@ -72,9 +72,8 @@ const useStyles = makeStyles({
         "& span": {display: "inline-block", verticalAlign: "top"}
     },
     text: {
-        fontFamily: "Oswald",
         fontStyle: "normal",
-        fontWeight: 500,
+        fontWeight: 300,
         fontSize: "20px",
         lineHeight: "20px",
         color: "#2872fa",

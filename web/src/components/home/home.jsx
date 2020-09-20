@@ -71,7 +71,7 @@ const styles = theme => ({
     headerTitle: {
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
-        fontWeight: "bold",
+        fontWeight: "500",
         fontSize: "60px",
         lineHeight: "70px",
         textAlign: "center",
@@ -79,7 +79,7 @@ const styles = theme => ({
     },
     headerTitleSecondary: {
         fontStyle: "normal",
-        fontWeight: "300",
+        fontWeight: "400",
         fontSize: "24px",
         lineHeight: "29px",
         textAlign: "center",
@@ -196,7 +196,7 @@ const styles = theme => ({
     paperTitle: {
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
-        fontWeight: "300",
+        fontWeight: "400",
         fontSize: "20px",
         lineHeight: "28px",
         color: "#ACAEBC"
