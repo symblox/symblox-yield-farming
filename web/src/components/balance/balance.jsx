@@ -3,12 +3,13 @@ import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
     root: {
+        display: "flex",
         fontFamily: "Oswald",
         fontSize: "20px",
         lineHeight: "24px",
-        color: "#C0C1CE",
-        marginLeft: "32px !important",
-
+        color: props => (props.outline ? "#C0C1CE" : "#C0C1CE"),
+        marginRight: props => (props.outline ? "32px" : "0px"),
+        marginLeft: props => (props.outline ? "0px" : "32px"),
         "& img": {
             width: "24px",
             height: "24px",
@@ -16,14 +17,14 @@ const useStyles = makeStyles({
             verticalAlign: "bottom"
         },
         "& span": {
-            color: "#454862",
+            color: props => (props.outline ? "#FFFFFF" : "#454862"),
             marginRight: "8px"
         }
     }
 });
 
 export default function Balance(props) {
-    const classes = useStyles();
+    const classes = useStyles(props);
     const {name, balance} = props;
 
     const tokenIcon = "/" + name + ".png";

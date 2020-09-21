@@ -19,28 +19,56 @@ html {
     -webkit-tap-highlight-color: transparent;
 }
 
-#root {
-    /* background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%); */
-    min-height: 730px !important;
-    position: relative;
-    /* z-index: -1; */
-    overflow-x: hidden;
-    background-image: url("/bg_banner.svg");
-    background-size: auto;
-    background-position: top center;
-    background-repeat: no-repeat;
+@media screen and (min-width: 600px) {
+    #root {
+        /* background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%); */
+        min-height: 730px !important;
+        position: relative;
+        /* z-index: -1; */
+        overflow-x: hidden;
+        background-image: url("/bg_banner.svg");
+        background-size: auto;
+        background-position: top center;
+        background-repeat: no-repeat;
+    }
+
+    #root::after {
+        content: "";
+        width: 160%;
+        min-height: 730px !important;
+        position: absolute;
+        left: -30%;
+        top: 0;
+        z-index: -1;
+        border-radius: 0 0 50% 50%;
+        background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%);
+    }
 }
 
-#root::after {
-    content: "";
-    width: 160%;
-    min-height: 730px !important;
-    position: absolute;
-    left: -30%;
-    top: 0;
-    z-index: -1;
-    border-radius: 0 0 50% 50%;
-    background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%);
+@media screen and (max-width: 600px) {
+    #root {
+        /* background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%); */
+        min-height: 730px !important;
+        position: relative;
+        /* z-index: -1; */
+        overflow-x: hidden;
+        background-image: url("/bg_banner.svg");
+        background-size: auto;
+        background-position: top center;
+        background-repeat: no-repeat;
+    }
+
+    #root::after {
+        content: "";
+        width: 160%;
+        min-height: 400px !important;
+        position: absolute;
+        left: -30%;
+        top: 0;
+        z-index: -1;
+        border-radius: 0 0 50% 50%;
+        background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%);
+    }
 }
 
 .MuiButton-label {

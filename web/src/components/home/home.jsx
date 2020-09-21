@@ -182,7 +182,6 @@ const styles = theme => ({
     actions: {
         height: "79px",
         padding: "46px 36px",
-        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "18px",
@@ -190,6 +189,14 @@ const styles = theme => ({
         color: "#C0C1CE",
         overflowX: "scroll",
         overflowY: "hidden"
+    },
+    actionsSm: {
+        textAlign: "center",
+        color: "#1E304B",
+        fontFamily: "Oswald",
+        fontSize: "20px",
+        fontWeight: 300,
+        display: "block"
     },
     paperTitle: {
         // fontFamily: "Noto Sans SC",
@@ -229,6 +236,14 @@ const styles = theme => ({
         height: "50%",
         left: "50%",
         top: "25%"
+    },
+    balanceBar: {
+        textAlign: "center",
+        color: "white",
+        fontSize: "24px",
+        "& div": {
+            display: "flex"
+        }
     }
 });
 
@@ -414,132 +429,237 @@ class Home extends Component {
                     setLanguage={this.props.setLanguage}
                 />
                 <Container>
-                    <Typography className={classes.headerTitle} gutterBottom>
-                        <FormattedMessage id="HOME_TITLE" />
-                    </Typography>
-                    <Typography
-                        className={classes.headerTitleSecondary}
-                        gutterBottom
-                    >
-                        <FormattedMessage id="HOME_SUBTITLE" />
-                    </Typography>
-                    <Card className={classes.root}>
-                        <CardActions className={classes.actions}>
+                    <Hidden xsDown>
+                        <Typography
+                            className={classes.headerTitle}
+                            gutterBottom
+                        >
+                            <FormattedMessage id="HOME_TITLE" />
+                        </Typography>
+                        <Typography
+                            className={classes.headerTitleSecondary}
+                            gutterBottom
+                        >
+                            <FormattedMessage id="HOME_SUBTITLE" />
+                        </Typography>
+                    </Hidden>
+                    <Hidden smUp>
+                        <div className={classes.balanceBar}>
                             <img
                                 className={classes.walletIcon}
                                 src={"/wallet.svg"}
                                 alt=""
                             />
-                            <FormattedMessage id="WALLET_BALANCE" />
-                            {rewardPools.length > 0 ? (
-                                <Balance
-                                    name={rewardPools[0].rewardsSymbol}
-                                    balance={rewardPools[0].rewardsBalance}
-                                />
-                            ) : (
-                                <></>
-                            )}
-                            {Array.from(balanceSet).map((data, i) => (
-                                <Balance
-                                    key={i}
-                                    name={JSON.parse(data).name}
-                                    balance={JSON.parse(data).erc20Balance}
-                                />
-                            ))}
-                        </CardActions>
-                        <Divider />
-                        <CardContent>
-                            <Grid
-                                container
-                                spacing={3}
-                                style={{position: "relative"}}
+                            <span style={{opacity: "0.6"}}>
+                                <FormattedMessage id="WALLET_BALANCE" />
+                            </span>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    margin: "10px auto 20px",
+                                    overflowX: "scroll",
+                                    overflowY: "hidden"
+                                }}
                             >
-                                <Grid item xs={12} sm={6}>
-                                    <Paper className={classes.paper}>
-                                        <Typography
-                                            className={classes.paperTitle}
-                                            gutterBottom
-                                        >
-                                            <FormattedMessage id="TOTAL_STAKING_APR" />
-                                        </Typography>
-                                        <Typography
-                                            className={
-                                                classes.paperTitleSecondary
-                                            }
-                                            gutterBottom
-                                        >
-                                            {rewardApr ? rewardApr : "-"}
-                                            <span> %</span>
-                                        </Typography>
-                                        <Button
-                                            className={classes.button}
-                                            style={{marginTop: "9px"}}
-                                            variant="contained"
-                                            disabled={hasJoinedCount == 0}
-                                            onClick={() =>
-                                                this.openDepositModal(
-                                                    rewardPools
-                                                )
-                                            }
-                                        >
-                                            <FormattedMessage id="DEPOSIT_INCENTIVE_PLAN" />
-                                        </Button>
-
-                                        <Typography
-                                            className={classes.paperTip}
-                                            gutterBottom
-                                        >
-                                            <FormattedMessage id="STAKING_TIP" />
-                                        </Typography>
-                                    </Paper>
-                                </Grid>
-                                <Hidden xsDown>
-                                    <Divider
-                                        className={classes.divider}
-                                        orientation="vertical"
+                                {rewardPools.length > 0 ? (
+                                    <Balance
+                                        outline={true}
+                                        name={rewardPools[0].rewardsSymbol}
+                                        balance={rewardPools[0].rewardsBalance}
                                     />
-                                </Hidden>
-                                <Grid item xs={12} sm={6}>
-                                    <Paper className={classes.paper}>
-                                        <Typography
-                                            className={classes.paperTitle}
-                                            gutterBottom
-                                        >
-                                            <FormattedMessage id="WITHDRAWABLE_REWARDS" />
-                                        </Typography>
-                                        <Typography
-                                            className={
-                                                classes.paperTitleSecondary
-                                            }
-                                            gutterBottom
-                                        >
-                                            {rewardsAvailable
-                                                ? rewardsAvailable
-                                                : "-"}{" "}
-                                            <span>SYX</span>
-                                        </Typography>
-                                        <Button
-                                            style={{marginTop: "9px"}}
-                                            className={classes.buttonSecondary}
-                                            variant="contained"
-                                            disabled={hasJoinedCount == 0}
-                                            onClick={() => {
-                                                this.openWithdrawRewardsModal();
-                                            }}
-                                        >
-                                            <FormattedMessage id="RP_WITHDRAW_REWARDS" />
-                                        </Button>
-                                        <Typography
-                                            className={classes.paperTip}
-                                            gutterBottom
-                                        >
-                                            <FormattedMessage id="WITHDRAW_REWARDS_TIP" />
-                                        </Typography>
-                                    </Paper>
+                                ) : (
+                                    <></>
+                                )}
+
+                                {Array.from(balanceSet).map((data, i) => (
+                                    <Balance
+                                        key={i}
+                                        outline={true}
+                                        name={JSON.parse(data).name}
+                                        balance={JSON.parse(data).erc20Balance}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </Hidden>
+                    <Hidden xsDown>
+                        <Card className={classes.root}>
+                            <CardActions className={classes.actions}>
+                                <img
+                                    className={classes.walletIcon}
+                                    src={"/wallet.svg"}
+                                    alt=""
+                                />
+                                <FormattedMessage id="WALLET_BALANCE" />
+                                {rewardPools.length > 0 ? (
+                                    <Balance
+                                        name={rewardPools[0].rewardsSymbol}
+                                        balance={rewardPools[0].rewardsBalance}
+                                    />
+                                ) : (
+                                    <></>
+                                )}
+                                {Array.from(balanceSet).map((data, i) => (
+                                    <Balance
+                                        key={i}
+                                        name={JSON.parse(data).name}
+                                        balance={JSON.parse(data).erc20Balance}
+                                    />
+                                ))}
+                            </CardActions>
+                            <Divider />
+                            <CardContent>
+                                <Grid
+                                    container
+                                    spacing={3}
+                                    style={{position: "relative"}}
+                                >
+                                    <Grid item xs={12} sm={6}>
+                                        <Paper className={classes.paper}>
+                                            <Typography
+                                                className={classes.paperTitle}
+                                                gutterBottom
+                                            >
+                                                <FormattedMessage id="TOTAL_STAKING_APR" />
+                                            </Typography>
+                                            <Typography
+                                                className={
+                                                    classes.paperTitleSecondary
+                                                }
+                                                gutterBottom
+                                            >
+                                                {rewardApr ? rewardApr : "-"}
+                                                <span> %</span>
+                                            </Typography>
+                                            <Button
+                                                className={classes.button}
+                                                style={{marginTop: "9px"}}
+                                                variant="contained"
+                                                disabled={hasJoinedCount == 0}
+                                                onClick={() =>
+                                                    this.openDepositModal(
+                                                        rewardPools
+                                                    )
+                                                }
+                                            >
+                                                <FormattedMessage id="DEPOSIT_INCENTIVE_PLAN" />
+                                            </Button>
+
+                                            <Typography
+                                                className={classes.paperTip}
+                                                gutterBottom
+                                            >
+                                                <FormattedMessage id="STAKING_TIP" />
+                                            </Typography>
+                                        </Paper>
+                                    </Grid>
+                                    <Hidden xsDown>
+                                        <Divider
+                                            className={classes.divider}
+                                            orientation="vertical"
+                                        />
+                                    </Hidden>
+                                    <Grid item xs={12} sm={6}>
+                                        <Paper className={classes.paper}>
+                                            <Typography
+                                                className={classes.paperTitle}
+                                                gutterBottom
+                                            >
+                                                <FormattedMessage id="WITHDRAWABLE_REWARDS" />
+                                            </Typography>
+                                            <Typography
+                                                className={
+                                                    classes.paperTitleSecondary
+                                                }
+                                                gutterBottom
+                                            >
+                                                {rewardsAvailable
+                                                    ? rewardsAvailable
+                                                    : "-"}{" "}
+                                                <span>SYX</span>
+                                            </Typography>
+                                            <Button
+                                                style={{marginTop: "9px"}}
+                                                className={
+                                                    classes.buttonSecondary
+                                                }
+                                                variant="contained"
+                                                disabled={hasJoinedCount == 0}
+                                                onClick={() => {
+                                                    this.openWithdrawRewardsModal();
+                                                }}
+                                            >
+                                                <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                                            </Button>
+                                            <Typography
+                                                className={classes.paperTip}
+                                                gutterBottom
+                                            >
+                                                <FormattedMessage id="WITHDRAW_REWARDS_TIP" />
+                                            </Typography>
+                                        </Paper>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </Hidden>
+                    <Hidden smUp>
+                        <Card className={classes.root}>
+                            <CardActions className={classes.actionsSm}>
+                                <FormattedMessage id="TOTAL_STAKING_APR" />{" "}
+                                {rewardApr ? rewardApr : "-"}%
+                            </CardActions>
+                            <Divider />
+                            <CardContent>
+                                <Grid
+                                    container
+                                    spacing={3}
+                                    style={{position: "relative"}}
+                                >
+                                    <Grid item xs={12}>
+                                        <Paper className={classes.paper}>
+                                            <Typography
+                                                className={classes.paperTitle}
+                                                gutterBottom
+                                            >
+                                                <FormattedMessage id="WITHDRAWABLE_REWARDS" />
+                                            </Typography>
+                                            <Typography
+                                                className={
+                                                    classes.paperTitleSecondary
+                                                }
+                                                gutterBottom
+                                            >
+                                                {rewardsAvailable
+                                                    ? rewardsAvailable
+                                                    : "-"}{" "}
+                                                <span>SYX</span>
+                                            </Typography>
+                                            <Button
+                                                style={{marginTop: "9px"}}
+                                                className={
+                                                    classes.buttonSecondary
+                                                }
+                                                variant="contained"
+                                                disabled={hasJoinedCount == 0}
+                                                onClick={() => {
+                                                    this.openWithdrawRewardsModal();
+                                                }}
+                                            >
+                                                <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                                            </Button>
+                                            <Typography
+                                                className={classes.paperTip}
+                                                gutterBottom
+                                            >
+                                                <FormattedMessage id="WITHDRAW_REWARDS_TIP" />
+                                            </Typography>
+                                        </Paper>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    </Hidden>
                     <div className={classes.title}>
                         <FormattedMessage id="RP_LIST_TITLE" />
                     </div>

@@ -22,17 +22,17 @@ export default class App extends React.Component {
                 locale={"en"}
                 messages={this.props.cur_language === "中文" ? zh_CN : en_US}
             >
-                <Container style={{paddingTop: "41px", paddingBottom: "80px"}}>
+                <Container style={{paddingTop: "41px", paddingBottom: "45px"}}>
                     <Hidden smUp>
                         <a
                             href={this.props.linkTo}
                             className={"header__logo"}
-                            style={{widht: "94px", height: "auto"}}
+                            style={{widht: "80px", height: "auto"}}
                         >
                             <img
                                 src={logo_xswap}
                                 alt="logo"
-                                style={{height: "20px"}}
+                                style={{height: "22px", marginTop: "4px"}}
                             />
                         </a>
                     </Hidden>
@@ -53,7 +53,6 @@ export default class App extends React.Component {
                     <div
                         className={"header__menu"}
                         style={{
-                            height: "36px",
                             maginTop: "3px",
                             float: "right"
                         }}

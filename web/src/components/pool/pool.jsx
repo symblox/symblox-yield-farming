@@ -33,7 +33,7 @@ const useStyles = makeStyles({
         lineHeight: "28px",
         color: "#FFFFFF",
         background:
-            "linear-gradient(130.49deg, #253C5C 0%, #051731 93.26%, #253C5C)",
+            "linear-gradient(124.56deg, #E71E85 -27.83%, #2148D3 55.48%, #E71E85)",
         mixBlendMode: "normal",
         boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
         height: "380px",
@@ -77,6 +77,15 @@ const useStyles = makeStyles({
         fontSize: "20px",
         lineHeight: "20px",
         color: "#2872fa",
+        opacity: "1 !important"
+    },
+    featuredText: {
+        fontFamily: "Oswald",
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "20px",
+        lineHeight: "20px",
+        color: "white",
         opacity: "1 !important"
     },
     textSecondary: {
@@ -181,7 +190,11 @@ export default function Pool(props) {
                         </React.Fragment>
                     }
                 >
-                    <Typography className={classes.text}>
+                    <Typography
+                        className={
+                            data.featured ? classes.featuredText : classes.text
+                        }
+                    >
                         <FormattedMessage id="SEE_DETAIL" />
                     </Typography>
                 </Tooltip>
