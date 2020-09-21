@@ -88,6 +88,15 @@ const useStyles = makeStyles({
         color: "white",
         opacity: "1 !important"
     },
+    featuredText: {
+        fontFamily: "Oswald",
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "20px",
+        lineHeight: "20px",
+        color: "white",
+        opacity: "1 !important"
+    },
     textSecondary: {
         fontSize: "20px",
         paddingTop: "24px",
