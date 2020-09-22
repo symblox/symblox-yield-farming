@@ -810,7 +810,11 @@ class Home extends Component {
                                                         </tr>
                                                     );
                                                 } else {
-                                                    return <></>;
+                                                    return (
+                                                        <React.Fragment
+                                                            key={i}
+                                                        ></React.Fragment>
+                                                    );
                                                 }
                                             })
                                         ) : (
@@ -839,9 +843,8 @@ class Home extends Component {
                                             this.state.pools.map((pool, i) => {
                                                 if (pool.type !== "seed") {
                                                     return (
-                                                        <>
+                                                        <React.Fragment key={i}>
                                                             <tr
-                                                                key={i}
                                                                 className={
                                                                     classes.tableBody
                                                                 }
@@ -1058,10 +1061,14 @@ class Home extends Component {
                                                                     </Grid>
                                                                 </Grid>
                                                             </Collapse>
-                                                        </>
+                                                        </React.Fragment>
                                                     );
                                                 } else {
-                                                    return <></>;
+                                                    return (
+                                                        <React.Fragment
+                                                            key={i}
+                                                        ></React.Fragment>
+                                                    );
                                                 }
                                             })
                                         ) : (

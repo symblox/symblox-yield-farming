@@ -166,7 +166,7 @@ export default function Pool(props) {
                 ) : (
                     <></>
                 )}
-                <Typography className={classes.title} gutterBottom>
+                <div className={classes.title}>
                     {data.type == "seed" ? (
                         <img className={classes.icon} src={tokenIcon} alt="" />
                     ) : (
@@ -185,7 +185,7 @@ export default function Pool(props) {
                         </>
                     )}
                     <div style={{padding: "8px 0 8px"}}>{data.id}</div>
-                </Typography>
+                </div>
                 <Tooltip
                     title={
                         <React.Fragment>
@@ -198,6 +198,7 @@ export default function Pool(props) {
                                   ).toFixed(4) + data.name}
                         </React.Fragment>
                     }
+                    enterTouchDelay={700}
                 >
                     <Typography
                         className={
