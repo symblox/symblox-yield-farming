@@ -16,97 +16,67 @@ export default class App extends React.Component {
         return (
             <div style={{background: "#051731", height: "200px"}}>
                 <Container>
-                    <Hidden xsDown>
-                        <a
-                            href={this.props.linkTo}
-                            className={"header__logo"}
-                            style={{
-                                widht: "188px",
-                                height: "auto",
-                                marginTop: "83px",
-                                display: "inline-block"
-                            }}
-                        >
-                            <img
-                                src={logo_xswap}
-                                alt="logo"
-                                style={{height: "39px"}}
-                            />
-                        </a>
-                        <Grid
-                            container
-                            spacing={3}
-                            style={{
-                                width: "304px",
-                                float: "right",
-                                fontStyle: "normal",
-                                fontWeight: "300",
-                                fontSize: "20px",
-                                lineHeight: "28px",
-                                color: "#FFFFFF",
-                                mixBlendMode: "normal",
-                                opacity: 0.6,
-                                marginTop: "74px"
-                            }}
-                        >
-                            <Grid item xs={4}>
-                                <a href="Twitter:@SymbloxDeFi">Twitter</a>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <a href="https://t.me/symblox">Terims</a>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <a href="mailto:symbloxsyx@gmail.com">
-                                    Support
-                                </a>
-                            </Grid>
+                    <a
+                        href={this.props.linkTo}
+                        className={"header__logo"}
+                        style={{
+                            widht: "188px",
+                            height: "auto",
+                            marginTop: "83px",
+                            display: "inline-block"
+                        }}
+                    >
+                        <img
+                            src={logo_xswap}
+                            alt="logo"
+                            style={{height: "33px"}}
+                        />
+                    </a>
+                    <Grid
+                        container
+                        spacing={3}
+                        style={{
+                            width: "160px",
+                            marginRight: "10px",
+                            float: "right",
+                            fontStyle: "normal",
+                            fontWeight: "300",
+                            fontSize: "20px",
+                            lineHeight: "28px",
+                            color: "#FFFFFF",
+                            mixBlendMode: "normal",
+                            // opacity: 0.6,
+                            marginTop: "68px"
+                        }}
+                    >
+                        <Grid item xs={4}>
+                            <a href="https://twitter.com/symbloxdefi">
+                                <img
+                                    src={"/twitter.svg"}
+                                    alt="logo"
+                                    style={{height: "39px"}}
+                                />
+                            </a>
                         </Grid>
-                    </Hidden>
-                    <Hidden smUp>
-                        <Grid
-                            container
-                            spacing={3}
-                            style={{
-                                textAlign: "center",
-                                fontStyle: "normal",
-                                fontWeight: "300",
-                                fontSize: "20px",
-                                lineHeight: "28px",
-                                color: "#FFFFFF",
-                                mixBlendMode: "normal"
-                            }}
-                        >
-                            <Grid item xs={12}>
-                                <a
-                                    href={this.props.linkTo}
-                                    className={"header__logo"}
-                                    style={{
-                                        widht: "188px",
-                                        height: "auto",
-                                        marginTop: "30px",
-                                        display: "inline-block"
-                                    }}
-                                >
-                                    <img
-                                        src={logo_xswap}
-                                        alt="logo"
-                                        style={{height: "39px"}}
-                                    />
-                                </a>
-                            </Grid>
-                            <Grid item xs={4} style={{opacity: 0.6}}>
-                                <a href="Twitter:@SymbloxDeFi">Twitter</a>
-                            </Grid>
-                            <Grid item xs={4} style={{opacity: 0.6}}>
-                                <a href="https://t.me/symblox">Terims</a>
-                            </Grid>
-                            <Grid item xs={4} style={{opacity: 0.6}}>
-                                <a href="mailto:symbloxsyx@gmail.com">
-                                    Support
-                                </a>
-                            </Grid>
+                        <Grid item xs={4}>
+                            <a href="https://t.me/symblox">
+                                <img
+                                    src={"/terims.svg"}
+                                    alt="logo"
+                                    style={{height: "39px"}}
+                                />
+                            </a>
                         </Grid>
-                    </Hidden>
+                        <Grid item xs={4}>
+                            <a href="https://medium.com/@symbloxsyx">
+                                <img
+                                    src={"/media.svg"}
+                                    alt="logo"
+                                    style={{height: "39px"}}
+                                />
+                            </a>
+                        </Grid>
+                    </Grid>
                 </Container>
             </div>
         );

@@ -226,6 +226,7 @@ export default function Pool(props) {
             <CardActions className={classes.bar}>
                 {data.entryContractAddress ? (
                     <Button
+                        variant="contained"
                         size="small"
                         className={classes.button}
                         onClick={onDeposit}
@@ -234,6 +235,7 @@ export default function Pool(props) {
                     </Button>
                 ) : (
                     <Button
+                        variant="contained"
                         size="small"
                         className={classes.buttonSecondary}
                         onClick={onJoin}

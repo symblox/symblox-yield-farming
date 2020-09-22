@@ -233,7 +233,7 @@ class DepositModal extends Component {
             }
         });
 
-        this.props.closeModal();
+        // this.props.closeModal();
     };
 
     render() {

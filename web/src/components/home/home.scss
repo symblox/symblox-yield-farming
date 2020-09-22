@@ -124,7 +124,6 @@
 @media screen and (max-width: 600px) {
     .exchange-table {
         width: 100%;
-        overflow: scroll;
         margin-bottom: 36px !important;
         .table-wrap {
             -moz-user-select: none;
@@ -143,6 +142,7 @@
                 text-align: right;
                 border-collapse: collapse;
                 overflow: hidden;
+                border-radius: 6px;
                 // thead
                 .table-head {
                     font-size: 16px;

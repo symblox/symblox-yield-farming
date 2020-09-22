@@ -795,6 +795,7 @@ class Home extends Component {
                                                                         classes.button
                                                                     }
                                                                     size="small"
+                                                                    variant="contained"
                                                                     onClick={() => {
                                                                         this.openTransactionModal(
                                                                             pool
@@ -932,6 +933,7 @@ class Home extends Component {
                                                                             classes.button
                                                                         }
                                                                         size="small"
+                                                                        variant="contained"
                                                                         onClick={() => {
                                                                             this.openTransactionModal(
                                                                                 pool
