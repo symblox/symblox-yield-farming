@@ -29,7 +29,7 @@ const en_US = {
     POPUP_ACTION_DEPOSIT: "Add Liquidity",
     POPUP_ACTION_WITHDRAW: "Remove Liquidity",
     POPUP_TITLE_STAKE: "Stake to Reward Pool",
-    POPUP_TITLE_UNSTAKE: "Unstake to Reward Pool",
+    POPUP_TITLE_UNSTAKE: "Remove Liquidity",
     POPUP_STAKE_BALANCE: "Current stake balance",
     POPUP_AVAILABLE_STAKE: "Available stakes",
     POPUP_STAKE_NEW_BALANCE: "New stake balance (estimated)",
