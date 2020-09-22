@@ -10,18 +10,16 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles({
     root: {
-        // minWidth: 373,
         position: "relative",
         borderRadius: "12px",
         textAlign: "center",
-        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
         fontSize: "20px",
         lineHeight: "28px",
         color: "#ACAEBC",
         boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
-        height: "380px%"
+        height: "380px"
     },
     featuredRoot: {
         position: "relative",
@@ -37,17 +35,13 @@ const useStyles = makeStyles({
         mixBlendMode: "normal",
         boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
         height: "380px",
-        // "& p": {
-        //     opacity: 0.8
-        // },
         "&::after": {
-            content: "''",
-            backgroundImage: "url('/bg_pool.svg')",
-            backgroundSize: "auto",
-            // backgroundPosition: "top center",
-            backgroundRepeat: "no-repeat",
-            padding: "100%",
-            pointerEvents: "none"
+            // content: "''",
+            // backgroundImage: "url('/bg_pool.svg')",
+            // backgroundSize: "auto",
+            // backgroundRepeat: "no-repeat",
+            // padding: "100%",
+            // pointerEvents: "none"
         }
     },
     icon: {
@@ -117,7 +111,6 @@ const useStyles = makeStyles({
         background:
             "linear-gradient(135deg, #42D9FE 0%, #2872FA 100%, #42D9FE)",
         borderRadius: "26px",
-        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
