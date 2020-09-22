@@ -35,3 +35,13 @@
     text-align: center;
     padding: 2px;
 }
+
+.triangle-up {
+    display: inline-block;
+    position: absolute;
+    top: -22px;
+    width: 0;
+    height: 0;
+    border: 12px solid transparent;
+    border-bottom-color: #eef6ff;
+}

@@ -8,11 +8,12 @@ import {
     Typography,
     Divider,
     Container,
-    Hidden
+    Hidden,
+    Collapse,
+    Card,
+    CardActions,
+    CardContent
 } from "@material-ui/core";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import {FormattedMessage} from "react-intl";
 import Snackbar from "../snackbar";
 import Header from "../header";
@@ -176,9 +177,6 @@ const styles = theme => ({
         color: theme.palette.text.secondary,
         height: "100%"
     },
-    banner: {
-        marginBottom: "16px"
-    },
     actions: {
         height: "79px",
         padding: "46px 36px",
@@ -244,6 +242,14 @@ const styles = theme => ({
         "& div": {
             display: "flex"
         }
+    },
+    collapse: {
+        background: "#EEF6FF",
+        padding: "10px 22px",
+        textAlign: "left",
+        fontSize: "18px",
+        color: "#C0C1CE",
+        position: "relative"
     }
 });
 
@@ -353,7 +359,6 @@ class Home extends Component {
     }
 
     connectionConnected = async () => {
-        const {account} = this.state;
         dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
         this.setState({account: store.getStore("account")});
         this.setState(() => ({
@@ -663,7 +668,7 @@ class Home extends Component {
                     <div className={classes.title}>
                         <FormattedMessage id="RP_LIST_TITLE" />
                     </div>
-                    <Grid container spacing={3} className={classes.banner}>
+                    <Grid container spacing={3}>
                         {rewardPools.map((data, i) => (
                             <Grid item xs={12} sm={6} md={4} key={i}>
                                 <Pool
@@ -683,129 +688,388 @@ class Home extends Component {
                             <FormattedMessage id="LP_LIST_TITLE" />
                         </div>
                         <div className="table-wrap">
-                            <table>
-                                <thead className="table-head">
-                                    <tr className={classes.tableHeader}>
-                                        <td>
-                                            <FormattedMessage id="LP_TRADING_PAIR" />
-                                        </td>
-                                        <td>
-                                            <FormattedMessage id="LP_SYX_PRICE" />
-                                        </td>
-                                        <td>
-                                            <FormattedMessage id="LP_MY_SHARE" />
-                                        </td>
-                                        <td>
-                                            <FormattedMessage id="RATIO" />
-                                        </td>
-                                        <td>
-                                            <FormattedMessage id="ACTION" />
-                                        </td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.state.pools ? (
-                                        this.state.pools.map((pool, i) => {
-                                            if (pool.type !== "seed") {
-                                                return (
-                                                    <tr
-                                                        key={i}
-                                                        className={
-                                                            classes.tableBody
-                                                        }
-                                                    >
-                                                        <td>
-                                                            {pool.stakeAmount >
-                                                            0.0001 ? (
-                                                                <div
+                            <Hidden xsDown>
+                                <table>
+                                    <thead className="table-head">
+                                        <tr className={classes.tableHeader}>
+                                            <td>
+                                                <FormattedMessage id="LP_TRADING_PAIR" />
+                                            </td>
+                                            <td>
+                                                <FormattedMessage id="LP_SYX_PRICE" />
+                                            </td>
+                                            <td>
+                                                <FormattedMessage id="LP_MY_SHARE" />
+                                            </td>
+                                            <td>
+                                                <FormattedMessage id="RATIO" />
+                                            </td>
+                                            <td>
+                                                <FormattedMessage id="ACTION" />
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.state.pools ? (
+                                            this.state.pools.map((pool, i) => {
+                                                if (pool.type !== "seed") {
+                                                    return (
+                                                        <tr
+                                                            key={i}
+                                                            className={
+                                                                classes.tableBody
+                                                            }
+                                                        >
+                                                            <td>
+                                                                {pool.stakeAmount >
+                                                                0.0001 ? (
+                                                                    <div
+                                                                        className={
+                                                                            "hold-left"
+                                                                        }
+                                                                    >
+                                                                        <FormattedMessage id="HOLD" />
+                                                                    </div>
+                                                                ) : (
+                                                                    <></>
+                                                                )}
+                                                                <img
                                                                     className={
-                                                                        "hold-left"
+                                                                        classes.icon
+                                                                    }
+                                                                    src={
+                                                                        "/" +
+                                                                        pool.name +
+                                                                        ".png"
+                                                                    }
+                                                                    style={{
+                                                                        marginRight:
+                                                                            "-2px"
+                                                                    }}
+                                                                    alt=""
+                                                                />
+                                                                <img
+                                                                    className={
+                                                                        classes.icon
+                                                                    }
+                                                                    src={
+                                                                        "/SYX.png"
+                                                                    }
+                                                                    alt=""
+                                                                />
+                                                                {pool.id}
+                                                            </td>
+                                                            <td>
+                                                                {parseFloat(
+                                                                    pool.price
+                                                                ).toFixed(4)}
+                                                                {pool.name}
+                                                            </td>
+                                                            <td>
+                                                                {pool.totalSupply >
+                                                                0
+                                                                    ? (
+                                                                          (parseFloat(
+                                                                              pool.stakeAmount
+                                                                          ) /
+                                                                              parseFloat(
+                                                                                  pool.totalSupply
+                                                                              )) *
+                                                                          100
+                                                                      ).toFixed(
+                                                                          2
+                                                                      )
+                                                                    : "0.00"}{" "}
+                                                                %
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    {
+                                                                        pool.weight
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <Button
+                                                                    className={
+                                                                        classes.button
+                                                                    }
+                                                                    size="small"
+                                                                    onClick={() => {
+                                                                        this.openTransactionModal(
+                                                                            pool
+                                                                        );
+                                                                    }}
+                                                                    disabled={
+                                                                        loading
                                                                     }
                                                                 >
-                                                                    <FormattedMessage id="HOLD" />
-                                                                </div>
-                                                            ) : (
-                                                                <></>
-                                                            )}
-                                                            <img
+                                                                    <FormattedMessage id="LP_SWAP" />
+                                                                </Button>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                } else {
+                                                    return <></>;
+                                                }
+                                            })
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </Hidden>
+                            <Hidden smUp>
+                                <table>
+                                    <thead className="table-head">
+                                        <tr className={classes.tableHeader}>
+                                            <td>
+                                                <FormattedMessage id="LP_TRADING_PAIR" />
+                                            </td>
+                                            <td>
+                                                <FormattedMessage id="LP_SYX_PRICE" />
+                                            </td>
+                                            <td>
+                                                <FormattedMessage id="ACTION" />
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.state.pools ? (
+                                            this.state.pools.map((pool, i) => {
+                                                if (pool.type !== "seed") {
+                                                    return (
+                                                        <>
+                                                            <tr
+                                                                key={i}
                                                                 className={
-                                                                    classes.icon
+                                                                    classes.tableBody
                                                                 }
-                                                                src={
-                                                                    "/" +
-                                                                    pool.name +
-                                                                    ".png"
-                                                                }
-                                                                style={{
-                                                                    marginRight:
-                                                                        "-2px"
-                                                                }}
-                                                                alt=""
-                                                            />
-                                                            <img
-                                                                className={
-                                                                    classes.icon
-                                                                }
-                                                                src={"/SYX.png"}
-                                                                alt=""
-                                                            />
-                                                            {pool.id}
-                                                        </td>
-                                                        <td>
-                                                            {parseFloat(
-                                                                pool.price
-                                                            ).toFixed(4)}
-                                                            {pool.name}
-                                                        </td>
-                                                        <td>
-                                                            {pool.totalSupply >
-                                                            0
-                                                                ? (
-                                                                      (parseFloat(
-                                                                          pool.stakeAmount
-                                                                      ) /
-                                                                          parseFloat(
-                                                                              pool.totalSupply
-                                                                          )) *
-                                                                      100
-                                                                  ).toFixed(2)
-                                                                : "0.00"}{" "}
-                                                            %
-                                                        </td>
-                                                        <td>
-                                                            <div>
-                                                                {pool.weight}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <Button
-                                                                className={
-                                                                    classes.button
-                                                                }
-                                                                size="small"
-                                                                onClick={() => {
-                                                                    this.openTransactionModal(
-                                                                        pool
-                                                                    );
-                                                                }}
-                                                                disabled={
-                                                                    loading
+                                                                onClick={() =>
+                                                                    this.setState(
+                                                                        {
+                                                                            ["open" +
+                                                                            i]: !this
+                                                                                .state[
+                                                                                "open" +
+                                                                                    i
+                                                                            ]
+                                                                        }
+                                                                    )
                                                                 }
                                                             >
-                                                                <FormattedMessage id="LP_SWAP" />
-                                                            </Button>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            } else {
-                                                return <></>;
-                                            }
-                                        })
-                                    ) : (
-                                        <></>
-                                    )}
-                                </tbody>
-                            </table>
+                                                                <td>
+                                                                    {pool.stakeAmount >
+                                                                    0.0001 ? (
+                                                                        <div
+                                                                            className={
+                                                                                "hold-left"
+                                                                            }
+                                                                        >
+                                                                            <FormattedMessage id="HOLD" />
+                                                                        </div>
+                                                                    ) : (
+                                                                        <></>
+                                                                    )}
+                                                                    <img
+                                                                        className={
+                                                                            classes.icon
+                                                                        }
+                                                                        src={
+                                                                            "/" +
+                                                                            pool.name +
+                                                                            ".png"
+                                                                        }
+                                                                        style={{
+                                                                            marginRight:
+                                                                                "-2px"
+                                                                        }}
+                                                                        alt=""
+                                                                    />
+                                                                    <img
+                                                                        className={
+                                                                            classes.icon
+                                                                        }
+                                                                        src={
+                                                                            "/SYX.png"
+                                                                        }
+                                                                        alt=""
+                                                                    />
+                                                                    <span
+                                                                        style={{
+                                                                            paddingLeft:
+                                                                                "5px"
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            pool.id
+                                                                        }
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    {parseFloat(
+                                                                        pool.price
+                                                                    ).toFixed(
+                                                                        4
+                                                                    )}
+                                                                    <div
+                                                                        style={{
+                                                                            color:
+                                                                                "#a4a7be"
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            pool.name
+                                                                        }
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <Button
+                                                                        className={
+                                                                            classes.button
+                                                                        }
+                                                                        size="small"
+                                                                        onClick={() => {
+                                                                            this.openTransactionModal(
+                                                                                pool
+                                                                            );
+                                                                        }}
+                                                                        disabled={
+                                                                            loading
+                                                                        }
+                                                                    >
+                                                                        <FormattedMessage id="LP_SWAP" />
+                                                                    </Button>
+                                                                </td>
+                                                            </tr>
+                                                            <Collapse
+                                                                in={
+                                                                    this.state[
+                                                                        "open" +
+                                                                            i
+                                                                    ]
+                                                                }
+                                                                timeout="auto"
+                                                                unmountOnExit
+                                                                className={
+                                                                    classes.collapse
+                                                                }
+                                                            >
+                                                                <div className="triangle-up"></div>
+                                                                <Grid
+                                                                    container
+                                                                    spacing={3}
+                                                                >
+                                                                    <Grid
+                                                                        item
+                                                                        xs={6}
+                                                                    >
+                                                                        {
+                                                                            pool.name
+                                                                        }
+                                                                        :
+                                                                        <span
+                                                                            style={{
+                                                                                color:
+                                                                                    "#1E304B",
+                                                                                paddingLeft:
+                                                                                    "5px"
+                                                                            }}
+                                                                        >
+                                                                            {parseFloat(
+                                                                                pool.erc20Balance
+                                                                            ).toFixed(
+                                                                                4
+                                                                            )}
+                                                                        </span>
+                                                                    </Grid>
+                                                                    <Grid
+                                                                        item
+                                                                        xs={6}
+                                                                    >
+                                                                        <FormattedMessage id="LP_MY_SHARE" />
+                                                                        :
+                                                                        <span
+                                                                            style={{
+                                                                                color:
+                                                                                    "#1E304B",
+                                                                                paddingLeft:
+                                                                                    "5px"
+                                                                            }}
+                                                                        >
+                                                                            {pool.totalSupply >
+                                                                            0
+                                                                                ? (
+                                                                                      (parseFloat(
+                                                                                          pool.stakeAmount
+                                                                                      ) /
+                                                                                          parseFloat(
+                                                                                              pool.totalSupply
+                                                                                          )) *
+                                                                                      100
+                                                                                  ).toFixed(
+                                                                                      2
+                                                                                  )
+                                                                                : "0.00"}{" "}
+                                                                            %
+                                                                        </span>
+                                                                    </Grid>
+                                                                    <Grid
+                                                                        item
+                                                                        xs={6}
+                                                                    >
+                                                                        {
+                                                                            pool.rewardsSymbol
+                                                                        }
+                                                                        :
+                                                                        <span
+                                                                            style={{
+                                                                                color:
+                                                                                    "#1E304B",
+                                                                                paddingLeft:
+                                                                                    "5px"
+                                                                            }}
+                                                                        >
+                                                                            {parseFloat(
+                                                                                pool.rewardsBalance
+                                                                            ).toFixed(
+                                                                                4
+                                                                            )}
+                                                                        </span>
+                                                                    </Grid>
+                                                                    <Grid
+                                                                        item
+                                                                        xs={6}
+                                                                    >
+                                                                        <FormattedMessage id="RATIO" />
+                                                                        :
+                                                                        <span
+                                                                            style={{
+                                                                                color:
+                                                                                    "#1E304B",
+                                                                                paddingLeft:
+                                                                                    "5px"
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                pool.weight
+                                                                            }
+                                                                        </span>
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </Collapse>
+                                                        </>
+                                                    );
+                                                } else {
+                                                    return <></>;
+                                                }
+                                            })
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </Hidden>
                         </div>
                     </div>
                 </Container>

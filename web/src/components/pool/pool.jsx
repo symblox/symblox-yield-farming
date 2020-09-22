@@ -33,13 +33,13 @@ const useStyles = makeStyles({
         lineHeight: "28px",
         color: "#FFFFFF",
         background:
-            "linear-gradient(124.56deg, #E71E85 -27.83%, #2148D3 55.48%, #E71E85)",
+            "linear-gradient(124.56deg, #E71E85 -27.83%, #2148D3 55.48%, #2148D3)",
         mixBlendMode: "normal",
         boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
         height: "380px",
-        "& p": {
-            opacity: 0.8
-        },
+        // "& p": {
+        //     opacity: 0.8
+        // },
         "&::after": {
             content: "''",
             backgroundImage: "url('/bg_pool.svg')",
@@ -73,10 +73,9 @@ const useStyles = makeStyles({
     },
     text: {
         fontStyle: "normal",
-        fontWeight: 300,
         fontSize: "20px",
         lineHeight: "20px",
-        color: "#2872fa",
+        color: "#ACAEBC",
         opacity: "1 !important"
     },
     featuredText: {
@@ -98,19 +97,21 @@ const useStyles = makeStyles({
         opacity: "1 !important"
     },
     textSecondary: {
-        fontSize: "20px",
+        fontSize: "18px",
         paddingTop: "24px",
         textAlign: "left"
     },
     textThird: {
-        fontSize: "20px",
+        fontSize: "18px",
         paddingTop: "8px",
         textAlign: "left"
     },
     textSecondaryColor: {
         color: "#36B685"
-        // color: props =>
-        //     props.data && props.data.featured ? "#FFFFFF" : "#1E304B"
+    },
+    textThirdColor: {
+        color: props =>
+            props.data && props.data.featured ? "#FFFFFF" : "#1E304B"
     },
     button: {
         background:
@@ -130,9 +131,8 @@ const useStyles = makeStyles({
     },
     buttonSecondary: {
         background:
-            "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)",
+            "linear-gradient(315deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)",
         borderRadius: "26px",
-        // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
         fontSize: "20px",
@@ -141,7 +141,7 @@ const useStyles = makeStyles({
         minWidth: "213px",
         "&:hover": {
             background:
-                "linear-gradient(315deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)"
+                "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)"
         }
     },
     bar: {
@@ -220,7 +220,10 @@ export default function Pool(props) {
 
                 <Typography className={classes.textThird}>
                     <FormattedMessage id="WITHDRAWABLE_REWARDS" />:{" "}
-                    <span style={{float: "right"}}>
+                    <span
+                        style={{float: "right"}}
+                        className={classes.textThirdColor}
+                    >
                         {parseFloat(data.rewardsAvailable).toFixed(4)}{" "}
                         {data.rewardsSymbol}
                     </span>

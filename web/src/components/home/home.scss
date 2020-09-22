@@ -1,4 +1,4 @@
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 600px) {
     .table-wrap {
         -moz-user-select: none;
         -webkit-user-select: none;
@@ -22,7 +22,6 @@
                 font-weight: 500;
                 color: rgba(164, 167, 190, 1);
                 line-height: 70px;
-                // border-bottom: 1px solid #e5e6f2;
                 position: relative;
                 tr {
                     border-top: none;
@@ -81,17 +80,6 @@
                 &:hover {
                     background-color: #fcfcfe;
                     cursor: pointer;
-
-                    // &::after {
-                    //     content: "";
-                    //     display: block;
-                    //     position: absolute;
-                    //     width: 2px;
-                    //     background-color: #ba59ff;
-                    //     height: 90px;
-                    //     left: 0;
-                    //     top: 0;
-                    // }
                 }
             }
         }
@@ -133,7 +121,7 @@
         }
     }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 600px) {
     .exchange-table {
         width: 100%;
         overflow: scroll;
@@ -154,13 +142,13 @@
                 width: 100%;
                 text-align: right;
                 border-collapse: collapse;
+                overflow: hidden;
                 // thead
                 .table-head {
                     font-size: 16px;
                     font-weight: 500;
                     color: rgba(164, 167, 190, 1);
                     line-height: 70px;
-                    // border-bottom: 1px solid #e5e6f2;
                     position: relative;
                     tr {
                         td {
@@ -220,30 +208,21 @@
                     &:hover {
                         background-color: #fcfcfe;
                         cursor: pointer;
-
-                        // &::after {
-                        //     content: "";
-                        //     display: block;
-                        //     position: absolute;
-                        //     width: 2px;
-                        //     background-color: #ba59ff;
-                        //     height: 90px;
-                        //     left: 0;
-                        //     top: 0;
-                        // }
                     }
                 }
 
                 // *** td ***
                 td {
                     flex: 1;
-                    // border-bottom: 1px solid #E5E6F2;
+                    padding: 25px 5px;
+                    text-align: center;
+                    font-size: 18px;
 
                     &:first-child {
-                        flex: 2 !important;
+                        flex: 1.2 !important;
                         text-align: left;
                         font-weight: 500;
-                        padding-left: 25px;
+                        padding-left: 16px;
                         font-family: "Oswald";
                     }
 
@@ -261,6 +240,11 @@
 
                     &:last-child {
                         flex: 1.6 !important;
+                    }
+
+                    button {
+                        margin-top: 6px;
+                        font-size: 18px;
                     }
                 }
             }
