@@ -393,9 +393,9 @@ class WithdrawRewardsModal extends Component {
                                     {data.map(v => {
                                         if (v.entryContractAddress) {
                                             return (
-                                                <option value={v.index}>
+                                                <MenuItem value={v.index}>
                                                     {v.id}
-                                                </option>
+                                                </MenuItem>
                                             );
                                         }
                                     })}
@@ -571,9 +571,9 @@ class WithdrawRewardsModal extends Component {
                                     {data.map(v => {
                                         if (v.entryContractAddress) {
                                             return (
-                                                <option value={v.index}>
+                                                <MenuItem value={v.index}>
                                                     {v.id}
-                                                </option>
+                                                </MenuItem>
                                             );
                                         }
                                     })}
