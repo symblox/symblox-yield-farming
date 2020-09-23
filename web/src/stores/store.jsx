@@ -387,6 +387,12 @@ class Store {
                             "YYYY/MM/DD HH:mm"
                         );
 
+                        pool.bptVlxBalance =
+                            parseFloat(data[11]) * parseFloat(data[7]);
+                        pool.bptSyxBalance =
+                            (parseFloat(data[12]) * parseFloat(data[7])) /
+                            parseFloat(data[3]);
+
                         pool.maxErc20In =
                             parseFloat(data[13]) * parseFloat(data[11]);
                         pool.maxSyxIn =

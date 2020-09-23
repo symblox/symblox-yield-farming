@@ -84,6 +84,11 @@ const styles = theme => ({
         "&:hover": {
             background:
                 "linear-gradient(315deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)"
+        },
+        "&.Mui-disabled": {
+            background:
+                "linear-gradient(135deg, rgb(66, 217, 254, 0.12) 0%, rgb(40, 114, 250,0.12) 100%, rgb(66, 217, 254, 0.12))",
+            color: "#FFFFFF"
         }
     },
     buttonSecondary: {
@@ -101,6 +106,11 @@ const styles = theme => ({
         "&:hover": {
             background:
                 "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)"
+        },
+        "&.Mui-disabled": {
+            background:
+                "linear-gradient(135deg, rgb(255, 58, 51, 0.12) 0%, rgb(252, 6, 198, 0.12) 100%, rgb(255, 58, 51, 0.12))",
+            color: "#FFFFFF"
         }
     },
     containedButton: {
@@ -337,6 +347,7 @@ class WithdrawRewardsModal extends Component {
     };
 
     onClaim = () => {
+        this.props.showLoading();
         dispatcher.dispatch({
             type: GET_REWARDS,
             content: {
@@ -346,7 +357,7 @@ class WithdrawRewardsModal extends Component {
     };
 
     render() {
-        const {classes, data, closeModal, modalOpen} = this.props;
+        const {classes, data, loading, closeModal, modalOpen} = this.props;
         const fullScreen = window.innerWidth < 450;
 
         return (
@@ -501,6 +512,7 @@ class WithdrawRewardsModal extends Component {
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button
+                                                    disabled={loading}
                                                     variant="outline"
                                                     onClick={this.max}
                                                 >
@@ -596,6 +608,7 @@ class WithdrawRewardsModal extends Component {
                     {this.state.curTab === 1 ? (
                         <Button
                             className={classes.buttonSecondary}
+                            disabled={loading}
                             autoFocus
                             onClick={this.confirm}
                             fullWidth={true}
@@ -605,6 +618,7 @@ class WithdrawRewardsModal extends Component {
                     ) : (
                         <Button
                             className={classes.button}
+                            disabled={loading}
                             autoFocus
                             onClick={this.onClaim}
                             fullWidth={true}

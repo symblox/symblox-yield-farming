@@ -195,10 +195,11 @@ export default function Pool(props) {
                             <FormattedMessage id="TOTAL_SUPPLY" />:
                             {data.type == "seed"
                                 ? parseFloat(data.totalSupply || 0).toFixed(4)
-                                : (
-                                      parseFloat(data.totalSupply || 0) *
-                                      parseFloat(data.BPTPrice || 0)
-                                  ).toFixed(4) + data.name}
+                                : parseFloat(data.bptVlxBalance).toFixed(4) +
+                                  data.name +
+                                  "," +
+                                  parseFloat(data.bptSyxBalance).toFixed(4) +
+                                  "SYX"}
                         </React.Fragment>
                     }
                     enterTouchDelay={700}

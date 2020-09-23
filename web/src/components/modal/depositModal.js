@@ -48,6 +48,11 @@ const styles = theme => ({
         "&:hover": {
             background:
                 "linear-gradient(315deg, #4DB5FF 0%, #57E2FF 100%, #4DB5FF)"
+        },
+        "&.Mui-disabled": {
+            background:
+                "linear-gradient(135deg, rgb(66, 217, 254, 0.12) 0%, rgb(40, 114, 250,0.12) 100%, rgb(66, 217, 254, 0.12))",
+            color: "#FFFFFF"
         }
     },
     select: {
@@ -219,6 +224,7 @@ class DepositModal extends Component {
     };
 
     confirm = () => {
+        this.props.showLoading();
         dispatcher.dispatch({
             type: DEPOSIT,
             content: {
@@ -237,7 +243,7 @@ class DepositModal extends Component {
     };
 
     render() {
-        const {classes, data, closeModal, modalOpen} = this.props;
+        const {classes, data, loading, closeModal, modalOpen} = this.props;
         const {pool, token, amount} = this.state;
         const fullScreen = window.innerWidth < 450;
 
@@ -338,6 +344,7 @@ class DepositModal extends Component {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Button
+                                            disabled={loading}
                                             variant="outline"
                                             onClick={this.max}
                                         >
@@ -418,6 +425,7 @@ class DepositModal extends Component {
                 <DialogActions>
                     <Button
                         autoFocus
+                        disabled={loading}
                         onClick={this.confirm}
                         className={classes.button}
                         fullWidth={true}

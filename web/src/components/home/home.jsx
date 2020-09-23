@@ -998,7 +998,7 @@ class Home extends Component {
                                                                             }}
                                                                         >
                                                                             {parseFloat(
-                                                                                pool.erc20Balance
+                                                                                pool.bptVlxBalance
                                                                             ).toFixed(
                                                                                 4
                                                                             )}
@@ -1052,7 +1052,7 @@ class Home extends Component {
                                                                             }}
                                                                         >
                                                                             {parseFloat(
-                                                                                pool.rewardsBalance
+                                                                                pool.bptSyxBalance
                                                                             ).toFixed(
                                                                                 4
                                                                             )}
@@ -1136,13 +1136,17 @@ class Home extends Component {
     };
 
     createEntryContract = data => {
-        this.setState({loading: true});
+        this.showLoading();
         dispatcher.dispatch({
             type: CREATE_ENTRY_CONTRACT,
             content: {
                 asset: data
             }
         });
+    };
+
+    showLoading = () => {
+        this.setState({loading: true});
     };
 
     errorReturned = error => {
@@ -1233,6 +1237,8 @@ class Home extends Component {
         return (
             <DepositModal
                 data={data}
+                loading={this.state.loading}
+                showLoading={this.showLoading}
                 closeModal={this.closeDepositModal}
                 modalOpen={this.state.depositModalOpen}
             />
@@ -1243,6 +1249,8 @@ class Home extends Component {
         return (
             <WithdrawRewardsModal
                 data={data}
+                loading={this.state.loading}
+                showLoading={this.showLoading}
                 closeModal={this.closeWithdrawRewardsModal}
                 modalOpen={this.state.withdrawRewardsModalOpen}
             />
@@ -1253,6 +1261,8 @@ class Home extends Component {
         return (
             <TransactionModal
                 data={data}
+                loading={this.state.loading}
+                showLoading={this.showLoading}
                 closeModal={this.closeTransactionModal}
                 modalOpen={this.state.transactionModalOpen}
             />
