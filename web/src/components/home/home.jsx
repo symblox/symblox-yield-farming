@@ -36,7 +36,7 @@ import {
     WITHDRAW_RETURNED,
     DEPOSIT_RETURNED,
     TRADE_RETURNED,
-    GET_REWARDS,
+    TX_CONFIRM,
     GET_REWARDS_RETURNED,
     CONNECTION_CONNECTED,
     CONNECTION_DISCONNECTED,
@@ -189,12 +189,16 @@ const styles = theme => ({
         overflowY: "hidden"
     },
     actionsSm: {
-        textAlign: "center",
+        textAlign: "left",
         color: "#1E304B",
         fontFamily: "Oswald",
-        fontSize: "20px",
+        fontSize: "24px",
         fontWeight: 300,
-        display: "block"
+        display: "block",
+        padding: "13px 32px",
+        "& span": {
+            float: "right"
+        }
     },
     paperTitle: {
         // fontFamily: "Noto Sans SC",
@@ -278,6 +282,7 @@ class Home extends Component {
         emitter.on(WITHDRAW_RETURNED, this.showHash);
         emitter.on(TRADE_RETURNED, this.showHash);
         emitter.on(GET_REWARDS_RETURNED, this.showHash);
+        emitter.on(TX_CONFIRM, this.closeAllModal);
         injected.isAuthorized().then(isAuthorized => {
             if (isAuthorized) {
                 injected
@@ -356,6 +361,7 @@ class Home extends Component {
         emitter.removeListener(TRADE_RETURNED, this.showHash);
         emitter.removeListener(GET_REWARDS_RETURNED, this.showHash);
         emitter.removeListener(ERROR, this.errorReturned);
+        emitter.removeListener(TX_CONFIRM, this.closeAllModal);
     }
 
     connectionConnected = async () => {
@@ -540,7 +546,10 @@ class Home extends Component {
                                                 className={classes.button}
                                                 style={{marginTop: "9px"}}
                                                 variant="contained"
-                                                disabled={hasJoinedCount == 0}
+                                                disabled={
+                                                    hasJoinedCount == 0 ||
+                                                    loading
+                                                }
                                                 onClick={() =>
                                                     this.openDepositModal(
                                                         rewardPools
@@ -589,7 +598,10 @@ class Home extends Component {
                                                     classes.buttonSecondary
                                                 }
                                                 variant="contained"
-                                                disabled={hasJoinedCount == 0}
+                                                disabled={
+                                                    hasJoinedCount == 0 ||
+                                                    loading
+                                                }
                                                 onClick={() => {
                                                     this.openWithdrawRewardsModal();
                                                 }}
@@ -611,8 +623,8 @@ class Home extends Component {
                     <Hidden smUp>
                         <Card className={classes.root}>
                             <CardActions className={classes.actionsSm}>
-                                <FormattedMessage id="TOTAL_STAKING_APR" />{" "}
-                                {rewardApr ? rewardApr : "-"}%
+                                <FormattedMessage id="TOTAL_STAKING_APR" />
+                                <span>{rewardApr ? rewardApr : "-"}%</span>
                             </CardActions>
                             <Divider />
                             <CardContent>
@@ -646,7 +658,10 @@ class Home extends Component {
                                                     classes.buttonSecondary
                                                 }
                                                 variant="contained"
-                                                disabled={hasJoinedCount == 0}
+                                                disabled={
+                                                    hasJoinedCount == 0 ||
+                                                    loading
+                                                }
                                                 onClick={() => {
                                                     this.openWithdrawRewardsModal();
                                                 }}
@@ -673,6 +688,7 @@ class Home extends Component {
                             <Grid item xs={12} sm={6} md={4} key={i}>
                                 <Pool
                                     data={data}
+                                    loading={loading}
                                     onDeposit={() =>
                                         this.openDepositModal(data)
                                     }
@@ -1101,8 +1117,7 @@ class Home extends Component {
     showHash = txHash => {
         this.setState({
             snackbarMessage: null,
-            snackbarType: null,
-            loading: false
+            snackbarType: null
         });
         const that = this;
         setTimeout(() => {
@@ -1111,7 +1126,17 @@ class Home extends Component {
         });
     };
 
+    closeAllModal = () => {
+        this.setState({
+            depositModalOpen: false,
+            withdrawRewardsModalOpen: false,
+            transactionModalOpen: false,
+            loading: false
+        });
+    };
+
     createEntryContract = data => {
+        this.setState({loading: true});
         dispatcher.dispatch({
             type: CREATE_ENTRY_CONTRACT,
             content: {

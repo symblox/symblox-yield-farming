@@ -120,6 +120,11 @@ const useStyles = makeStyles({
         "&:hover": {
             background:
                 "linear-gradient(315deg, #4DB5FF 0%, #57E2FF 100%, #4DB5FF)"
+        },
+        "&.Mui-disabled": {
+            background:
+                "linear-gradient(135deg, rgb(66, 217, 254, 0.12) 0%, rgb(40, 114, 250,0.12) 100%, rgb(66, 217, 254, 0.12))",
+            color: "#FFFFFF"
         }
     },
     buttonSecondary: {
@@ -135,6 +140,11 @@ const useStyles = makeStyles({
         "&:hover": {
             background:
                 "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)"
+        },
+        "&.Mui-disabled": {
+            background:
+                "linear-gradient(135deg, rgb(255, 58, 51, 0.12) 0%, rgb(252, 6, 198, 0.12) 100%, rgb(255, 58, 51, 0.12))",
+            color: "#FFFFFF"
         }
     },
     bar: {
@@ -145,7 +155,7 @@ const useStyles = makeStyles({
 
 export default function Pool(props) {
     const classes = useStyles(props);
-    const {data, onDeposit, onJoin} = props;
+    const {data, loading, onDeposit, onJoin} = props;
 
     const tokenIcon = "/" + data.name + ".png";
 
@@ -229,6 +239,7 @@ export default function Pool(props) {
                         variant="contained"
                         size="small"
                         className={classes.button}
+                        disabled={loading}
                         onClick={onDeposit}
                     >
                         <FormattedMessage id="LP_DEPOSIT" />
@@ -238,6 +249,7 @@ export default function Pool(props) {
                         variant="contained"
                         size="small"
                         className={classes.buttonSecondary}
+                        disabled={loading}
                         onClick={onJoin}
                     >
                         <FormattedMessage id="JOIN" />

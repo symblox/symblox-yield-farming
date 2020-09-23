@@ -17,7 +17,8 @@ import {
     GET_REWARDS_RETURNED,
     CREATE_ENTRY_CONTRACT,
     CALCULATE_PRICE,
-    CALCULATE_PRICE_RETURNED
+    CALCULATE_PRICE_RETURNED,
+    TX_CONFIRM
 } from "../constants";
 import Web3 from "web3";
 
@@ -1021,6 +1022,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1104,6 +1106,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1205,6 +1208,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1363,6 +1367,7 @@ class Store {
                         type: GET_BALANCES_PERPETUAL,
                         content: {}
                     });
+                    emitter.emit(TX_CONFIRM);
                 }
             })
             .on("receipt", function (receipt) {
@@ -1429,6 +1434,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
