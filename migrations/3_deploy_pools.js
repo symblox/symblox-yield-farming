@@ -87,7 +87,7 @@ module.exports = async function (deployer, network, accounts) {
 
     // create a new pool with pid: 0
     await rewardMgr.add(
-        "100000000000000000", // weight, 0.1
+        "1000000000000000000", // weight, 1
         wvlxAddress,
         false // whether to update all the pools
     );

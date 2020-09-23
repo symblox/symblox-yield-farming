@@ -55,6 +55,25 @@
             {
                 "indexed": true,
                 "internalType": "address",
+                "name": "src",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "LogReward",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
                 "name": "dst",
                 "type": "address"
             },
@@ -124,6 +143,11 @@
         ],
         "name": "OwnershipTransferred",
         "type": "event"
+    },
+    {
+        "payable": true,
+        "stateMutability": "payable",
+        "type": "fallback"
     },
     {
         "constant": true,
@@ -408,8 +432,8 @@
                 "type": "uint256"
             }
         ],
-        "payable": true,
-        "stateMutability": "payable",
+        "payable": false,
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

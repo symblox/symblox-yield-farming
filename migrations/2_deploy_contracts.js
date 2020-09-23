@@ -19,10 +19,10 @@ module.exports = async function (deployer, network, accounts) {
                 endBlock: "100100"
             },
             vlxtest: {
-                rewardsPerBlock: "74000000000000000", // 1 syx
-                startBlock: "872300",
-                bonusEndBlock: "941420",
-                endBlock: "981420"
+                rewardsPerBlock: "688932980599647000", // 0.688932980599647
+                startBlock: "1052894",
+                bonusEndBlock: "1294814",
+                endBlock: "2020574"
             }
         }
     };

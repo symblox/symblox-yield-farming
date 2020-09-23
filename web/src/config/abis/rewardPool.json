@@ -28,7 +28,7 @@
             },
             {
                 "internalType": "uint256",
-                "name": "_rewardCap",
+                "name": "_endBlock",
                 "type": "uint256"
             }
         ],
@@ -178,6 +178,21 @@
     {
         "constant": true,
         "inputs": [],
+        "name": "endBlock",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
         "name": "isOwner",
         "outputs": [
             {
@@ -248,21 +263,6 @@
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "rewardCap",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -423,21 +423,6 @@
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_newCap",
-                "type": "uint256"
-            }
-        ],
-        "name": "setRewardCap",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
         "inputs": [],
         "name": "massUpdatePools",
         "outputs": [],
@@ -522,7 +507,13 @@
             }
         ],
         "name": "getReward",
-        "outputs": [],
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"

@@ -51,7 +51,7 @@ contract RewardManager is Ownable {
     // syX tokens created per block.
     uint256 public syxPerBlock;
     // Bonus muliplier for early syx makers.
-    uint256 public constant BONUS_MULTIPLIER = 10;
+    uint256 public constant BONUS_MULTIPLIER = 3;
 
     // Info of each pool.
     PoolInfo[] public poolInfo;

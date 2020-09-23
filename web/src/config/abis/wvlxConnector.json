@@ -55,6 +55,25 @@
             {
                 "indexed": true,
                 "internalType": "address",
+                "name": "src",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "LogReward",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
                 "name": "dst",
                 "type": "address"
             },
@@ -344,7 +363,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "minAmountOut",
+                "name": "",
                 "type": "uint256"
             }
         ],
@@ -370,7 +389,7 @@
             },
             {
                 "internalType": "uint256",
-                "name": "minAmountOut",
+                "name": "",
                 "type": "uint256"
             }
         ],
@@ -382,8 +401,8 @@
                 "type": "uint256"
             }
         ],
-        "payable": true,
-        "stateMutability": "payable",
+        "payable": false,
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
