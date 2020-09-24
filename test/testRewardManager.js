@@ -175,12 +175,12 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "0");
             await time.advanceBlockTo(currBlock.addn(100));
             await this.rewardMgr.deposit(0, "0", {from: bob}); // block 101
-            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "1000");
+            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "300");
             await time.advanceBlockTo(currBlock.addn(104));
             await this.rewardMgr.deposit(0, "0", {from: bob}); // block 105
-            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "5000");
-            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "500");
-            assert.equal((await this.symblox.totalSupply()).valueOf(), "5500");
+            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "1500");
+            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "150");
+            assert.equal((await this.symblox.totalSupply()).valueOf(), "1650");
         });
 
         it("should not distribute Symblox if no one deposit", async () => {
@@ -212,12 +212,9 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             assert.equal((await this.lp.balanceOf(bob)).valueOf(), "990");
             await time.advanceBlockTo(currBlock.addn(219));
             await this.rewardMgr.withdraw(0, "10", {from: bob}); // block 220
-            assert.equal((await this.symblox.totalSupply()).valueOf(), "11000");
-            assert.equal(
-                (await this.symblox.balanceOf(bob)).valueOf(),
-                "10000"
-            );
-            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "1000");
+            assert.equal((await this.symblox.totalSupply()).valueOf(), "3300");
+            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "3000");
+            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "300");
             assert.equal((await this.lp.balanceOf(bob)).valueOf(), "1000");
         });
 
@@ -258,10 +255,10 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             //   RewardManager should have the remaining: 10000 - 5666 = 4334
             await time.advanceBlockTo(currBlock.addn(319));
             await this.rewardMgr.deposit(0, "10", {from: alice});
-            assert.equal((await this.symblox.totalSupply()).valueOf(), "11000");
+            assert.equal((await this.symblox.totalSupply()).valueOf(), "3300");
             assert.equal(
                 (await this.symblox.balanceOf(alice)).valueOf(),
-                "5666"
+                "1700"
             );
             assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "0");
             assert.equal((await this.symblox.balanceOf(carol)).valueOf(), "0");
@@ -269,27 +266,27 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
                 (
                     await this.symblox.balanceOf(this.rewardMgr.address)
                 ).valueOf(),
-                "4334"
+                "1300"
             );
-            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "1000");
+            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "300");
             // Bob withdraws 5 LPs at block 330. At this point:
-            //   Bob should have: 4*2/3*1000 + 2*2/6*1000 + 10*2/7*1000 = 6190
+            //   Bob should have: 4*2/3*300 + 2*2/6*300 + 10*2/7*300 = 1857
             await time.advanceBlockTo(currBlock.addn(329));
             await this.rewardMgr.withdraw(0, "5", {from: bob});
-            assert.equal((await this.symblox.totalSupply()).valueOf(), "22000");
+            assert.equal((await this.symblox.totalSupply()).valueOf(), "6600");
             assert.equal(
                 (await this.symblox.balanceOf(alice)).valueOf(),
-                "5666"
+                "1700"
             );
-            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "6190");
+            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "1857");
             assert.equal((await this.symblox.balanceOf(carol)).valueOf(), "0");
             assert.equal(
                 (
                     await this.symblox.balanceOf(this.rewardMgr.address)
                 ).valueOf(),
-                "8144"
+                "2443"
             );
-            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "2000");
+            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "600");
             // Alice withdraws 20 LPs at block 340.
             // Bob withdraws 15 LPs at block 350.
             // Carol withdraws 30 LPs at block 360.
@@ -299,22 +296,19 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             await this.rewardMgr.withdraw(0, "15", {from: bob});
             await time.advanceBlockTo(currBlock.addn(359));
             await this.rewardMgr.withdraw(0, "30", {from: carol});
-            assert.equal((await this.symblox.totalSupply()).valueOf(), "55000");
-            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "5000");
-            // Alice should have: 5666 + 10*2/7*1000 + 10*2/6.5*1000 = 11600
+            assert.equal((await this.symblox.totalSupply()).valueOf(), "16500");
+            assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "1500");
+            // Alice should have: 1700 + 3*2/7*1000 + 3*2/6.5*1000 = 3480
             assert.equal(
                 (await this.symblox.balanceOf(alice)).valueOf(),
-                "11600"
+                "3480"
             );
-            // Bob should have: 6190 + 10*1.5/6.5 * 1000 + 10*1.5/4.5*1000 = 11831
-            assert.equal(
-                (await this.symblox.balanceOf(bob)).valueOf(),
-                "11831"
-            );
-            // Carol should have: 2*3/6*1000 + 10*3/7*1000 + 10*3/6.5*1000 + 10*3/4.5*1000 + 10*1000 = 26568
+            // Bob should have: 1857 + 3*1.5/6.5 * 1000 + 3*1.5/4.5*1000 = 3550
+            assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "3550");
+            // Carol should have: 2*3/6*300 + 3*3/7*1000 + 3*3/6.5*1000 + 3*3/4.5*1000 + 3*1000 = 7970
             assert.equal(
                 (await this.symblox.balanceOf(carol)).valueOf(),
-                "26568"
+                "7970"
             );
             // All of them should have 1000 LPs back.
             assert.equal((await this.lp.balanceOf(alice)).valueOf(), "1000");
@@ -349,28 +343,28 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             // Add LP2 to the pool with allocation 2 at block 420
             await time.advanceBlockTo(currBlock.addn(419));
             await this.rewardMgr.add("20", this.lp2.address, true);
-            // Alice should have 10*1000 pending reward
+            // Alice should have 10*300 pending reward
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, alice)).valueOf(),
-                "10000"
+                "3000"
             );
             // Bob deposits 10 LP2s at block 425
             await time.advanceBlockTo(currBlock.addn(424));
             await this.rewardMgr.deposit(1, "5", {from: bob});
-            // Alice should have 10000 + 5*1/3*1000 = 11666 pending reward
+            // Alice should have 3000 + 5*100 = 3500 pending reward
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, alice)).valueOf(),
-                "11666"
+                "3500"
             );
             await time.advanceBlockTo(currBlock.addn(430));
-            // At block 430. Bob should get 5*2/3*1000 = 3333. Alice should get ~1666 more.
+            // At block 430. Bob should get 1000. Alice should get ~4000 more.
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, alice)).valueOf(),
-                "13333"
+                "4000"
             );
             assert.equal(
                 (await this.rewardMgr.pendingSyx(1, bob)).valueOf(),
-                "3333"
+                "1000"
             );
         });
 
@@ -396,13 +390,13 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             // Alice deposits 10 LPs at block 590
             await time.advanceBlockTo(currBlock.addn(589));
             await this.rewardMgr.deposit(0, "10", {from: alice});
-            // At block 605, she should have 1000*10 + 100*5 = 10500 pending.
+            // At block 605, she should have 1000*3 + 100*5 = 3500 pending.
             await time.advanceBlockTo(currBlock.addn(605));
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, alice)).valueOf(),
-                "10500"
+                "3500"
             );
-            // At block 606, Alice withdraws all pending rewards and should get 10600.
+            // At block 606, Alice withdraws all pending rewards and should get 3600.
             await this.rewardMgr.deposit(0, "0", {from: alice});
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, alice)).valueOf(),
@@ -410,7 +404,7 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             );
             assert.equal(
                 (await this.symblox.balanceOf(alice)).valueOf(),
-                "10600"
+                "3600"
             );
         });
     });
