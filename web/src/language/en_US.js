@@ -60,6 +60,7 @@ const en_US = {
     HOLD: "hold",
     TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
     TRADE_ERROR_BALANCE: "Available balance not enough",
-    SEE_DETAIL: "See detail"
+    SEE_DETAIL: "See detail",
+    REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio"
 };
 export default en_US;

@@ -192,14 +192,28 @@ export default function Pool(props) {
                 <Tooltip
                     title={
                         <React.Fragment>
-                            <FormattedMessage id="TOTAL_SUPPLY" />:
-                            {data.type == "seed"
-                                ? parseFloat(data.totalSupply || 0).toFixed(4)
-                                : parseFloat(data.bptVlxBalance).toFixed(4) +
-                                  data.name +
-                                  "," +
-                                  parseFloat(data.bptSyxBalance).toFixed(4) +
-                                  "SYX"}
+                            <div>
+                                <FormattedMessage id="TOTAL_SUPPLY" />:
+                                {data.type == "seed"
+                                    ? parseFloat(data.totalSupply || 0).toFixed(
+                                          4
+                                      )
+                                    : parseFloat(data.bptVlxBalance).toFixed(
+                                          4
+                                      ) +
+                                      data.name +
+                                      " " +
+                                      parseFloat(data.bptSyxBalance).toFixed(
+                                          4
+                                      ) +
+                                      "SYX"}
+                            </div>
+                            <div>
+                                <FormattedMessage id="REWARD_DISTRIBUTION_RATIO" />
+                                :{" "}
+                                {(parseFloat(data.allocPoint) * 100).toFixed(2)}{" "}
+                                %
+                            </div>
                         </React.Fragment>
                     }
                     enterTouchDelay={700}

@@ -289,6 +289,14 @@ class Store {
                             );
                         },
                         callbackInner => {
+                            this._getAllocPoint(
+                                web3,
+                                pool,
+                                account,
+                                callbackInner
+                            );
+                        },
+                        callbackInner => {
                             this._getStakeTokenPrice(
                                 web3,
                                 pool,
@@ -361,9 +369,10 @@ class Store {
                         pool.price = data[3];
                         pool.erc20Balance = data[4];
                         pool.rewardsBalance = data[5];
-                        pool.rewardRate = data[6];
-                        pool.BPTPrice = data[7];
-                        pool.totalSupply = data[8];
+                        pool.rewardRate = data[6] * data[7];
+                        pool.allocPoint = data[7];
+                        pool.BPTPrice = data[8];
+                        pool.totalSupply = data[9];
                         let totalBalanceForSyx;
                         if (pool.type === "seed") {
                             totalBalanceForSyx =
@@ -371,36 +380,36 @@ class Store {
                                 parseFloat(pool.price);
                         } else {
                             totalBalanceForSyx =
-                                parseFloat(data[11]) / parseFloat(pool.price) +
-                                parseFloat(data[12]);
+                                parseFloat(data[12]) / parseFloat(pool.price) +
+                                parseFloat(data[13]);
                         }
 
                         pool.rewardApr = (totalBalanceForSyx > 0
-                            ? ((parseFloat(data[6]) * blocksPerYear) /
+                            ? ((parseFloat(pool.rewardRate) * blocksPerYear) /
                                   totalBalanceForSyx) *
                               100
                             : 0
                         ).toFixed(1);
 
-                        pool.weight = data[9];
-                        pool.periodFinish = moment(data[10] * 1000).format(
+                        pool.weight = data[10];
+                        pool.periodFinish = moment(data[11] * 1000).format(
                             "YYYY/MM/DD HH:mm"
                         );
 
                         pool.bptVlxBalance =
-                            parseFloat(data[11]) * parseFloat(data[7]);
+                            parseFloat(data[12]) * parseFloat(data[8]);
                         pool.bptSyxBalance =
-                            (parseFloat(data[12]) * parseFloat(data[7])) /
-                            parseFloat(data[3]);
+                            (parseFloat(data[12]) * parseFloat(data[8])) /
+                            parseFloat(data[4]);
 
                         pool.maxErc20In =
-                            parseFloat(data[13]) * parseFloat(data[11]);
-                        pool.maxSyxIn =
-                            parseFloat(data[13]) * parseFloat(data[12]);
-                        pool.maxErc20Out =
-                            parseFloat(data[14]) * parseFloat(data[11]);
-                        pool.maxSyxOut =
                             parseFloat(data[14]) * parseFloat(data[12]);
+                        pool.maxSyxIn =
+                            parseFloat(data[14]) * parseFloat(data[13]);
+                        pool.maxErc20Out =
+                            parseFloat(data[15]) * parseFloat(data[12]);
+                        pool.maxSyxOut =
+                            parseFloat(data[15]) * parseFloat(data[13]);
                         callback(null, pool);
                     }
                 );
@@ -570,20 +579,27 @@ class Store {
             let rate = await erc20Contract.methods
                 .syxPerBlock()
                 .call({from: account.address});
+
+            callback(null, this.toStringDecimals(rate, 18));
+        } catch (ex) {
+            return callback(ex);
+        }
+    };
+
+    _getAllocPoint = async (web3, asset, account, callback) => {
+        let erc20Contract = new web3.eth.Contract(
+            asset.poolABI,
+            asset.poolAddress
+        );
+        try {
             let totalAllocPoint = await erc20Contract.methods
                 .totalAllocPoint()
                 .call({from: account.address});
             let poolInfo = await erc20Contract.methods
-                .poolInfo(0)
+                .poolInfo(asset.index)
                 .call({from: account.address});
 
-            callback(
-                null,
-                this.toStringDecimals(
-                    (rate * poolInfo.allocPoint) / totalAllocPoint,
-                    18
-                )
-            );
+            callback(null, poolInfo.allocPoint / totalAllocPoint);
         } catch (ex) {
             return callback(ex);
         }

@@ -59,6 +59,7 @@ const zh_CN = {
     HOLD: "持有",
     TOTAL_STAKE_AFTER_DEPOSIT: "存入后总金额",
     TRADE_ERROR_BALANCE: "可用余额不足",
-    SEE_DETAIL: "查看详情"
+    SEE_DETAIL: "查看详情",
+    REWARD_DISTRIBUTION_RATIO: "奖励分配比例"
 };
 export default zh_CN;
