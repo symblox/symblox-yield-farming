@@ -8,7 +8,7 @@ const zh_CN = {
     LP_SYX_PRICE: "SYX 价格",
     LP_MY_SHARE: "我的份额",
     LP_DEPOSIT: "存入",
-    LP_WITHDRAW: "兑现",
+    LP_WITHDRAW: "兑现并提取奖励",
     LP_SWAP: "交易",
     RP_LIST_TITLE: "奖励池",
     RP_TYPE: "名称",
@@ -64,6 +64,7 @@ const zh_CN = {
     TRADE_ERROR_BALANCE: "可用余额不足",
     SEE_DETAIL: "查看详情",
     REWARD_DISTRIBUTION_RATIO: "奖励分配比例",
-    NETWORK_ERROR: "网络错误，请切换到VLX网络"
+    NETWORK_ERROR: "网络错误，请切换到VLX网络",
+    POPUP_WITHDRAW_RESULT: "取出 {amount} {tokenName} + 奖励 {rewardAmount} SYX"
 };
 export default zh_CN;

@@ -8,7 +8,7 @@ const en_US = {
     LP_SYX_PRICE: "SYX Price",
     LP_MY_SHARE: "My Share",
     LP_DEPOSIT: "Add Liquidity",
-    LP_WITHDRAW: "Remove Liquidity",
+    LP_WITHDRAW: "Remove liquidity and withdraw rewards",
     LP_SWAP: "Swap",
     RP_LIST_TITLE: "Reward Pools",
     RP_TYPE: "Name",
@@ -65,6 +65,8 @@ const en_US = {
     TRADE_ERROR_BALANCE: "Available balance not enough",
     SEE_DETAIL: "See detail",
     REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio",
-    NETWORK_ERROR: "Network error, please switch to VLX network"
+    NETWORK_ERROR: "Network error, please switch to VLX network",
+    POPUP_WITHDRAW_RESULT:
+        "Withdraw {amount} {tokenName} + reward {rewardAmount} SYX"
 };
 export default en_US;

@@ -71,7 +71,7 @@ const styles = theme => ({
     },
     button: {
         background:
-            "linear-gradient(135deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)",
+            "linear-gradient(135deg, #42D9FE 0%, #2872FA 100%, #42D9FE)",
         borderRadius: "26px",
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
@@ -79,11 +79,11 @@ const styles = theme => ({
         fontSize: "20px",
         lineHeight: "34px",
         color: "#FFFFFF",
-        height: "60px",
+        height: "50px",
         margin: "16px 0px 32px 0px",
         "&:hover": {
             background:
-                "linear-gradient(315deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)"
+                "linear-gradient(315deg, #4DB5FF 0%, #57E2FF 100%, #4DB5FF)"
         },
         "&.Mui-disabled": {
             background:
@@ -93,7 +93,7 @@ const styles = theme => ({
     },
     buttonSecondary: {
         background:
-            "linear-gradient(135deg, #41587A 0%, #0B2243 93.26%, #41587A)",
+            "linear-gradient(135deg, #FF3A33 0%, #FC06C6 100%, #FF3A33)",
         borderRadius: "26px",
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
@@ -101,7 +101,7 @@ const styles = theme => ({
         fontSize: "20px",
         lineHeight: "34px",
         color: "#FFFFFF",
-        height: "60px",
+        height: "50px",
         margin: "16px 0px 32px 0px",
         "&:hover": {
             background:
@@ -604,20 +604,37 @@ class WithdrawRewardsModal extends Component {
                         </>
                     )}
                 </DialogContent>
-                <DialogActions>
-                    {this.state.curTab === 1 ? (
+
+                {this.state.curTab === 1 ? (
+                    <>
+                        <div style={{marginLeft: "16px"}}>
+                            <FormattedMessage
+                                id="POPUP_WITHDRAW_RESULT"
+                                values={{
+                                    amount: this.state.amount,
+                                    tokenName: this.state.token,
+                                    rewardAmount: parseFloat(
+                                        this.state.pool.rewardsAvailable
+                                    ).toFixed(4)
+                                }}
+                            />
+                        </div>
+                        <DialogActions>
+                            <Button
+                                className={classes.button}
+                                disabled={loading}
+                                autoFocus
+                                onClick={this.confirm}
+                                fullWidth={true}
+                            >
+                                <FormattedMessage id="LP_WITHDRAW" />
+                            </Button>
+                        </DialogActions>
+                    </>
+                ) : (
+                    <DialogActions>
                         <Button
                             className={classes.buttonSecondary}
-                            disabled={loading}
-                            autoFocus
-                            onClick={this.confirm}
-                            fullWidth={true}
-                        >
-                            <FormattedMessage id="LP_WITHDRAW" />
-                        </Button>
-                    ) : (
-                        <Button
-                            className={classes.button}
                             disabled={loading}
                             autoFocus
                             onClick={this.onClaim}
@@ -625,8 +642,8 @@ class WithdrawRewardsModal extends Component {
                         >
                             <FormattedMessage id="RP_WITHDRAW_REWARDS" />
                         </Button>
-                    )}
-                </DialogActions>
+                    </DialogActions>
+                )}
             </Dialog>
         );
     }
