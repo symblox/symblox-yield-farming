@@ -21,6 +21,9 @@ const en_US = {
     POPUP_TITLE_DEPOSIT: "Add Liquidity",
     POPUP_TITLE_WITHDRAW: "Remove Liquidity",
     POPUP_WALLET_BALANCE: "Available Balance",
+    POPUP_DEPOSITABLE_AMOUNT: "Depositable amount",
+    POPUP_WITHDRAWABLE_AMOUNT: "Withdrawable amount",
+    POPUP_TRADEABLE_AMOUNT: "Tradeable amount",
     POPUP_INPUT_AMOUNT: "Amount",
     POPUP_INPUT_MAX: "MAX",
     POPUP_INPUT_TOKEN: "Token",
@@ -61,6 +64,7 @@ const en_US = {
     TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
     TRADE_ERROR_BALANCE: "Available balance not enough",
     SEE_DETAIL: "See detail",
-    REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio"
+    REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio",
+    NETWORK_ERROR: "Network error, please switch to VLX network"
 };
 export default en_US;

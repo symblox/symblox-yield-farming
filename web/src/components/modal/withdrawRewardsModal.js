@@ -424,7 +424,7 @@ class WithdrawRewardsModal extends Component {
                             </div>
                             <Typography gutterBottom>
                                 <span style={{color: "#ACAEBC"}}>
-                                    <FormattedMessage id="POPUP_WALLET_BALANCE" />
+                                    <FormattedMessage id="POPUP_WITHDRAWABLE_AMOUNT" />
                                 </span>
                                 <span style={{float: "right"}}>
                                     {this.state.token == "SYX" ? (

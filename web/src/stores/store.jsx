@@ -210,7 +210,6 @@ class Store {
                 store.setStore({keyName: connectorAddress});
             } catch (err) {
                 console.error(err);
-                alert(JSON.stringify(err));
             }
         }
         console.log("pool: ", id, " connectorAddress: ", connectorAddress);

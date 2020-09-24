@@ -416,7 +416,7 @@ class TransactionModal extends Component {
                                     alt=""
                                 />
                             )}
-                            <FormattedMessage id="POPUP_WALLET_BALANCE" />
+                            <FormattedMessage id="POPUP_TRADEABLE_AMOUNT" />
                             {": "}
                             {this.state.token == data.tokens[0]
                                 ? parseFloat(data.maxSyxIn) >
@@ -519,7 +519,7 @@ class TransactionModal extends Component {
                                     alt=""
                                 />
                             )}
-                            <FormattedMessage id="POPUP_WALLET_BALANCE" />
+                            <FormattedMessage id="POPUP_TRADEABLE_AMOUNT" />
                             {": "}
                             {this.state.token == data.tokens[1]
                                 ? parseFloat(data.maxSyxIn) >

@@ -21,6 +21,9 @@ const zh_CN = {
     POPUP_TITLE_DEPOSIT: "存入交易池",
     POPUP_TITLE_WITHDRAW: "取出交易池",
     POPUP_WALLET_BALANCE: "可用余额",
+    POPUP_DEPOSITABLE_AMOUNT: "可存入金额",
+    POPUP_WITHDRAWABLE_AMOUNT: "可取出金额",
+    POPUP_TRADEABLE_AMOUNT: "可交易金额",
     POPUP_INPUT_AMOUNT: "金额",
     POPUP_INPUT_MAX: "全部",
     POPUP_INPUT_TOKEN: "选择代币",
@@ -60,6 +63,7 @@ const zh_CN = {
     TOTAL_STAKE_AFTER_DEPOSIT: "存入后总金额",
     TRADE_ERROR_BALANCE: "可用余额不足",
     SEE_DETAIL: "查看详情",
-    REWARD_DISTRIBUTION_RATIO: "奖励分配比例"
+    REWARD_DISTRIBUTION_RATIO: "奖励分配比例",
+    NETWORK_ERROR: "网络错误，请切换到VLX网络"
 };
 export default zh_CN;

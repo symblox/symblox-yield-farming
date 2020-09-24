@@ -298,7 +298,7 @@ class DepositModal extends Component {
                     )}
                     <Typography gutterBottom>
                         <span style={{color: "#ACAEBC"}}>
-                            <FormattedMessage id="POPUP_WALLET_BALANCE" />
+                            <FormattedMessage id="POPUP_DEPOSITABLE_AMOUNT" />
                             {": "}
                         </span>
                         <span style={{float: "right"}}>

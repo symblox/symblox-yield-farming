@@ -14,7 +14,9 @@ import {
     CardActions,
     CardContent
 } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import {FormattedMessage} from "react-intl";
+import config from "../../config";
 import Snackbar from "../snackbar";
 import Header from "../header";
 import Footer from "../footer";
@@ -283,6 +285,7 @@ class Home extends Component {
         emitter.on(TRADE_RETURNED, this.showHash);
         emitter.on(GET_REWARDS_RETURNED, this.showHash);
         emitter.on(TX_CONFIRM, this.closeAllModal);
+        const that = this;
         injected.isAuthorized().then(isAuthorized => {
             if (isAuthorized) {
                 injected
@@ -292,8 +295,11 @@ class Home extends Component {
                             account: {address: a.account},
                             web3context: {library: {provider: a.provider}}
                         });
+                        console.log(a.provider.networkVersion);
+                        that.setState({
+                            networkId: a.provider.networkVersion
+                        });
                         emitter.emit(CONNECTION_CONNECTED);
-                        console.log(a);
                     })
                     .catch(e => {
                         console.log(e);
@@ -305,10 +311,14 @@ class Home extends Component {
         // metamask networkChange
         if (window.ethereum && window.ethereum.on) {
             window.ethereum.autoRefreshOnNetworkChange = false;
+            const that = this;
             window.ethereum.on("chainChanged", _chainId => {
                 console.log("networkId: ", _chainId);
                 if (window.sessionStorage.getItem("chainId") !== _chainId) {
                     window.sessionStorage.setItem("chainId", _chainId);
+                    that.setState({
+                        networkId: _chainId
+                    });
                     window.location.reload();
                 }
             });
@@ -430,6 +440,14 @@ class Home extends Component {
 
         return (
             <div>
+                {this.state.networkId &&
+                this.state.networkId != config.requiredNetworkId ? (
+                    <Alert severity="error">
+                        <FormattedMessage id="NETWORK_ERROR" />
+                    </Alert>
+                ) : (
+                    <></>
+                )}
                 <Header
                     show={true}
                     address={address}
