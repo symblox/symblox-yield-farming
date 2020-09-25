@@ -36,7 +36,7 @@ export default class App extends React.Component {
                         container
                         spacing={3}
                         style={{
-                            width: "160px",
+                            width: "200px",
                             marginRight: "10px",
                             float: "right",
                             fontStyle: "normal",
@@ -49,30 +49,44 @@ export default class App extends React.Component {
                             marginTop: "68px"
                         }}
                     >
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
                             <a href="https://twitter.com/symbloxdefi">
                                 <img
                                     src={"/twitter.svg"}
-                                    alt="logo"
+                                    alt="twitter"
                                     style={{height: "39px"}}
                                 />
                             </a>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
                             <a href="https://t.me/symblox">
                                 <img
                                     src={"/terims.svg"}
-                                    alt="logo"
+                                    alt="terims"
                                     style={{height: "39px"}}
                                 />
                             </a>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
                             <a href="https://medium.com/@symbloxsyx">
                                 <img
                                     src={"/media.svg"}
-                                    alt="logo"
+                                    alt="media"
                                     style={{height: "39px"}}
+                                />
+                            </a>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <a href="https://github.com/symblox/symblox-yield-farming">
+                                <img
+                                    src={"/github.svg"}
+                                    alt="github"
+                                    style={{
+                                        background: "#49475F",
+                                        borderRadius: "50%",
+                                        padding: "6px",
+                                        height: "39px"
+                                    }}
                                 />
                             </a>
                         </Grid>
