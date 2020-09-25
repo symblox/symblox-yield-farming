@@ -8,6 +8,7 @@ const en_US = {
     LP_SYX_PRICE: "SYX Price",
     LP_MY_SHARE: "My Share",
     LP_DEPOSIT: "Add Liquidity",
+    LP_DEPOSIT_WITHDRAW_REWARD: "Add Liquidity and withdraw rewards",
     LP_WITHDRAW: "Remove liquidity and withdraw rewards",
     LP_SWAP: "Swap",
     RP_LIST_TITLE: "Reward Pools",

@@ -432,7 +432,7 @@ class DepositModal extends Component {
                         className={classes.button}
                         fullWidth={true}
                     >
-                        <FormattedMessage id="LP_DEPOSIT" />
+                        <FormattedMessage id="LP_DEPOSIT_WITHDRAW_REWARD" />
                     </Button>
                 </DialogActions>
             </Dialog>

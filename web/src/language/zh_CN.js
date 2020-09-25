@@ -8,6 +8,7 @@ const zh_CN = {
     LP_SYX_PRICE: "SYX 价格",
     LP_MY_SHARE: "我的份额",
     LP_DEPOSIT: "存入",
+    LP_DEPOSIT_WITHDRAW_REWARD: "存入并提取奖励",
     LP_WITHDRAW: "兑现并提取奖励",
     LP_SWAP: "交易",
     RP_LIST_TITLE: "奖励池",
