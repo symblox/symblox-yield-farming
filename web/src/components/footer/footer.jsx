@@ -50,7 +50,10 @@ export default class App extends React.Component {
                         }}
                     >
                         <Grid item xs={3}>
-                            <a href="https://twitter.com/symbloxdefi">
+                            <a
+                                href="https://twitter.com/symbloxdefi"
+                                target="_blank"
+                            >
                                 <img
                                     src={"/twitter.svg"}
                                     alt="twitter"
@@ -59,7 +62,7 @@ export default class App extends React.Component {
                             </a>
                         </Grid>
                         <Grid item xs={3}>
-                            <a href="https://t.me/symblox">
+                            <a href="https://t.me/symblox" target="_blank">
                                 <img
                                     src={"/terims.svg"}
                                     alt="terims"
@@ -68,7 +71,10 @@ export default class App extends React.Component {
                             </a>
                         </Grid>
                         <Grid item xs={3}>
-                            <a href="https://medium.com/@symbloxsyx">
+                            <a
+                                href="https://medium.com/@symbloxsyx"
+                                target="_blank"
+                            >
                                 <img
                                     src={"/media.svg"}
                                     alt="media"
@@ -77,7 +83,10 @@ export default class App extends React.Component {
                             </a>
                         </Grid>
                         <Grid item xs={3}>
-                            <a href="https://github.com/symblox/symblox-yield-farming">
+                            <a
+                                href="https://github.com/symblox/symblox-yield-farming"
+                                target="_blank"
+                            >
                                 <img
                                     src={"/github.svg"}
                                     alt="github"
