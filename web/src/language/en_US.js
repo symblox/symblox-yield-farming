@@ -9,7 +9,7 @@ const en_US = {
     LP_MY_SHARE: "My Share",
     LP_DEPOSIT: "Add Liquidity",
     LP_DEPOSIT_WITHDRAW_REWARD: "Add Liquidity and withdraw rewards",
-    LP_WITHDRAW: "Remove liquidity and withdraw rewards",
+    LP_WITHDRAW: "Confirm",
     LP_SWAP: "Swap",
     RP_LIST_TITLE: "Reward Pools",
     RP_TYPE: "Name",
@@ -56,10 +56,10 @@ const en_US = {
     WITHDRAW_REWARDS_TIP:
         "Please find the reward token SYX in the wallet after claimed",
     UNIT_PRICE: "Unit Price",
-    HOME_TITLE: "A building block for Open Finance",
+    HOME_TITLE: "Bringing real-world assets to blockchain",
     HOME_SUBTITLE:
-        "Symblox is an open derivatives issuance and trading protocol",
-    JOIN: "Join reward pool",
+        "Symblox is a decentralized synthetic asset issuance and trading protocol",
+    JOIN: "Join",
     TOTAL_SUPPLY: "Total supply",
     HOLD: "hold",
     TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
@@ -68,9 +68,9 @@ const en_US = {
     REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio",
     NETWORK_ERROR:
         "Current newtwork is not supported, please switch to VELAS mainnet (RPC URL: https://explorer.velas.com/rpc)",
-    POPUP_WITHDRAW_AMOUNT: "Withdraw amount",
-    POPUP_WITHDRAW_REWARD: "Withdraw reward",
+    POPUP_WITHDRAW_AMOUNT: "Amount to withdraw",
+    POPUP_WITHDRAW_REWARD: "Rewards to claim",
     RISK_WARNING:
-        "WARNING: THIS CONTRACT IS NOT AUDITED. DO NOT USE THIS WEBSITE UNLESS YOU HAVE REVIEWED THE CONTRACTS"
+        "This contract is under auditing. PLEASE REVIEW THE CONTRACT BEFORE PROCEEDING."
 };
 export default en_US;
