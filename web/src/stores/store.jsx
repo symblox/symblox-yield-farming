@@ -1280,6 +1280,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1327,6 +1328,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {

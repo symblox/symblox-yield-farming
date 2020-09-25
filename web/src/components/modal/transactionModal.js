@@ -348,6 +348,11 @@ class TransactionModal extends Component {
     };
 
     confirm = () => {
+        if (
+            parseFloat(this.state.amount) === 0 ||
+            isNaN(parseFloat(this.state.amount))
+        )
+            return;
         this.props.showLoading();
         dispatcher.dispatch({
             type: TRADE,

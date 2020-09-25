@@ -114,6 +114,22 @@ const styles = theme => ({
             lineHeight: "23px",
             color: "#ACAEBC"
         }
+    },
+    text: {
+        fontStyle: "normal",
+        fontWeight: "300",
+        fontSize: "18px",
+        lineHeight: "25px",
+        color: "#ACAEBC"
+    },
+    rightText: {
+        float: "right",
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "18px",
+        lineHeight: "22px",
+        textAlign: "right",
+        color: "#4E5B70"
     }
 });
 
@@ -224,6 +240,11 @@ class DepositModal extends Component {
     };
 
     confirm = () => {
+        if (
+            parseFloat(this.state.amount) === 0 ||
+            isNaN(parseFloat(this.state.amount))
+        )
+            return;
         this.props.showLoading();
         dispatcher.dispatch({
             type: DEPOSIT,
@@ -302,20 +323,6 @@ class DepositModal extends Component {
                             {": "}
                         </span>
                         <span style={{float: "right"}}>
-                            {token == "SYX" ? (
-                                <img
-                                    className={classes.icon}
-                                    src={"/SYX.png"}
-                                    alt=""
-                                />
-                            ) : (
-                                <img
-                                    className={classes.icon}
-                                    src={"/" + this.state.pool.name + ".png"}
-                                    alt=""
-                                />
-                            )}
-
                             {pool.type == "seed"
                                 ? parseFloat(pool.erc20Balance).toFixed(4) +
                                   pool.symbol
@@ -382,24 +389,11 @@ class DepositModal extends Component {
                         </FormControl>
                     </div>
                     <Typography gutterBottom>
-                        <span style={{color: "#ACAEBC"}}>
+                        <span className={classes.text}>
                             <FormattedMessage id="TOTAL_STAKE_AFTER_DEPOSIT" />
                             {": "}
                         </span>
-                        <span style={{float: "right"}}>
-                            {token == "SYX" ? (
-                                <img
-                                    className={classes.icon}
-                                    src={"/SYX.png"}
-                                    alt=""
-                                />
-                            ) : (
-                                <img
-                                    className={classes.icon}
-                                    src={"/" + this.state.pool.name + ".png"}
-                                    alt=""
-                                />
-                            )}
+                        <span className={classes.rightText}>
                             {pool.type == "seed"
                                 ? (
                                       parseFloat(pool.stakeAmount) +
@@ -419,6 +413,14 @@ class DepositModal extends Component {
                                   ).toFixed(4) +
                                   " " +
                                   pool.name}
+                        </span>
+                    </Typography>
+                    <Typography gutterBottom>
+                        <span className={classes.text}>
+                            <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
+                        </span>
+                        <span className={classes.rightText}>
+                            {parseFloat(pool.rewardsAvailable).toFixed(4)} SYX
                         </span>
                     </Typography>
                 </DialogContent>

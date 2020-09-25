@@ -311,6 +311,12 @@ class WithdrawRewardsModal extends Component {
     };
 
     confirm = () => {
+        if (
+            parseFloat(this.state.amount) === 0 ||
+            isNaN(parseFloat(this.state.amount))
+        )
+            return;
+        this.props.showLoading();
         let amount;
         if (this.state.pool.type === "seed") {
             amount = this.formatNumber(
