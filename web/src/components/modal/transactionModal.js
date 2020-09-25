@@ -50,7 +50,7 @@ const styles = theme => ({
         lineHeight: "34px",
         color: "#FFFFFF",
         minWidth: "115px",
-        height: "60px",
+        height: "50px",
         margin: "16px 8px 32px 8px",
         "&:hover": {
             background:
@@ -90,7 +90,7 @@ const styles = theme => ({
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: "300",
-        fontSize: "18px",
+        fontSize: "16px",
         lineHeight: "25px",
         color: "#ACAEBC"
     },
@@ -99,7 +99,7 @@ const styles = theme => ({
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
-        fontSize: "18px",
+        fontSize: "16px",
         lineHeight: "22px",
         textAlign: "right",
         color: "#4E5B70"

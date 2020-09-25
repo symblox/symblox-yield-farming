@@ -80,7 +80,7 @@ const styles = theme => ({
         lineHeight: "34px",
         color: "#FFFFFF",
         height: "50px",
-        margin: "16px 0px 32px 0px",
+        margin: "16px 8px 32px 8px",
         "&:hover": {
             background:
                 "linear-gradient(315deg, #4DB5FF 0%, #57E2FF 100%, #4DB5FF)"
@@ -102,7 +102,7 @@ const styles = theme => ({
         lineHeight: "34px",
         color: "#FFFFFF",
         height: "50px",
-        margin: "16px 0px 32px 0px",
+        margin: "16px 8px 32px 8px",
         "&:hover": {
             background:
                 "linear-gradient(315deg, #FF78E1 0%, #FF736E 100%, #FF78E1)"
@@ -147,7 +147,7 @@ const styles = theme => ({
     text: {
         fontStyle: "normal",
         fontWeight: "300",
-        fontSize: "18px",
+        fontSize: "16px",
         lineHeight: "25px",
         color: "#ACAEBC"
     },
@@ -155,7 +155,7 @@ const styles = theme => ({
         float: "right",
         fontStyle: "normal",
         fontWeight: 500,
-        fontSize: "18px",
+        fontSize: "16px",
         lineHeight: "22px",
         textAlign: "right",
         color: "#4E5B70"

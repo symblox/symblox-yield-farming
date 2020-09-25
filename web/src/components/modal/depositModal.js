@@ -39,10 +39,11 @@ const styles = theme => ({
         // fontFamily: "Noto Sans SC",
         fontStyle: "normal",
         fontWeight: 500,
-        fontSize: "24px",
+        fontSize: "20px",
         lineHeight: "34px",
         color: "#FFFFFF",
         paddingTop: "9px",
+        height: "50px",
         minWidth: "115px",
         margin: "16px 8px 32px 8px",
         "&:hover": {
@@ -118,7 +119,7 @@ const styles = theme => ({
     text: {
         fontStyle: "normal",
         fontWeight: "300",
-        fontSize: "18px",
+        fontSize: "16px",
         lineHeight: "25px",
         color: "#ACAEBC"
     },
@@ -126,7 +127,7 @@ const styles = theme => ({
         float: "right",
         fontStyle: "normal",
         fontWeight: 500,
-        fontSize: "18px",
+        fontSize: "16px",
         lineHeight: "22px",
         textAlign: "right",
         color: "#4E5B70"
