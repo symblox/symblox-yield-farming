@@ -9,7 +9,7 @@ const zh_CN = {
     LP_MY_SHARE: "我的份额",
     LP_DEPOSIT: "存入",
     LP_DEPOSIT_WITHDRAW_REWARD: "存入并提取奖励",
-    LP_WITHDRAW: "兑现并提取奖励",
+    LP_WITHDRAW: "提取奖励并取出",
     LP_SWAP: "交易",
     RP_LIST_TITLE: "奖励池",
     RP_TYPE: "名称",
@@ -33,7 +33,7 @@ const zh_CN = {
     POPUP_ACTION_DEPOSIT: "存入",
     POPUP_ACTION_WITHDRAW: "取出",
     POPUP_TITLE_STAKE: "抵押到奖金池",
-    POPUP_TITLE_UNSTAKE: "取出奖金池",
+    POPUP_TITLE_UNSTAKE: "取出资产",
     POPUP_STAKE_BALANCE: "当前抵押数",
     POPUP_AVAILABLE_STAKE: "可抵押余额",
     POPUP_STAKE_NEW_BALANCE: "新抵押数 (估算)",
@@ -50,13 +50,13 @@ const zh_CN = {
     END_TIME: "结束时间",
     WALLET_BALANCE: "钱包余额",
     INVESTABLE_AMOUNT: "可投资金额",
-    DEPOSIT_INCENTIVE_PLAN: "存入激励计划",
+    DEPOSIT_INCENTIVE_PLAN: "存入奖励池",
     RATIO: "比例",
     ACTION: "操作",
     STAKING_TIP: "将 VLX 存入奖励池即可获得 SYX 收益",
     WITHDRAW_REWARDS_TIP: "取出奖励后，可在钱包内查看已获得的奖励代币 SYX",
     UNIT_PRICE: "单价",
-    HOME_TITLE: "随时随地、人人参与的金融基础设施",
+    HOME_TITLE: "连接现实资产到区块链的桥梁",
     HOME_SUBTITLE: "Symblox是一个区块链合成资产发行和交易协议",
     JOIN: "加入奖励池",
     TOTAL_SUPPLY: "总量",
@@ -67,9 +67,9 @@ const zh_CN = {
     REWARD_DISTRIBUTION_RATIO: "奖励分配比例",
     NETWORK_ERROR:
         "当前网络不支持，请切换到 VELAS 主网使用（可在钱包设置网络节点RPC地址为：https://explorer.velas.com/rpc)",
-    POPUP_WITHDRAW_AMOUNT: "取出金额",
+    POPUP_WITHDRAW_AMOUNT: "取出抵押资产",
     POPUP_WITHDRAW_REWARD: "取出奖励",
     RISK_WARNING:
-        "风险提示：项目合约未经审计，请在使用之前查看合约的具体内容并了解需要自行承担的风险"
+        "该项目合约正在审计中，请在使用之前查看合约具体内容并了解需要承担的风险"
 };
 export default zh_CN;
