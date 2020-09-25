@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withRouter, Link} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import {withStyles} from "@material-ui/core/styles";
 import {
     Button,
@@ -26,6 +26,7 @@ import UnlockModal from "../unlock/unlockModal";
 import DepositModal from "../modal/depositModal";
 import TransactionModal from "../modal/transactionModal";
 import WithdrawRewardsModal from "../modal/withdrawRewardsModal";
+import NetworkErrModal from "../modal/networkErrModal";
 
 import Loader from "../loader";
 import Store from "../../stores";
@@ -256,6 +257,12 @@ const styles = theme => ({
         fontSize: "18px",
         color: "#C0C1CE",
         position: "relative"
+    },
+    customAlert: {
+        "& .MuiAlert-message": {
+            width: "100%",
+            textAlign: "center"
+        }
     }
 });
 
@@ -271,7 +278,8 @@ class Home extends Component {
             modalOpen: false,
             depositModalOpen: false,
             withdrawRewardsModalOpen: false,
-            transactionModalOpen: false
+            transactionModalOpen: false,
+            showAlert: true
         };
     }
 
@@ -440,14 +448,18 @@ class Home extends Component {
 
         return (
             <div>
-                {this.state.networkId &&
-                this.state.networkId != config.requiredNetworkId ? (
-                    <Alert severity="error">
-                        <FormattedMessage id="NETWORK_ERROR" />
+                {this.state.showAlert ? (
+                    <Alert
+                        severity="warning"
+                        onClose={() => this.setState({showAlert: false})}
+                        className={classes.customAlert}
+                    >
+                        <FormattedMessage id="RISK_WARNING" />
                     </Alert>
                 ) : (
                     <></>
                 )}
+
                 <Header
                     show={true}
                     address={address}
@@ -560,22 +572,40 @@ class Home extends Component {
                                                 {rewardApr ? rewardApr : "-"}
                                                 <span> %</span>
                                             </Typography>
-                                            <Button
-                                                className={classes.button}
-                                                style={{marginTop: "9px"}}
-                                                variant="contained"
-                                                disabled={
-                                                    hasJoinedCount == 0 ||
-                                                    loading
-                                                }
-                                                onClick={() =>
-                                                    this.openDepositModal(
-                                                        rewardPools
-                                                    )
-                                                }
-                                            >
-                                                <FormattedMessage id="DEPOSIT_INCENTIVE_PLAN" />
-                                            </Button>
+                                            {hasJoinedCount === 0 ? (
+                                                <Button
+                                                    variant="contained"
+                                                    className={
+                                                        classes.buttonSecondary
+                                                    }
+                                                    style={{marginTop: "9px"}}
+                                                    disabled={loading}
+                                                    onClick={() =>
+                                                        this.createEntryContract(
+                                                            rewardPools[0]
+                                                        )
+                                                    }
+                                                >
+                                                    <FormattedMessage id="JOIN" />
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    className={classes.button}
+                                                    style={{marginTop: "9px"}}
+                                                    variant="contained"
+                                                    disabled={
+                                                        hasJoinedCount == 0 ||
+                                                        loading
+                                                    }
+                                                    onClick={() =>
+                                                        this.openDepositModal(
+                                                            rewardPools
+                                                        )
+                                                    }
+                                                >
+                                                    <FormattedMessage id="DEPOSIT_INCENTIVE_PLAN" />
+                                                </Button>
+                                            )}
 
                                             <Typography
                                                 className={classes.paperTip}
@@ -1123,7 +1153,9 @@ class Home extends Component {
                     this.renderWithdrawRewardsModal(this.state.pools)}
                 {transactionModalOpen &&
                     this.renderTransactionModal(this.state.tradeData)}
-
+                {this.state.networkId &&
+                    this.state.networkId != config.requiredNetworkId &&
+                    this.renderNetworkErrModal()}
                 {snackbarMessage && this.renderSnackbar()}
 
                 {loading && <Loader />}
@@ -1285,6 +1317,10 @@ class Home extends Component {
                 modalOpen={this.state.transactionModalOpen}
             />
         );
+    };
+
+    renderNetworkErrModal = () => {
+        return <NetworkErrModal />;
     };
 }
 

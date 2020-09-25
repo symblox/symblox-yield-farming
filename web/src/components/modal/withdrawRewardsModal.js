@@ -143,6 +143,22 @@ const styles = theme => ({
     },
     message: {
         lineHeight: "44px"
+    },
+    text: {
+        fontStyle: "normal",
+        fontWeight: "300",
+        fontSize: "18px",
+        lineHeight: "25px",
+        color: "#ACAEBC"
+    },
+    rightText: {
+        float: "right",
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "18px",
+        lineHeight: "22px",
+        textAlign: "right",
+        color: "#4E5B70"
     }
 });
 
@@ -549,10 +565,39 @@ class WithdrawRewardsModal extends Component {
                                     </Select>
                                 </FormControl>
                             </div>
+                            {this.state.curTab === 1 ? (
+                                <>
+                                    <Typography gutterBottom>
+                                        <span className={classes.text}>
+                                            <FormattedMessage id="POPUP_WITHDRAW_AMOUNT" />
+                                        </span>
+                                        <span className={classes.rightText}>
+                                            {this.state.amount || "0"}{" "}
+                                            {this.state.token}
+                                        </span>
+                                    </Typography>
+                                    <Typography gutterBottom>
+                                        <span className={classes.text}>
+                                            <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
+                                        </span>
+                                        <span className={classes.rightText}>
+                                            {parseFloat(
+                                                this.state.pool.rewardsAvailable
+                                            ).toFixed(4)}{" "}
+                                            SYX
+                                        </span>
+                                    </Typography>
+                                </>
+                            ) : (
+                                <></>
+                            )}
                         </>
                     ) : (
                         <>
-                            <Typography gutterBottom>
+                            <Typography
+                                gutterBottom
+                                style={{marginBottom: "16px"}}
+                            >
                                 <span style={{color: "#ACAEBC"}}>
                                     <FormattedMessage id="WITHDRAWABLE_REWARDS" />
                                     {": "}
@@ -604,35 +649,18 @@ class WithdrawRewardsModal extends Component {
                         </>
                     )}
                 </DialogContent>
-
-                {this.state.curTab === 1 ? (
-                    <>
-                        <div style={{marginLeft: "16px"}}>
-                            <FormattedMessage
-                                id="POPUP_WITHDRAW_RESULT"
-                                values={{
-                                    amount: this.state.amount,
-                                    tokenName: this.state.token,
-                                    rewardAmount: parseFloat(
-                                        this.state.pool.rewardsAvailable
-                                    ).toFixed(4)
-                                }}
-                            />
-                        </div>
-                        <DialogActions>
-                            <Button
-                                className={classes.button}
-                                disabled={loading}
-                                autoFocus
-                                onClick={this.confirm}
-                                fullWidth={true}
-                            >
-                                <FormattedMessage id="LP_WITHDRAW" />
-                            </Button>
-                        </DialogActions>
-                    </>
-                ) : (
-                    <DialogActions>
+                <DialogActions>
+                    {this.state.curTab === 1 ? (
+                        <Button
+                            className={classes.button}
+                            disabled={loading}
+                            autoFocus
+                            onClick={this.confirm}
+                            fullWidth={true}
+                        >
+                            <FormattedMessage id="LP_WITHDRAW" />
+                        </Button>
+                    ) : (
                         <Button
                             className={classes.buttonSecondary}
                             disabled={loading}
@@ -642,8 +670,8 @@ class WithdrawRewardsModal extends Component {
                         >
                             <FormattedMessage id="RP_WITHDRAW_REWARDS" />
                         </Button>
-                    </DialogActions>
-                )}
+                    )}
+                </DialogActions>
             </Dialog>
         );
     }

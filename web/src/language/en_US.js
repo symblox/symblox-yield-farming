@@ -58,15 +58,18 @@ const en_US = {
     HOME_TITLE: "A building block for Open Finance",
     HOME_SUBTITLE:
         "Symblox is an open derivatives issuance and trading protocol",
-    JOIN: "Join",
+    JOIN: "Join reward pool",
     TOTAL_SUPPLY: "Total supply",
     HOLD: "hold",
     TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
     TRADE_ERROR_BALANCE: "Available balance not enough",
     SEE_DETAIL: "See detail",
     REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio",
-    NETWORK_ERROR: "Network error, please switch to VLX network",
-    POPUP_WITHDRAW_RESULT:
-        "Withdraw {amount} {tokenName} + reward {rewardAmount} SYX"
+    NETWORK_ERROR:
+        "Current newtwork is not supported, please switch to VELAS mainnet (RPC URL: https://explorer.velas.com/rpc)",
+    POPUP_WITHDRAW_AMOUNT: "Withdraw amount",
+    POPUP_WITHDRAW_REWARD: "Withdraw reward",
+    RISK_WARNING:
+        "WARNING: THIS CONTRACT IS NOT AUDITED. DO NOT USE THIS WEBSITE UNLESS YOU HAVE REVIEWED THE CONTRACTS"
 };
 export default en_US;

@@ -57,14 +57,18 @@ const zh_CN = {
     UNIT_PRICE: "单价",
     HOME_TITLE: "随时随地、人人参与的金融基础设施",
     HOME_SUBTITLE: "Symblox是一个区块链合成资产发行和交易协议",
-    JOIN: "加入",
+    JOIN: "加入奖励池",
     TOTAL_SUPPLY: "总量",
     HOLD: "持有",
     TOTAL_STAKE_AFTER_DEPOSIT: "存入后总金额",
     TRADE_ERROR_BALANCE: "可用余额不足",
     SEE_DETAIL: "查看详情",
     REWARD_DISTRIBUTION_RATIO: "奖励分配比例",
-    NETWORK_ERROR: "网络错误，请切换到VLX网络",
-    POPUP_WITHDRAW_RESULT: "取出 {amount} {tokenName} + 奖励 {rewardAmount} SYX"
+    NETWORK_ERROR:
+        "当前网络不支持，请切换到 VELAS 主网使用（可在钱包设置网络节点RPC地址为：https://explorer.velas.com/rpc)",
+    POPUP_WITHDRAW_AMOUNT: "取出金额",
+    POPUP_WITHDRAW_REWARD: "取出奖励",
+    RISK_WARNING:
+        "风险提示：项目合约未经审计，请在使用之前查看合约的具体内容并了解需要自行承担的风险"
 };
 export default zh_CN;
