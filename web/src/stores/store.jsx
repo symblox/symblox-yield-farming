@@ -234,8 +234,13 @@ class Store {
         const account = store.getStore("account");
         const web3 = await this.getWeb3();
 
-        const currentBlock = await web3.eth.getBlockNumber();
-        store.setStore({currentBlock: currentBlock});
+        try {
+            const currentBlock = await web3.eth.getBlockNumber();
+            store.setStore({currentBlock: currentBlock});
+        } catch (err) {
+            console.log(err);
+            return emitter.emit(ERROR, err);
+        }
 
         async.map(
             pools,
@@ -326,14 +331,6 @@ class Store {
                             this._getWeight(web3, pool, account, callbackInner);
                         },
                         callbackInner => {
-                            this._getPeriodFinish(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        callbackInner => {
                             this._getBptTotalBalance(
                                 web3,
                                 pool,
@@ -383,45 +380,70 @@ class Store {
                         pool.allocPoint = data[7];
                         pool.BPTPrice = data[8];
                         pool.totalSupply = data[9];
-                        let totalBalanceForSyx;
+                        pool.totalBalanceForSyx = 0;
                         if (pool.type === "seed") {
-                            totalBalanceForSyx =
+                            pool.totalBalanceForSyx =
                                 parseFloat(pool.totalSupply) /
                                 parseFloat(pool.price);
                         } else {
-                            totalBalanceForSyx =
-                                parseFloat(data[12]) / parseFloat(pool.price) +
-                                parseFloat(data[13]);
+                            pool.totalBalanceForSyx =
+                                parseFloat(data[11]) / parseFloat(pool.price) +
+                                parseFloat(data[12]);
                         }
 
-                        pool.rewardApr = (totalBalanceForSyx > 0
+                        pool.rewardApr = (pool.totalBalanceForSyx > 0
                             ? ((parseFloat(pool.rewardRate) * blocksPerYear) /
-                                  totalBalanceForSyx) *
+                                  pool.totalBalanceForSyx) *
                               100
                             : 0
                         ).toFixed(1);
 
                         pool.weight = data[10];
-                        pool.periodFinish = moment(data[11] * 1000).format(
-                            "YYYY/MM/DD HH:mm"
-                        );
 
-                        pool.bptVlxBalance = data[12];
-                        pool.bptSyxBalance = data[13];
+                        pool.bptVlxBalance = data[11];
+                        pool.bptSyxBalance = data[12];
 
                         pool.maxErc20In =
-                            parseFloat(data[14]) * parseFloat(data[12]);
+                            parseFloat(data[13]) * parseFloat(data[11]);
                         pool.maxSyxIn =
-                            parseFloat(data[14]) * parseFloat(data[13]);
+                            parseFloat(data[13]) * parseFloat(data[12]);
                         pool.maxErc20Out =
-                            parseFloat(data[15]) * parseFloat(data[12]);
+                            parseFloat(data[14]) * parseFloat(data[11]);
                         pool.maxSyxOut =
-                            parseFloat(data[15]) * parseFloat(data[13]);
+                            parseFloat(data[14]) * parseFloat(data[12]);
                         callback(null, pool);
                     }
                 );
             },
             (err, poolData) => {
+                console.log({poolData});
+                //If there is a transaction pool corresponding to the seed pool, replace the price of the seed pool with the price of the transaction pool and update the rewardApr
+                if (Array.isArray(poolData)) {
+                    for (let i = 0; i < poolData.length; i++) {
+                        if (poolData[i].type === "seed") {
+                            for (let j = 0; j < poolData.length; j++) {
+                                if (
+                                    poolData[j].type !== "seed" &&
+                                    poolData[i].name === poolData[j].name
+                                ) {
+                                    poolData[i].price = poolData[j].price;
+                                    poolData[i].totalBalanceForSyx =
+                                        parseFloat(poolData[i].totalSupply) /
+                                        parseFloat(poolData[i].price);
+                                    poolData[i].rewardApr = (poolData[i]
+                                        .totalBalanceForSyx > 0
+                                        ? ((parseFloat(poolData[i].rewardRate) *
+                                              blocksPerYear) /
+                                              poolData[i].totalBalanceForSyx) *
+                                          100
+                                        : 0
+                                    ).toFixed(1);
+                                }
+                            }
+                        }
+                    }
+                }
+                console.log({poolData});
                 if (err) {
                     console.log(err);
                     return emitter.emit(ERROR, err);
@@ -843,22 +865,22 @@ class Store {
         }
     };
 
-    _getPeriodFinish = async (web3, asset, account, callback) => {
-        let contract = new web3.eth.Contract(asset.poolABI, asset.poolAddress);
-        try {
-            const curBlockNumber = await web3.eth.getBlockNumber();
-            const res = await contract.methods.bonusEndBlock().call();
-            const diff = res - curBlockNumber;
-            if (diff > 0) {
-                callback(null, moment().unix() + diff * config.secPerBlock);
-            } else {
-                const pastBlock = await web3.eth.getBlock(res);
-                callback(null, pastBlock.timestamp);
-            }
-        } catch (ex) {
-            return callback(ex);
-        }
-    };
+    // _getPeriodFinish = async (web3, asset, account, callback) => {
+    //     let contract = new web3.eth.Contract(asset.poolABI, asset.poolAddress);
+    //     try {
+    //         const curBlockNumber = await web3.eth.getBlockNumber();
+    //         const res = await contract.methods.bonusEndBlock().call();
+    //         const diff = res - curBlockNumber;
+    //         if (diff > 0) {
+    //             callback(null, moment().unix() + diff * config.secPerBlock);
+    //         } else {
+    //             const pastBlock = await web3.eth.getBlock(res);
+    //             callback(null, pastBlock.timestamp);
+    //         }
+    //     } catch (ex) {
+    //         return callback(ex);
+    //     }
+    // };
 
     _getBptTotalBalance = async (web3, asset, token, account, callback) => {
         if (asset.type === "seed") {
