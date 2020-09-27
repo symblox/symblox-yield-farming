@@ -422,14 +422,22 @@ class Home extends Component {
         }
 
         let rewardApr = 0,
-            rewardsAvailable = 0;
+            rewardsAvailable = 0,
+            totalStakeAmount = 0;
         if (this.state.pools) {
             this.state.pools.map(pool => {
-                rewardApr += parseFloat(pool.rewardApr);
+                const toSyxAmount =
+                    (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
+                    parseFloat(pool.price);
+                rewardApr += parseFloat(pool.rewardApr) * toSyxAmount;
                 rewardsAvailable += parseFloat(pool.rewardsAvailable);
+                totalStakeAmount += toSyxAmount;
             });
 
-            rewardApr = (rewardApr / this.state.pools.length).toFixed(1);
+            rewardApr =
+                totalStakeAmount > 0
+                    ? (rewardApr / totalStakeAmount).toFixed(1)
+                    : "0.0";
             rewardsAvailable = rewardsAvailable.toFixed(4);
         }
 

@@ -416,7 +416,6 @@ class Store {
                 );
             },
             (err, poolData) => {
-                console.log({poolData});
                 //If there is a transaction pool corresponding to the seed pool, replace the price of the seed pool with the price of the transaction pool and update the rewardApr
                 if (Array.isArray(poolData)) {
                     for (let i = 0; i < poolData.length; i++) {
@@ -443,7 +442,6 @@ class Store {
                         }
                     }
                 }
-                console.log({poolData});
                 if (err) {
                     console.log(err);
                     return emitter.emit(ERROR, err);
@@ -793,7 +791,8 @@ class Store {
 
     _getStakeTokenPrice = async (web3, asset, account, callback) => {
         if (asset.type === "seed") {
-            callback(null, "0");
+            //The token deposited in the seed pool is the token pledged to the reward pool, so the price is 1
+            callback(null, "1");
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
