@@ -35,6 +35,61 @@ export default class App extends React.Component {
                                 style={{height: "22px", marginTop: "4px"}}
                             />
                         </a>
+
+                        <div
+                            className={"header__menu"}
+                            style={{
+                                maginTop: "3px",
+                                float: "right"
+                            }}
+                        >
+                            {this.props.address && this.props.show && (
+                                <a className={"header__menu_wallet_sm"}>
+                                    <div
+                                        onClick={() =>
+                                            this.props.overlayClicked &&
+                                            this.props.overlayClicked()
+                                        }
+                                    >
+                                        {/* <img
+                                            src={icon_user}
+                                            alt=""
+                                            style={{
+                                                width: "16px",
+                                                height: "16px",
+                                                marginRight: "5px"
+                                            }}
+                                        /> */}
+                                        {this.props.address}
+                                    </div>
+                                </a>
+                            )}
+                            {!this.props.address && this.props.show && (
+                                <a
+                                    className={"header__menu_wallet_sm"}
+                                    onClick={() =>
+                                        this.props.overlayClicked &&
+                                        this.props.overlayClicked()
+                                    }
+                                >
+                                    <FormattedMessage id="LABEL_CONNECT_WALLET" />
+                                </a>
+                            )}
+                            <Select
+                                className={"header__menu_wallet_sm"}
+                                value={this.props.cur_language}
+                                onChange={this.props.setLanguage.bind(this)}
+                                label="Lanage"
+                                style={{width: "60px", paddingRight: 0}}
+                                inputProps={{
+                                    name: "lanage",
+                                    id: "outlined-token"
+                                }}
+                            >
+                                <option value={"中文"}>{"中文"}</option>
+                                <option value={"EN"}>{"EN"}</option>
+                            </Select>
+                        </div>
                     </Hidden>
                     <Hidden xsDown>
                         <a
@@ -48,62 +103,62 @@ export default class App extends React.Component {
                                 style={{height: "39px"}}
                             />
                         </a>
-                    </Hidden>
 
-                    <div
-                        className={"header__menu"}
-                        style={{
-                            maginTop: "3px",
-                            float: "right"
-                        }}
-                    >
-                        {this.props.address && this.props.show && (
-                            <a className={"header__menu_wallet"}>
-                                <div
+                        <div
+                            className={"header__menu"}
+                            style={{
+                                maginTop: "3px",
+                                float: "right"
+                            }}
+                        >
+                            {this.props.address && this.props.show && (
+                                <a className={"header__menu_wallet"}>
+                                    <div
+                                        onClick={() =>
+                                            this.props.overlayClicked &&
+                                            this.props.overlayClicked()
+                                        }
+                                    >
+                                        <img
+                                            src={icon_user}
+                                            alt=""
+                                            style={{
+                                                width: "16px",
+                                                height: "16px",
+                                                marginRight: "5px"
+                                            }}
+                                        />
+                                        {this.props.address}
+                                    </div>
+                                </a>
+                            )}
+                            {!this.props.address && this.props.show && (
+                                <a
+                                    className={"header__menu_wallet"}
                                     onClick={() =>
                                         this.props.overlayClicked &&
                                         this.props.overlayClicked()
                                     }
                                 >
-                                    <img
-                                        src={icon_user}
-                                        alt=""
-                                        style={{
-                                            width: "16px",
-                                            height: "16px",
-                                            marginRight: "5px"
-                                        }}
-                                    />
-                                    {this.props.address}
-                                </div>
-                            </a>
-                        )}
-                        {!this.props.address && this.props.show && (
-                            <a
+                                    <FormattedMessage id="LABEL_CONNECT_WALLET" />
+                                </a>
+                            )}
+                            <Select
                                 className={"header__menu_wallet"}
-                                onClick={() =>
-                                    this.props.overlayClicked &&
-                                    this.props.overlayClicked()
-                                }
+                                value={this.props.cur_language}
+                                onChange={this.props.setLanguage.bind(this)}
+                                label="Lanage"
+                                style={{width: "60px", paddingRight: 0}}
+                                inputProps={{
+                                    name: "lanage",
+                                    id: "outlined-token"
+                                }}
                             >
-                                <FormattedMessage id="LABEL_CONNECT_WALLET" />
-                            </a>
-                        )}
-                        <Select
-                            className={"header__menu_wallet"}
-                            value={this.props.cur_language}
-                            onChange={this.props.setLanguage.bind(this)}
-                            label="Lanage"
-                            style={{width: "60px", paddingRight: 0}}
-                            inputProps={{
-                                name: "lanage",
-                                id: "outlined-token"
-                            }}
-                        >
-                            <option value={"中文"}>{"中文"}</option>
-                            <option value={"EN"}>{"EN"}</option>
-                        </Select>
-                    </div>
+                                <option value={"中文"}>{"中文"}</option>
+                                <option value={"EN"}>{"EN"}</option>
+                            </Select>
+                        </div>
+                    </Hidden>
                 </Container>
             </IntlProvider>
         );
