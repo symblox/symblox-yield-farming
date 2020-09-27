@@ -292,7 +292,7 @@ class Home extends Component {
         emitter.on(WITHDRAW_RETURNED, this.showHash);
         emitter.on(TRADE_RETURNED, this.showHash);
         emitter.on(GET_REWARDS_RETURNED, this.showHash);
-        emitter.on(TX_CONFIRM, this.closeAllModal);
+        emitter.on(TX_CONFIRM, this.hideLoading);
         const that = this;
         injected.isAuthorized().then(isAuthorized => {
             if (isAuthorized) {
@@ -380,7 +380,7 @@ class Home extends Component {
         emitter.removeListener(TRADE_RETURNED, this.showHash);
         emitter.removeListener(GET_REWARDS_RETURNED, this.showHash);
         emitter.removeListener(ERROR, this.errorReturned);
-        emitter.removeListener(TX_CONFIRM, this.closeAllModal);
+        emitter.removeListener(TX_CONFIRM, this.hideLoading);
     }
 
     connectionConnected = async () => {
@@ -1176,7 +1176,10 @@ class Home extends Component {
     showHash = txHash => {
         this.setState({
             snackbarMessage: null,
-            snackbarType: null
+            snackbarType: null,
+            depositModalOpen: false,
+            withdrawRewardsModalOpen: false,
+            transactionModalOpen: false
         });
         const that = this;
         setTimeout(() => {
@@ -1185,11 +1188,8 @@ class Home extends Component {
         });
     };
 
-    closeAllModal = () => {
+    hideLoading = () => {
         this.setState({
-            depositModalOpen: false,
-            withdrawRewardsModalOpen: false,
-            transactionModalOpen: false,
             loading: false
         });
     };

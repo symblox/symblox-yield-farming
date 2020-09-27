@@ -1050,7 +1050,7 @@ class Store {
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
-                    emitter.emit(TX_CONFIRM);
+
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
@@ -1059,6 +1059,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1134,7 +1135,7 @@ class Store {
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
-                    emitter.emit(TX_CONFIRM);
+
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
@@ -1143,6 +1144,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1236,7 +1238,7 @@ class Store {
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
-                    emitter.emit(TX_CONFIRM);
+
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
@@ -1245,6 +1247,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1287,7 +1290,7 @@ class Store {
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
-                    emitter.emit(TX_CONFIRM);
+
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
@@ -1296,6 +1299,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1335,7 +1339,7 @@ class Store {
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
-                    emitter.emit(TX_CONFIRM);
+
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
@@ -1344,6 +1348,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
@@ -1397,7 +1402,7 @@ class Store {
             })
             .on("transactionHash", function (hash) {
                 console.log(hash);
-                emitter.emit(TX_CONFIRM);
+
                 callback(null, hash);
             })
             .on("confirmation", function (confirmationNumber, receipt) {
@@ -1406,6 +1411,7 @@ class Store {
                         type: GET_BALANCES_PERPETUAL,
                         content: {}
                     });
+                    emitter.emit(TX_CONFIRM);
                 }
             })
             .on("receipt", function (receipt) {
@@ -1464,7 +1470,6 @@ class Store {
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
-                    emitter.emit(TX_CONFIRM);
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
@@ -1473,6 +1478,7 @@ class Store {
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
                         });
+                        emitter.emit(TX_CONFIRM);
                     }
                 })
                 .on("receipt", function (receipt) {
