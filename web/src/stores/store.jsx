@@ -419,9 +419,10 @@ class Store {
                 //If there is a transaction pool corresponding to the seed pool, replace the price of the seed pool with the price of the transaction pool and update the rewardApr
                 if (Array.isArray(poolData)) {
                     for (let i = 0; i < poolData.length; i++) {
-                        if (poolData[i].type === "seed") {
+                        if (poolData[i] && poolData[i].type === "seed") {
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
+                                    poolData[j] &&
                                     poolData[j].type !== "seed" &&
                                     poolData[i].name === poolData[j].name
                                 ) {
