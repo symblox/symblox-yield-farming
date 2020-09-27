@@ -273,8 +273,8 @@ class Home extends Component {
         const rewardPools = store.getStore("rewardPools");
         this.state = {
             rewardPools,
-            loading: !account,
-            account: account,
+            loading: true,
+            account,
             modalOpen: false,
             depositModalOpen: false,
             withdrawRewardsModalOpen: false,
@@ -1225,10 +1225,20 @@ class Home extends Component {
     };
 
     getBalancesReturned = () => {
+        const oldPools = this.state.pools;
         const pools = store.getStore("rewardPools");
-        this.setState({
-            pools
-        });
+        //The loading is hidden when the data is requested for the first time, and will not be hidden later, so as not to affect the loading displayed by the transaction
+        if (!oldPools && pools) {
+            this.setState({
+                loading: false,
+                pools
+            });
+        } else {
+            this.setState({
+                pools
+            });
+        }
+
         window.setTimeout(() => {
             dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
         }, 15000);
