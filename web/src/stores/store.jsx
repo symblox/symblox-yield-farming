@@ -179,18 +179,30 @@ class Store {
         }, 100);
     };
 
+    getWeb3 = async () => {
+        if (
+            store.getStore("web3context") &&
+            store.getStore("web3context").library.provider
+        ) {
+            return new Web3(store.getStore("web3context").library.provider);
+        } else {
+            return new Web3(config.rpcUrl);
+        }
+    };
+
     getEntryContract = async id => {
         const account = store.getStore("account");
         const keyName = "entryContractAddress" + id;
 
         let connectorAddress = store.getStore(keyName);
         if (
-            !connectorAddress ||
-            connectorAddress == "0x0000000000000000000000000000000000000000"
+            (!connectorAddress ||
+                connectorAddress ==
+                    "0x0000000000000000000000000000000000000000") &&
+            account &&
+            account.address
         ) {
-            const web3 = new Web3(
-                store.getStore("web3context").library.provider
-            );
+            const web3 = await this.getWeb3();
 
             const contract = new web3.eth.Contract(
                 config.connectorFactoryABI,
@@ -220,8 +232,7 @@ class Store {
     getBalancesPerpetual = async () => {
         const pools = store.getStore("rewardPools");
         const account = store.getStore("account");
-        if (!store.getStore("web3context")) return;
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = await this.getWeb3();
 
         const currentBlock = await web3.eth.getBlockNumber();
         store.setStore({currentBlock: currentBlock});
@@ -395,11 +406,8 @@ class Store {
                             "YYYY/MM/DD HH:mm"
                         );
 
-                        pool.bptVlxBalance =
-                            parseFloat(data[12]) * parseFloat(data[8]);
-                        pool.bptSyxBalance =
-                            (parseFloat(data[12]) * parseFloat(data[8])) /
-                            parseFloat(data[4]);
+                        pool.bptVlxBalance = data[12];
+                        pool.bptSyxBalance = data[13];
 
                         pool.maxErc20In =
                             parseFloat(data[14]) * parseFloat(data[12]);
@@ -433,10 +441,7 @@ class Store {
         callback
     ) => {
         try {
-            const web3 = new Web3(
-                store.getStore("web3context").library.provider
-            );
-
+            const web3 = await this.getWeb3();
             const erc20Contract = new web3.eth.Contract(abi, address);
             const allowance = await erc20Contract.methods
                 .allowance(account.address, contract)
@@ -519,7 +524,7 @@ class Store {
             try {
                 let userInfo = await contract.methods
                     .userInfo(asset.index, entryContractAddress)
-                    .call({from: account.address});
+                    .call();
                 callback(
                     null,
                     this.toStringDecimals(userInfo.amount, asset.decimals)
@@ -531,6 +536,7 @@ class Store {
     };
 
     _getERC20Balance = async (web3, asset, account, callback) => {
+        if (!account || !account.address) return callback(null, "0");
         if (asset.type === "seed" || asset.type === "swap-native") {
             try {
                 let balance = await web3.eth.getBalance(account.address);
@@ -546,7 +552,7 @@ class Store {
             try {
                 let balance = await erc20Contract.methods
                     .balanceOf(account.address)
-                    .call({from: account.address});
+                    .call();
                 callback(null, this.toStringDecimals(balance, asset.decimals));
             } catch (ex) {
                 return callback(ex);
@@ -555,6 +561,7 @@ class Store {
     };
 
     _getRewardTokenBalance = async (web3, asset, account, callback) => {
+        if (!account || !account.address) return callback(null, "0");
         let erc20Contract = new web3.eth.Contract(
             asset.erc20ABI,
             asset.rewardsAddress
@@ -562,7 +569,7 @@ class Store {
         try {
             let balance = await erc20Contract.methods
                 .balanceOf(account.address)
-                .call({from: account.address});
+                .call();
             callback(null, this.toStringDecimals(balance, asset.decimals));
         } catch (ex) {
             return callback(ex);
@@ -575,9 +582,7 @@ class Store {
             asset.poolAddress
         );
         try {
-            let rate = await erc20Contract.methods
-                .syxPerBlock()
-                .call({from: account.address});
+            let rate = await erc20Contract.methods.syxPerBlock().call();
 
             callback(null, this.toStringDecimals(rate, 18));
         } catch (ex) {
@@ -593,10 +598,10 @@ class Store {
         try {
             let totalAllocPoint = await erc20Contract.methods
                 .totalAllocPoint()
-                .call({from: account.address});
+                .call();
             let poolInfo = await erc20Contract.methods
                 .poolInfo(asset.index)
-                .call({from: account.address});
+                .call();
 
             callback(null, poolInfo.allocPoint / totalAllocPoint);
         } catch (ex) {
@@ -642,7 +647,7 @@ class Store {
         amount,
         callback
     ) => {
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = await this.getWeb3();
         let bptContract = new web3.eth.Contract(asset.abi, asset.address);
         try {
             const balanceIn = await bptContract.methods
@@ -772,19 +777,17 @@ class Store {
             try {
                 const balance = await bptContract.methods
                     .getBalance(asset.erc20Address)
-                    .call({from: account.address});
+                    .call();
                 const denorm = await bptContract.methods
                     .getDenormalizedWeight(asset.erc20Address)
-                    .call({from: account.address});
+                    .call();
                 const totalSupply = await bptContract.methods
                     .totalSupply()
-                    .call({from: account.address});
+                    .call();
                 const totalWeight = await bptContract.methods
                     .getTotalDenormalizedWeight()
-                    .call({from: account.address});
-                const swapFee = await bptContract.methods
-                    .getSwapFee()
-                    .call({from: account.address});
+                    .call();
+                const swapFee = await bptContract.methods.getSwapFee().call();
 
                 let price = await bptContract.methods
                     .calcSingleOutGivenPoolIn(
@@ -795,7 +798,7 @@ class Store {
                         web3.utils.toWei("1", "ether"),
                         swapFee
                     )
-                    .call({from: account.address});
+                    .call();
                 callback(null, this.toStringDecimals(price, asset.decimals));
             } catch (ex) {
                 return callback(ex);
@@ -809,7 +812,7 @@ class Store {
             let totalSupply;
             totalSupply = await contract.methods
                 .balanceOf(asset.poolAddress)
-                .call({from: account.address});
+                .call();
             callback(null, this.toStringDecimals(totalSupply, asset.decimals));
         } catch (ex) {
             return callback(ex);
@@ -824,10 +827,10 @@ class Store {
             try {
                 const weight1 = await bptContract.methods
                     .getDenormalizedWeight(asset.rewardsAddress)
-                    .call({from: account.address});
+                    .call();
                 const weight2 = await bptContract.methods
                     .getDenormalizedWeight(asset.erc20Address)
-                    .call({from: account.address});
+                    .call();
                 callback(
                     null,
                     parseInt(this.toStringDecimals(weight1, asset.decimals)) +
@@ -844,9 +847,7 @@ class Store {
         let contract = new web3.eth.Contract(asset.poolABI, asset.poolAddress);
         try {
             const curBlockNumber = await web3.eth.getBlockNumber();
-            const res = await contract.methods
-                .bonusEndBlock()
-                .call({from: account.address});
+            const res = await contract.methods.bonusEndBlock().call();
             const diff = res - curBlockNumber;
             if (diff > 0) {
                 callback(null, moment().unix() + diff * config.secPerBlock);
@@ -865,9 +866,7 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                let amount = await bptContract.methods
-                    .getBalance(token)
-                    .call({from: account.address});
+                let amount = await bptContract.methods.getBalance(token).call();
                 callback(null, this.toStringDecimals(amount, asset.decimals));
             } catch (ex) {
                 return callback(ex);
@@ -881,9 +880,7 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                let ratio = await bptContract.methods
-                    .MAX_IN_RATIO()
-                    .call({from: account.address});
+                let ratio = await bptContract.methods.MAX_IN_RATIO().call();
                 callback(null, this.toStringDecimals(ratio, asset.decimals));
             } catch (ex) {
                 return callback(ex);
@@ -897,9 +894,7 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                let ratio = await bptContract.methods
-                    .MAX_OUT_RATIO()
-                    .call({from: account.address});
+                let ratio = await bptContract.methods.MAX_OUT_RATIO().call();
                 callback(null, this.toStringDecimals(ratio, asset.decimals));
             } catch (ex) {
                 return callback(ex);
@@ -915,7 +910,7 @@ class Store {
             try {
                 let price = await contract.methods
                     .getSpotPrice(asset.erc20Address, asset.rewardsAddress)
-                    .call({from: account.address});
+                    .call();
                 callback(null, this.toStringDecimals(price, asset.decimals));
             } catch (ex) {
                 return callback(ex);
@@ -934,9 +929,7 @@ class Store {
             );
 
             try {
-                let earned = await contract.methods
-                    .earned()
-                    .call({from: account.address});
+                let earned = await contract.methods.earned().call();
                 callback(null, this.toStringDecimals(earned, 18));
             } catch (ex) {
                 return callback(ex);
@@ -991,7 +984,7 @@ class Store {
     };
 
     _callDeposit = async (asset, account, token, amount, callback) => {
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = await this.getWeb3();
         const entryContractAddress = await this.getEntryContract(asset.index);
         if (!entryContractAddress) {
             callback("connector not create");
@@ -1081,7 +1074,7 @@ class Store {
     };
 
     _callWithdraw = async (asset, account, token, amount, callback) => {
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = await this.getWeb3();
         const entryContractAddress = await this.getEntryContract(asset.index);
         if (!entryContractAddress) {
             callback("connector not create");
@@ -1193,7 +1186,7 @@ class Store {
         price,
         callback
     ) => {
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = await this.getWeb3();
         const yCurveFiContract = new web3.eth.Contract(
             asset.abi,
             asset.address
@@ -1367,7 +1360,7 @@ class Store {
     };
 
     _callCreateEntryContract = async (asset, account, callback) => {
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = await this.getWeb3();
 
         const yCurveFiContract = new web3.eth.Contract(
             config.connectorFactoryABI,
@@ -1428,7 +1421,7 @@ class Store {
     };
 
     _callGetReward = async (asset, account, callback) => {
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = await this.getWeb3();
         const entryContractAddress = await this.getEntryContract(asset.index);
         if (!entryContractAddress) {
             callback("connector not create");
@@ -1483,8 +1476,8 @@ class Store {
     };
 
     _getGasPrice = async () => {
-        const networkId = store.getStore("web3context").library.provider
-            .networkVersion;
+        const web3 = await this.getWeb3();
+        const networkId = await web3.eth.net.getId();
         if (networkId === "1") {
             try {
                 const url = "https://gasprice.poa.network/";

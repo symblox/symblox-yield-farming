@@ -316,6 +316,7 @@ class Home extends Component {
         });
     }
     componentDidMount() {
+        dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
         // metamask networkChange
         if (window.ethereum && window.ethereum.on) {
             window.ethereum.autoRefreshOnNetworkChange = false;
@@ -351,18 +352,18 @@ class Home extends Component {
                 }
             });
         }
-        setTimeout(async () => {
-            const {account} = this.state;
-            //   console.log(account)
-            if (
-                !Object.getOwnPropertyNames(account).length ||
-                account.address === undefined
-            ) {
-                this.setState(() => ({
-                    modalOpen: true
-                }));
-            }
-        }, 2000);
+        // setTimeout(async () => {
+        //     const {account} = this.state;
+        //     //   console.log(account)
+        //     if (
+        //         !Object.getOwnPropertyNames(account).length ||
+        //         account.address === undefined
+        //     ) {
+        // this.setState(() => ({
+        //     modalOpen: true
+        // }));
+        //     }
+        // }, 2000);
     }
     componentWillUnmount() {
         emitter.removeListener(CONNECTION_CONNECTED, this.connectionConnected);
@@ -1186,13 +1187,23 @@ class Home extends Component {
     };
 
     createEntryContract = data => {
-        this.showLoading();
-        dispatcher.dispatch({
-            type: CREATE_ENTRY_CONTRACT,
-            content: {
-                asset: data
-            }
-        });
+        const {account} = this.state;
+        if (
+            !Object.getOwnPropertyNames(account).length ||
+            account.address === undefined
+        ) {
+            this.setState(() => ({
+                modalOpen: true
+            }));
+        } else {
+            this.showLoading();
+            dispatcher.dispatch({
+                type: CREATE_ENTRY_CONTRACT,
+                content: {
+                    asset: data
+                }
+            });
+        }
     };
 
     showLoading = () => {
@@ -1241,10 +1252,20 @@ class Home extends Component {
     };
 
     openTransactionModal = data => {
-        this.setState({
-            transactionModalOpen: true,
-            tradeData: data
-        });
+        const {account} = this.state;
+        if (
+            !Object.getOwnPropertyNames(account).length ||
+            account.address === undefined
+        ) {
+            this.setState(() => ({
+                modalOpen: true
+            }));
+        } else {
+            this.setState({
+                transactionModalOpen: true,
+                tradeData: data
+            });
+        }
     };
 
     closeUnlockModal = () => {
