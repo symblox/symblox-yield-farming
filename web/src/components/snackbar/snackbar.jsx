@@ -141,6 +141,7 @@ class MySnackbar extends Component {
                         variant="text"
                         size="small"
                         onClick={() => window.open(snackbarMessage, "_blank")}
+                        style={{minWidth: "30px"}}
                     >
                         View
                     </Button>,
@@ -182,7 +183,7 @@ class MySnackbar extends Component {
                             style={{
                                 display: "inline-block",
                                 verticalAlign: "middle",
-                                maxWidth: "400px"
+                                maxWidth: "200px"
                             }}
                         >
                             <Typography
@@ -195,7 +196,8 @@ class MySnackbar extends Component {
                                 variant="body1"
                                 style={{
                                     fontSize: "10px",
-                                    color: colors.lightBlack
+                                    color: colors.lightBlack,
+                                    wordWrap: "break-word"
                                 }}
                             >
                                 {message}

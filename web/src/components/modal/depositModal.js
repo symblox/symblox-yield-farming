@@ -178,13 +178,13 @@ class DepositModal extends Component {
             });
             this.state = {
                 pool: curPool,
-                token: curPool.tokens[0],
+                token: curPool.tokens[curPool.tokens.length - 1],
                 amount: "0"
             };
         } else {
             this.state = {
                 pool: props.data,
-                token: props.data.tokens[0],
+                token: props.data.tokens[props.data.tokens.length - 1],
                 amount: "0"
             };
         }
