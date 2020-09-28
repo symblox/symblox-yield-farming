@@ -63,20 +63,20 @@ contract BaseConnector is syxOwnable {
 
     function getReward() external onlyOwner {
         IERC20 syx = IERC20(rewardManager.syx());
-        uint256 rewardAmount = rewardManager.getReward(uint256(rewardPoolId));
-        require(
-            syx.balanceOf(address(this)) >= rewardAmount,
-            "ERR_BAL_INSUFFICIENT"
-        );
-        syx.safeTransfer(msg.sender, rewardAmount);
+        rewardManager.getReward(uint256(rewardPoolId));
 
-        emit LogReward(msg.sender, rewardAmount);
+        uint256 syxAmount = syx.balanceOf(address(this));
+
+        syx.safeTransfer(msg.sender, syxAmount);
+
+        emit LogReward(msg.sender, syxAmount);
     }
 
     /**
      * @dev Don't need to check onlyOwner as the caller needs to check that
      */
     function stakeLpToken(uint256 amount) internal {
+        IERC20 syx = IERC20(rewardManager.syx());
         (uint256 currBalance, ) = rewardManager.userInfo(
             uint256(rewardPoolId),
             address(this)
@@ -95,6 +95,10 @@ contract BaseConnector is syxOwnable {
 
         require(newBalance - currBalance == amount, "ERR_STAKE_REWARD");
 
+        uint256 syxAmount = syx.balanceOf(address(this));
+        syx.safeTransfer(msg.sender, syxAmount);
+
+        emit LogReward(msg.sender, syxAmount);
         emit LogStake(msg.sender, newBalance);
     }
 
@@ -102,6 +106,7 @@ contract BaseConnector is syxOwnable {
      * @dev Don't need to check onlyOwner as the caller needs to check that
      */
     function unstakeLpToken(uint256 lpTokenAmount) internal {
+        IERC20 syx = IERC20(rewardManager.syx());
         (uint256 currBalance, ) = rewardManager.userInfo(
             uint256(rewardPoolId),
             address(this)
@@ -118,6 +123,10 @@ contract BaseConnector is syxOwnable {
             "ERR_UNSTAKE_REWARD"
         );
 
+        uint256 syxAmount = syx.balanceOf(address(this));
+        syx.safeTransfer(msg.sender, syxAmount);
+
+        emit LogReward(msg.sender, syxAmount);
         emit LogUnstake(msg.sender, lpTokenAmount);
     }
 

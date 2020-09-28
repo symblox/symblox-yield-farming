@@ -18,6 +18,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
 
         // RewardManager Mock
         this.rewardManagerMock = await MockContract.new();
+        this.syxMock = await MockContract.new();
         this.rewardMgr = await RewardManager.at(this.rewardManagerMock.address);
         // BPool Mock
         this.bpoolMock = await MockContract.new();
@@ -94,10 +95,6 @@ contract("BptConnector", ([alice, bob, carol]) => {
             rewardAmount
         );
 
-        const getRewardFailTx = this.bptConn.getReward();
-
-        await expectRevert(getRewardFailTx, "ERR_BAL_INSUFFICIENT");
-
         await symbloxMock.transfer(this.bptConn.address, rewardAmount);
 
         const getRewardTx = await this.bptConn.getReward();
@@ -111,6 +108,13 @@ contract("BptConnector", ([alice, bob, carol]) => {
         // Mock function calls
         symbloxMock = await MockERC20.new("Symblox", "SYX", 18, depositAmount);
         await symbloxMock.approve(this.bptConn.address, depositAmount);
+
+        const syxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            syxMethod,
+            abi.rawEncode(["address"], [symbloxMock.address])
+        );
+
         const joinSwapMethod = this.bpool.contract.methods
             .joinswapExternAmountIn(constants.ZERO_ADDRESS, 0, 0)
             .encodeABI();
@@ -160,6 +164,12 @@ contract("BptConnector", ([alice, bob, carol]) => {
             userInfoMethod,
             abi.rawEncode(["uint256", "uint256"], [0, 0])
         );
+        const syxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            syxMethod,
+            abi.rawEncode(["address"], [this.syxMock.address])
+        );
+        await this.syxMock.givenAnyReturnBool(true);
         const depositMethod = this.rewardMgr.contract.methods
             .deposit(0, 0)
             .encodeABI();
@@ -182,6 +192,12 @@ contract("BptConnector", ([alice, bob, carol]) => {
         await symbloxMock.transfer(this.bptConn.address, amount);
 
         // Mock function calls
+        const syxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            syxMethod,
+            abi.rawEncode(["address"], [this.syxMock.address])
+        );
+        await this.syxMock.givenAnyReturnBool(true);
         const exitSwapMethod = this.bpool.contract.methods
             .exitswapPoolAmountIn(constants.ZERO_ADDRESS, 0, 0)
             .encodeABI();
@@ -210,6 +226,11 @@ contract("BptConnector", ([alice, bob, carol]) => {
     it("should withdraw native token from BptConnector", async () => {
         const amount = ether("1");
         // Mock function calls
+        const syxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            syxMethod,
+            abi.rawEncode(["address"], [symbloxMock.address])
+        );
         const exitSwapMethod = this.bpool.contract.methods
             .exitswapPoolAmountInWTokenOut(0, 0)
             .encodeABI();
@@ -225,10 +246,6 @@ contract("BptConnector", ([alice, bob, carol]) => {
             .withdraw(0, 0)
             .encodeABI();
         await this.rewardManagerMock.givenMethodReturnUint(withdrawMethod, 0);
-
-        // Revert if no tokens in the connector
-        const withdrawFailTx = this.bptConn.withdraw(amount, 0);
-        await expectRevert(withdrawFailTx, "ERR_BAL_INSUFFICIENT");
 
         // Needs to send withdraw amout of native tokens to the connector first
         await web3.eth.sendTransaction({

@@ -175,7 +175,6 @@ contract RewardManager is Ownable {
      * @param _amount Amount of LP tokens to deposit
      * @return Total amount of the user's LP tokens
      */
-
     function deposit(uint256 _pid, uint256 _amount) public returns (uint256) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
