@@ -1186,12 +1186,21 @@ class Home extends Component {
             const snackbarObj = {snackbarMessage: txHash, snackbarType: "Hash"};
             that.setState(snackbarObj);
         });
+
+        setTimeout(() => {
+            dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
+            this.hideLoading();
+        }, 6000);
     };
 
     hideLoading = () => {
         this.setState({
             loading: false
         });
+    };
+
+    showLoading = () => {
+        this.setState({loading: true});
     };
 
     createEntryContract = data => {
@@ -1212,10 +1221,6 @@ class Home extends Component {
                 }
             });
         }
-    };
-
-    showLoading = () => {
-        this.setState({loading: true});
     };
 
     errorReturned = error => {

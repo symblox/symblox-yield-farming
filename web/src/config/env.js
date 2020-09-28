@@ -3,6 +3,7 @@ import abis from "./abis";
 function env() {
     return {
         requiredNetworkId: 111,
+        minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
         rpcUrl: "https://tn.yopta.net",
         bpt: "0xeA4bF1A4b8e687E1Aa23620A9ECF157b681B91Ec",
         syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",

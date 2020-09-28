@@ -85,7 +85,6 @@ class Store {
                     rewardsBalance: 0,
                     poolAddress: config.rewardPool,
                     poolABI: config.rewardPoolABI,
-                    balance: 0,
                     rewardsAvailable: 0
                 },
                 {
@@ -116,7 +115,6 @@ class Store {
                     rewardsBalance: 0,
                     poolAddress: config.rewardPool,
                     poolABI: config.rewardPoolABI,
-                    balance: 0,
                     rewardsAvailable: 0
                 }
             ]
@@ -224,8 +222,7 @@ class Store {
                 console.error(err);
             }
         }
-        console.log("pool: ", id, " connectorAddress: ", connectorAddress);
-
+        // console.log("pool: ", id, " connectorAddress: ", connectorAddress);
         return connectorAddress;
     };
 

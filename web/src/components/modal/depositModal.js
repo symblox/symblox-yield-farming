@@ -17,6 +17,7 @@ import Typography from "@material-ui/core/Typography";
 
 import Store from "../../stores";
 import {DEPOSIT} from "../../constants";
+import config from "../../config";
 
 const dispatcher = Store.dispatcher;
 
@@ -210,23 +211,48 @@ class DepositModal extends Component {
         });
     };
 
-    max = () => {
+    getMaxAmount = () => {
         const pool = this.state.pool;
         const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
-        let maxAmount =
-            pool.type == "seed"
-                ? formatNumberPrecision(pool.erc20Balance)
-                : token == "SYX"
-                ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
-                    ? formatNumberPrecision(pool.rewardsBalance)
-                    : formatNumberPrecision(pool.maxSyxIn)
-                : parseFloat(pool.maxErc20In) > parseFloat(pool.erc20Balance)
-                ? formatNumberPrecision(pool.erc20Balance)
-                : formatNumberPrecision(pool.maxErc20In);
+        let balance = parseFloat(pool.erc20Balance);
+        if (pool.type === "seed" || pool.type === "swap-native") {
+            balance =
+                balance > config.minReservedAmount
+                    ? balance - config.minReservedAmount
+                    : 0;
+        }
+
+        switch (pool.type) {
+            case "seed":
+                return formatNumberPrecision(balance);
+            case "swap":
+            case "swap-native":
+                if (token === "SYX") {
+                    if (
+                        parseFloat(pool.maxSyxIn) >
+                        parseFloat(pool.rewardsBalance)
+                    ) {
+                        return formatNumberPrecision(pool.rewardsBalance);
+                    } else {
+                        return formatNumberPrecision(pool.maxSyxIn);
+                    }
+                } else {
+                    if (parseFloat(pool.maxErc20In) > balance) {
+                        return formatNumberPrecision(balance);
+                    } else {
+                        return formatNumberPrecision(pool.maxErc20In);
+                    }
+                }
+            default:
+                return 0;
+        }
+    };
+
+    max = () => {
         this.setState({
-            amount: maxAmount + ""
+            amount: this.getMaxAmount() + ""
         });
     };
 
@@ -260,8 +286,6 @@ class DepositModal extends Component {
                         : this.state.pool.erc20Address
             }
         });
-
-        // this.props.closeModal();
     };
 
     render() {
@@ -325,18 +349,10 @@ class DepositModal extends Component {
                         </span>
                         <span style={{float: "right"}}>
                             {pool.type == "seed"
-                                ? parseFloat(pool.erc20Balance).toFixed(4) +
-                                  pool.symbol
+                                ? this.getMaxAmount().toFixed(4) + pool.symbol
                                 : token == "SYX"
-                                ? parseFloat(pool.maxSyxIn) >
-                                  parseFloat(pool.rewardsBalance)
-                                    ? parseFloat(pool.rewardsBalance).toFixed(4)
-                                    : parseFloat(pool.maxSyxIn).toFixed(4) +
-                                      " SYX"
-                                : parseFloat(pool.maxErc20In) >
-                                  parseFloat(pool.erc20Balance)
-                                ? parseFloat(pool.erc20Balance).toFixed(4)
-                                : parseFloat(pool.maxErc20In).toFixed(4) +
+                                ? this.getMaxAmount().toFixed(4) + " SYX"
+                                : this.getMaxAmount().toFixed(4) +
                                   " " +
                                   pool.name}
                         </span>
