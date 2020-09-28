@@ -305,7 +305,6 @@ class Home extends Component {
                             account: {address: a.account},
                             web3context: {library: {provider: a.provider}}
                         });
-                        console.log(a.provider.networkVersion);
                         that.setState({
                             networkId: a.provider.networkVersion
                         });
@@ -318,12 +317,11 @@ class Home extends Component {
         });
     }
     componentDidMount() {
-        dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
-
         const networkId = store.getStore("networkId");
         this.setState({
             networkId
         });
+
         if (window.ethereum && window.ethereum.on) {
             // metamask networkChange
             window.ethereum.autoRefreshOnNetworkChange = false;
@@ -358,19 +356,25 @@ class Home extends Component {
                     window.location.reload();
                 }
             });
+        } else {
+            dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
         }
-        // setTimeout(async () => {
-        //     const {account} = this.state;
-        //     //   console.log(account)
-        //     if (
-        //         !Object.getOwnPropertyNames(account).length ||
-        //         account.address === undefined
-        //     ) {
+        setTimeout(async () => {
+            const {account} = this.state;
+            //   console.log(account)
+            if (
+                !Object.getOwnPropertyNames(account).length ||
+                account.address === undefined
+            ) {
+                dispatcher.dispatch({
+                    type: GET_BALANCES_PERPETUAL,
+                    content: {}
+                });
         // this.setState(() => ({
         //     modalOpen: true
         // }));
-        //     }
-        // }, 2000);
+            }
+        }, 2000);
     }
     componentWillUnmount() {
         emitter.removeListener(CONNECTION_CONNECTED, this.connectionConnected);
