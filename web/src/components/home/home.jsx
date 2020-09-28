@@ -319,8 +319,13 @@ class Home extends Component {
     }
     componentDidMount() {
         dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
-        // metamask networkChange
+
+        const networkId = store.getStore("networkId");
+        this.setState({
+            networkId
+        });
         if (window.ethereum && window.ethereum.on) {
+            // metamask networkChange
             window.ethereum.autoRefreshOnNetworkChange = false;
             const that = this;
             window.ethereum.on("chainChanged", _chainId => {

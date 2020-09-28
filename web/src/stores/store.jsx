@@ -38,7 +38,7 @@ class Store {
     constructor() {
         this.store = {
             currentBlock: 0,
-            universalGasPrice: "70",
+            universalGasPrice: "20",
             account: {},
             web3: null,
             connectorsByName: {
@@ -179,14 +179,23 @@ class Store {
     };
 
     getWeb3 = async () => {
+        let web3;
         if (
             store.getStore("web3context") &&
             store.getStore("web3context").library.provider
         ) {
-            return new Web3(store.getStore("web3context").library.provider);
+            web3 = new Web3(store.getStore("web3context").library.provider);
         } else {
-            return new Web3(config.rpcUrl);
+            web3 = new Web3(config.rpcUrl);
         }
+        try {
+            const networkId = await web3.eth.net.getId();
+            store.setStore({networkId});
+        } catch (error) {
+            console.error(error);
+        }
+
+        return web3;
     };
 
     getEntryContract = async id => {
@@ -1502,8 +1511,7 @@ class Store {
     };
 
     _getGasPrice = async () => {
-        const web3 = await this.getWeb3();
-        const networkId = await web3.eth.net.getId();
+        const networkId = store.getStore("networkId");
         if (networkId === "1") {
             try {
                 const url = "https://gasprice.poa.network/";
@@ -1512,11 +1520,12 @@ class Store {
                 if (priceJSON) {
                     return priceJSON.fast.toFixed(0);
                 }
-                return store.getStore("universalGasPrice");
             } catch (e) {
                 console.log(e);
                 return store.getStore("universalGasPrice");
             }
+        } else if (networkId === config.requiredNetworkId) {
+            return store.getStore("universalGasPrice");
         } else {
             return "1";
         }

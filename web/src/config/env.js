@@ -1,10 +1,23 @@
 import abis from "./abis";
 
+let requiredNetworkId = 111;
+
+if (process.env.NODE_ENV === "development") {
+    requiredNetworkId = 111;
+} else if (process.env.NODE_ENV === "production") {
+    requiredNetworkId = 111;
+}
+
+const rpcUrls = {
+    111: "https://tn.yopta.net",
+    106: "https://explorer.velas.com/rpc"
+};
+
 function env() {
     return {
-        requiredNetworkId: 111,
+        requiredNetworkId,
+        rpcUrl: rpcUrls[requiredNetworkId],
         minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
-        rpcUrl: "https://tn.yopta.net",
         bpt: "0xeA4bF1A4b8e687E1Aa23620A9ECF157b681B91Ec",
         syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
         wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f",
@@ -21,10 +34,5 @@ function env() {
         connectorFactoryABI: abis.connectorFactoryABI,
         secPerBlock: 5
     };
-    // if (process.env.NODE_ENV === "development") {
-
-    // } else if (process.env.NODE_ENV === "production") {
-
-    // }
 }
 export default env();
