@@ -16,6 +16,7 @@ import {
     GET_REWARDS,
     GET_REWARDS_RETURNED,
     CREATE_ENTRY_CONTRACT,
+    CREATE_ENTRY_CONTRACT_RETURNED,
     CALCULATE_PRICE,
     CALCULATE_PRICE_RETURNED,
     TX_CONFIRM
@@ -1379,7 +1380,7 @@ class Store {
                 return emitter.emit(ERROR, err);
             }
 
-            return emitter.emit(GET_REWARDS_RETURNED, res);
+            return emitter.emit(CREATE_ENTRY_CONTRACT_RETURNED, res);
         });
     };
 

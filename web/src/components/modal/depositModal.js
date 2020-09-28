@@ -180,12 +180,14 @@ class DepositModal extends Component {
             this.state = {
                 pool: curPool,
                 token: curPool.tokens[curPool.tokens.length - 1],
+                loading: false,
                 amount: "0"
             };
         } else {
             this.state = {
                 pool: props.data,
                 token: props.data.tokens[props.data.tokens.length - 1],
+                loading: false,
                 amount: "0"
             };
         }
@@ -272,7 +274,16 @@ class DepositModal extends Component {
             isNaN(parseFloat(this.state.amount))
         )
             return;
-        this.props.showLoading();
+        this.setState({
+            loading: true
+        });
+        setTimeout(
+            () =>
+                this.setState({
+                    loading: false
+                }),
+            5000
+        );
         dispatcher.dispatch({
             type: DEPOSIT,
             content: {
@@ -289,8 +300,8 @@ class DepositModal extends Component {
     };
 
     render() {
-        const {classes, data, loading, closeModal, modalOpen} = this.props;
-        const {pool, token, amount} = this.state;
+        const {classes, data, closeModal, modalOpen} = this.props;
+        const {pool, loading, token, amount} = this.state;
         const fullScreen = window.innerWidth < 450;
 
         return (

@@ -177,7 +177,8 @@ class TransactionModal extends Component {
             amount: "0",
             price: props.data.price,
             buyToken: props.data.tokens[1],
-            buyAmount: "0"
+            buyAmount: "0",
+            loading: false
         };
     }
 
@@ -353,7 +354,16 @@ class TransactionModal extends Component {
             isNaN(parseFloat(this.state.amount))
         )
             return;
-        this.props.showLoading();
+        this.setState({
+            loading: true
+        });
+        setTimeout(
+            () =>
+                this.setState({
+                    loading: false
+                }),
+            5000
+        );
         dispatcher.dispatch({
             type: TRADE,
             content: {
@@ -378,7 +388,8 @@ class TransactionModal extends Component {
     };
 
     render() {
-        const {classes, loading, data, closeModal, modalOpen} = this.props;
+        const {classes, data, closeModal, modalOpen} = this.props;
+        const {loading} = this.state;
         const fullScreen = window.innerWidth < 450;
 
         const availableAmount = parseFloat(

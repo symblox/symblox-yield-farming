@@ -240,7 +240,8 @@ class WithdrawRewardsModal extends Component {
             curTab: 0,
             pool: curPool,
             token: curPool.tokens[0],
-            amount: "0"
+            amount: "0",
+            loading: false
         };
     }
 
@@ -316,7 +317,17 @@ class WithdrawRewardsModal extends Component {
             isNaN(parseFloat(this.state.amount))
         )
             return;
-        this.props.showLoading();
+
+        this.setState({
+            loading: true
+        });
+        setTimeout(
+            () =>
+                this.setState({
+                    loading: false
+                }),
+            5000
+        );
         let amount;
         if (this.state.pool.type === "seed") {
             amount = this.formatNumber(
@@ -369,7 +380,16 @@ class WithdrawRewardsModal extends Component {
     };
 
     onClaim = () => {
-        this.props.showLoading();
+        this.setState({
+            loading: true
+        });
+        setTimeout(
+            () =>
+                this.setState({
+                    loading: false
+                }),
+            5000
+        );
         dispatcher.dispatch({
             type: GET_REWARDS,
             content: {
@@ -379,7 +399,8 @@ class WithdrawRewardsModal extends Component {
     };
 
     render() {
-        const {classes, data, loading, closeModal, modalOpen} = this.props;
+        const {classes, data, closeModal, modalOpen} = this.props;
+        const {loading} = this.state;
         const fullScreen = window.innerWidth < 450;
 
         return (

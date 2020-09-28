@@ -45,7 +45,8 @@ import {
     CONNECTION_DISCONNECTED,
     GET_BALANCES_PERPETUAL_RETURNED,
     GET_BALANCES_PERPETUAL,
-    CREATE_ENTRY_CONTRACT
+    CREATE_ENTRY_CONTRACT,
+    CREATE_ENTRY_CONTRACT_RETURNED
 } from "../../constants";
 
 const emitter = Store.emitter;
@@ -243,7 +244,7 @@ const styles = theme => ({
         top: "25%"
     },
     balanceBar: {
-        textAlign: "center",
+        textAlign: "left",
         color: "white",
         fontSize: "24px",
         "& div": {
@@ -292,6 +293,7 @@ class Home extends Component {
         emitter.on(WITHDRAW_RETURNED, this.showHash);
         emitter.on(TRADE_RETURNED, this.showHash);
         emitter.on(GET_REWARDS_RETURNED, this.showHash);
+        emitter.on(CREATE_ENTRY_CONTRACT_RETURNED, this.showHash);
         emitter.on(TX_CONFIRM, this.hideLoading);
         const that = this;
         injected.isAuthorized().then(isAuthorized => {
@@ -1179,7 +1181,8 @@ class Home extends Component {
             snackbarType: null,
             depositModalOpen: false,
             withdrawRewardsModalOpen: false,
-            transactionModalOpen: false
+            transactionModalOpen: false,
+            loading: true
         });
         const that = this;
         setTimeout(() => {
@@ -1190,17 +1193,17 @@ class Home extends Component {
         setTimeout(() => {
             dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
             this.hideLoading();
-        }, 6000);
+        }, 10000);
+    };
+
+    showLoading = () => {
+        this.setState({loading: true});
     };
 
     hideLoading = () => {
         this.setState({
             loading: false
         });
-    };
-
-    showLoading = () => {
-        this.setState({loading: true});
     };
 
     createEntryContract = data => {
@@ -1214,6 +1217,9 @@ class Home extends Component {
             }));
         } else {
             this.showLoading();
+            setTimeout(() => {
+                this.hideLoading();
+            }, 5000);
             dispatcher.dispatch({
                 type: CREATE_ENTRY_CONTRACT,
                 content: {
@@ -1332,7 +1338,6 @@ class Home extends Component {
             <DepositModal
                 data={data}
                 loading={this.state.loading}
-                showLoading={this.showLoading}
                 closeModal={this.closeDepositModal}
                 modalOpen={this.state.depositModalOpen}
             />
@@ -1344,7 +1349,6 @@ class Home extends Component {
             <WithdrawRewardsModal
                 data={data}
                 loading={this.state.loading}
-                showLoading={this.showLoading}
                 closeModal={this.closeWithdrawRewardsModal}
                 modalOpen={this.state.withdrawRewardsModalOpen}
             />
@@ -1356,7 +1360,6 @@ class Home extends Component {
             <TransactionModal
                 data={data}
                 loading={this.state.loading}
-                showLoading={this.showLoading}
                 closeModal={this.closeTransactionModal}
                 modalOpen={this.state.transactionModalOpen}
             />
