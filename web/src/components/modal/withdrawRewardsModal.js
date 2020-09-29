@@ -160,6 +160,9 @@ const styles = theme => ({
         lineHeight: "22px",
         textAlign: "right",
         color: "#4E5B70"
+    },
+    maxBtn: {
+        padding: "10px 18px"
     }
 });
 
@@ -273,32 +276,32 @@ class WithdrawRewardsModal extends Component {
         });
     };
 
-    max = () => {
+    getMaxAmount = () => {
         const pool = this.state.pool;
         const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
-        let maxAmount =
-            pool.type == "seed"
-                ? formatNumberPrecision(pool.stakeAmount)
-                : token == "SYX"
-                ? (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
-                      parseFloat(pool.price) >
-                  parseFloat(pool.maxSyxOut)
-                    ? formatNumberPrecision(pool.maxSyxOut)
-                    : formatNumberPrecision(
-                          parseFloat(pool.stakeAmount) *
-                              parseFloat(pool.BPTPrice)
-                      ) / parseFloat(pool.price)
-                : parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice) >
-                  parseFloat(pool.maxErc20Out)
-                ? formatNumberPrecision(pool.maxErc20Out)
+        return pool.type == "seed"
+            ? formatNumberPrecision(pool.stakeAmount)
+            : token == "SYX"
+            ? (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
+                  parseFloat(pool.price) >
+              parseFloat(pool.maxSyxOut)
+                ? formatNumberPrecision(pool.maxSyxOut)
                 : formatNumberPrecision(
                       parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)
-                  );
+                  ) / parseFloat(pool.price)
+            : parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice) >
+              parseFloat(pool.maxErc20Out)
+            ? formatNumberPrecision(pool.maxErc20Out)
+            : formatNumberPrecision(
+                  parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)
+              );
+    };
 
+    max = () => {
         this.setState({
-            amount: maxAmount + ""
+            amount: this.getMaxAmount() + ""
         });
     };
 
@@ -556,6 +559,19 @@ class WithdrawRewardsModal extends Component {
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button
+                                                    className={classes.maxBtn}
+                                                    style={{
+                                                        opacity:
+                                                            parseFloat(
+                                                                this.state
+                                                                    .amount
+                                                            ).toFixed(4) ===
+                                                            this.getMaxAmount().toFixed(
+                                                                4
+                                                            )
+                                                                ? "0.6"
+                                                                : "1"
+                                                    }}
                                                     disabled={loading}
                                                     variant="outline"
                                                     onClick={this.max}

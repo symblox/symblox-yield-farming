@@ -127,6 +127,9 @@ const styles = theme => ({
             lineHeight: "23px",
             color: "#ACAEBC"
         }
+    },
+    maxBtn: {
+        padding: "10px 18px"
     }
 });
 
@@ -284,19 +287,22 @@ class TransactionModal extends Component {
         }
     };
 
-    max = () => {
+    getMaxAmount = () => {
         const pool = this.props.data;
         const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
-        let maxAmount =
-            token == "SYX"
-                ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
-                    ? formatNumberPrecision(pool.rewardsBalance)
-                    : formatNumberPrecision(pool.maxSyxIn)
-                : parseFloat(pool.maxErc20In) > parseFloat(pool.erc20Balance)
-                ? formatNumberPrecision(pool.erc20Balance)
-                : formatNumberPrecision(pool.maxErc20In);
+        return token == "SYX"
+            ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
+                ? formatNumberPrecision(pool.rewardsBalance)
+                : formatNumberPrecision(pool.maxSyxIn)
+            : parseFloat(pool.maxErc20In) > parseFloat(pool.erc20Balance)
+            ? formatNumberPrecision(pool.erc20Balance)
+            : formatNumberPrecision(pool.maxErc20In);
+    };
+
+    max = () => {
+        const maxAmount = this.getMaxAmount();
 
         if (parseFloat(maxAmount) > 0) {
             this.setState({
@@ -463,6 +469,18 @@ class TransactionModal extends Component {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Button
+                                            className={classes.maxBtn}
+                                            style={{
+                                                opacity:
+                                                    parseFloat(
+                                                        this.state.amount
+                                                    ).toFixed(4) ===
+                                                    this.getMaxAmount().toFixed(
+                                                        4
+                                                    )
+                                                        ? "0.6"
+                                                        : "1"
+                                            }}
                                             disabled={loading}
                                             variant="outline"
                                             onClick={this.max}

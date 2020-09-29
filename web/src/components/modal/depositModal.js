@@ -133,6 +133,9 @@ const styles = theme => ({
         lineHeight: "22px",
         textAlign: "right",
         color: "#4E5B70"
+    },
+    maxBtn: {
+        padding: "10px 18px"
     }
 });
 
@@ -403,6 +406,18 @@ class DepositModal extends Component {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Button
+                                            className={classes.maxBtn}
+                                            style={{
+                                                opacity:
+                                                    parseFloat(amount).toFixed(
+                                                        4
+                                                    ) ===
+                                                    this.getMaxAmount().toFixed(
+                                                        4
+                                                    )
+                                                        ? "0.6"
+                                                        : "1"
+                                            }}
                                             disabled={loading}
                                             variant="outline"
                                             onClick={this.max}
