@@ -63,6 +63,7 @@ const en_US = {
     TOTAL_SUPPLY: "Total supply",
     HOLD: "hold",
     TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
+    TOTAL_STAKE: "Deposited in the reward pool",
     TRADE_ERROR_BALANCE: "Available balance not enough",
     SEE_DETAIL: "See detail",
     REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio",

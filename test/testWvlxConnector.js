@@ -14,6 +14,7 @@ const RewardManager = artifacts.require("RewardManager");
 contract("WvlxConnector", ([alice, bob, carol]) => {
     beforeEach(async () => {
         this.rewardManagerMock = await MockContract.new();
+        this.syxMock = await MockContract.new();
         this.rewardMgr = await RewardManager.at(this.rewardManagerMock.address);
         // create the lpToken contract
         this.wvlx = await WVLX.new();
@@ -64,14 +65,16 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
             depositMethod,
             depositAmount
         );
+        const syxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            syxMethod,
+            abi.rawEncode(["address"], [this.syxMock.address])
+        );
+        await this.syxMock.givenAnyReturnBool(true);
+
         const depositTx = await this.wvlxConn.methods["deposit(uint256)"](0, {
             value: depositAmount
         });
-
-        // for (let log of depositTx.logs) {
-        //     // console.log({log});
-        //     console.log(`${log.event} -> ${log.args.amount.toString()}`);
-        // }
 
         expectEvent(depositTx, "LogDeposit", {
             amount: depositAmount
@@ -95,6 +98,12 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
             depositMethod,
             amount
         );
+        const syxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
+        await this.rewardManagerMock.givenMethodReturn(
+            syxMethod,
+            abi.rawEncode(["address"], [this.syxMock.address])
+        );
+        await this.syxMock.givenAnyReturnBool(true);
         await this.wvlxConn.methods["deposit(uint256)"](0, {
             value: amount
         });

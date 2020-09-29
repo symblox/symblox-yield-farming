@@ -387,216 +387,6 @@ library SafeERC20 {
     }
 }
 
-// File: contracts/interfaces/IBPool.sol
-
-pragma solidity ^0.5.0;
-
-interface IBPool {
-    function isPublicSwap() external view returns (bool);
-
-    function isFinalized() external view returns (bool);
-
-    function isBound(address t) external view returns (bool);
-
-    function getNumTokens() external view returns (uint256);
-
-    function getCurrentTokens() external view returns (address[] memory tokens);
-
-    function getFinalTokens() external view returns (address[] memory tokens);
-
-    function getDenormalizedWeight(address token)
-        external
-        view
-        returns (uint256);
-
-    function getTotalDenormalizedWeight() external view returns (uint256);
-
-    function getNormalizedWeight(address token) external view returns (uint256);
-
-    function getBalance(address token) external view returns (uint256);
-
-    function getSwapFee() external view returns (uint256);
-
-    function getController() external view returns (address);
-
-    function setSwapFee(uint256 swapFee) external;
-
-    function setController(address manager) external;
-
-    function setPublicSwap(bool public_) external;
-
-    function finalize() external;
-
-    function bind(
-        address token,
-        uint256 balance,
-        uint256 denorm
-    ) external;
-
-    function rebind(
-        address token,
-        uint256 balance,
-        uint256 denorm
-    ) external;
-
-    function unbind(address token) external;
-
-    function gulp(address token) external;
-
-    function getSpotPrice(address tokenIn, address tokenOut)
-        external
-        view
-        returns (uint256 spotPrice);
-
-    function getSpotPriceSansFee(address tokenIn, address tokenOut)
-        external
-        view
-        returns (uint256 spotPrice);
-
-    function joinPool(uint256 poolAmountOut, uint256[] calldata maxAmountsIn)
-        external;
-
-    function exitPool(uint256 poolAmountIn, uint256[] calldata minAmountsOut)
-        external;
-
-    function swapExactAmountIn(
-        address tokenIn,
-        uint256 tokenAmountIn,
-        address tokenOut,
-        uint256 minAmountOut,
-        uint256 maxPrice
-    ) external returns (uint256 tokenAmountOut, uint256 spotPriceAfter);
-
-    function swapWTokenAmountIn(
-        address tokenOut,
-        uint256 minAmountOut,
-        uint256 maxPrice
-    ) external payable returns (uint256 tokenAmountOut, uint256 spotPriceAfter);
-
-    function swapExactAmountOut(
-        address tokenIn,
-        uint256 maxAmountIn,
-        address tokenOut,
-        uint256 tokenAmountOut,
-        uint256 maxPrice
-    ) external returns (uint256 tokenAmountIn, uint256 spotPriceAfter);
-
-    function joinswapExternAmountIn(
-        address tokenIn,
-        uint256 tokenAmountIn,
-        uint256 minPoolAmountOut
-    ) external returns (uint256 poolAmountOut);
-
-    function joinswapWTokenIn(uint256 minPoolAmountOut)
-        external
-        payable
-        returns (uint256 poolAmountOut);
-
-    // function joinswapPoolAmountOut(
-    //     address tokenIn,
-    //     uint256 poolAmountOut,
-    //     uint256 maxAmountIn
-    // ) external returns (uint256 tokenAmountIn);
-
-    function exitswapPoolAmountIn(
-        address tokenOut,
-        uint256 poolAmountIn,
-        uint256 minAmountOut
-    ) external returns (uint256 tokenAmountOut);
-
-    function exitswapPoolAmountInWTokenOut(
-        uint256 poolAmountIn,
-        uint256 minAmountOut
-    ) external returns (uint256 tokenAmountOut);
-
-    // function exitswapExternAmountOut(
-    //     address tokenOut,
-    //     uint256 tokenAmountOut,
-    //     uint256 maxPoolAmountIn
-    // ) external returns (uint256 poolAmountIn);
-
-    function totalSupply() external view returns (uint256);
-
-    function balanceOf(address whom) external view returns (uint256);
-
-    function allowance(address src, address dst)
-        external
-        view
-        returns (uint256);
-
-    function approve(address dst, uint256 amt) external returns (bool);
-
-    function transfer(address dst, uint256 amt) external returns (bool);
-
-    function transferFrom(
-        address src,
-        address dst,
-        uint256 amt
-    ) external returns (bool);
-
-    function calcSpotPrice(
-        uint256 tokenBalanceIn,
-        uint256 tokenWeightIn,
-        uint256 tokenBalanceOut,
-        uint256 tokenWeightOut,
-        uint256 swapFee
-    ) external pure returns (uint256 spotPrice);
-
-    function calcOutGivenIn(
-        uint256 tokenBalanceIn,
-        uint256 tokenWeightIn,
-        uint256 tokenBalanceOut,
-        uint256 tokenWeightOut,
-        uint256 tokenAmountIn,
-        uint256 swapFee
-    ) external pure returns (uint256 tokenAmountOut);
-
-    function calcInGivenOut(
-        uint256 tokenBalanceIn,
-        uint256 tokenWeightIn,
-        uint256 tokenBalanceOut,
-        uint256 tokenWeightOut,
-        uint256 tokenAmountOut,
-        uint256 swapFee
-    ) external pure returns (uint256 tokenAmountIn);
-
-    function calcPoolOutGivenSingleIn(
-        uint256 tokenBalanceIn,
-        uint256 tokenWeightIn,
-        uint256 poolSupply,
-        uint256 totalWeight,
-        uint256 tokenAmountIn,
-        uint256 swapFee
-    ) external pure returns (uint256 poolAmountOut);
-
-    function calcSingleInGivenPoolOut(
-        uint256 tokenBalanceIn,
-        uint256 tokenWeightIn,
-        uint256 poolSupply,
-        uint256 totalWeight,
-        uint256 poolAmountOut,
-        uint256 swapFee
-    ) external pure returns (uint256 tokenAmountIn);
-
-    function calcSingleOutGivenPoolIn(
-        uint256 tokenBalanceOut,
-        uint256 tokenWeightOut,
-        uint256 poolSupply,
-        uint256 totalWeight,
-        uint256 poolAmountIn,
-        uint256 swapFee
-    ) external pure returns (uint256 tokenAmountOut);
-
-    function calcPoolInGivenSingleOut(
-        uint256 tokenBalanceOut,
-        uint256 tokenWeightOut,
-        uint256 poolSupply,
-        uint256 totalWeight,
-        uint256 tokenAmountOut,
-        uint256 swapFee
-    ) external pure returns (uint256 poolAmountIn);
-}
-
 // File: @openzeppelin/upgrades/contracts/Initializable.sol
 
 pragma solidity >=0.4.24 <0.7.0;
@@ -935,116 +725,47 @@ contract BaseConnector is syxOwnable {
     ) external onlyOwner returns (uint256 tokenAmountOut) {}
 }
 
-// File: contracts/BptConnector.sol
+// File: contracts/WvlxConnector.sol
 
 pragma solidity 0.5.17;
 
 
 
 
-contract BptConnector is BaseConnector {
-    using SafeMath for uint256;
+interface IWvlx {
+    function withdraw(uint256 wad) external;
+}
+
+contract WvlxConnector is BaseConnector {
     using SafeERC20 for IERC20;
-
-    modifier validBpt(address token) {
-        require(IBPool(lpToken).isBound(token), "ERR_TOKEN_INVALID");
-        _;
-    }
+    using Address for address payable;
 
     /**
-     * @dev Deposit first to the liquidity pool and then the reward pool to earn rewards
-     * @param tokenIn ERC20 address to deposit
-     * @param tokenAmountIn deposit amount, in wei
+     * @dev Firstly, deposit to the liquidity pool to get the lpToken,
+     * then deposit the lpTokens to RewardManager to earn rewards
      */
-    function deposit(
-        address tokenIn,
-        uint256 tokenAmountIn,
-        uint256 minPoolAmountOut
-    ) external validBpt(tokenIn) onlyOwner returns (uint256 poolAmountOut) {
-        IERC20 tokenDeposit = IERC20(tokenIn);
-        require(
-            tokenDeposit.allowance(msg.sender, address(this)) >= tokenAmountIn,
-            "ERR_ALLOWANCE"
-        );
-        // transfer the tokens here
-        tokenDeposit.safeTransferFrom(msg.sender, address(this), tokenAmountIn);
-
-        //
-        // deposit to the bpool
-        //
-        if (tokenDeposit.allowance(address(this), lpToken) < tokenAmountIn) {
-            tokenDeposit.approve(lpToken, tokenAmountIn);
-        }
-        poolAmountOut = IBPool(lpToken).joinswapExternAmountIn(
-            tokenIn,
-            tokenAmountIn,
-            minPoolAmountOut
-        );
-        require(poolAmountOut > 0, "ERR_BPOOL_DEPOSIT");
-
-        //
-        // stake to RewardManager
-        //
-        super.stakeLpToken(poolAmountOut);
-
-        emit LogDeposit(msg.sender, poolAmountOut);
-    }
-
-    /**
-     * @dev Deposit first to the liquidity pool and then the reward pool to earn rewards
-     */
-    function deposit(uint256 minPoolAmountOut)
+    function deposit(uint256)
         external
         payable
         onlyOwner
-        returns (uint256 poolAmountOut)
+        returns (uint256 wvlxAmount)
     {
-        poolAmountOut = IBPool(lpToken).joinswapWTokenIn.value(msg.value)(
-            minPoolAmountOut
-        );
-        require(poolAmountOut > 0, "ERR_BPOOL_DEPOSIT");
-
+        // Cast lpToken from address to address payable
+        address payable recipient = address(uint160(address(lpToken)));
+        // Send to wrap VLX contract
+        recipient.sendValue(msg.value);
+        // Make sure the amount received is the same as the one sent
+        wvlxAmount = IERC20(lpToken).balanceOf(address(this));
+        require(wvlxAmount == msg.value, "ERR_WVLX_RECEIVED");
         //
-        // stake to RewardManager
+        // Deposit to the RewardManager
         //
-        super.stakeLpToken(poolAmountOut);
+        stakeLpToken(wvlxAmount);
 
-        emit LogDeposit(msg.sender, poolAmountOut);
+        emit LogDeposit(msg.sender, msg.value);
     }
 
-    /**
-     * @dev Unstake from the reward pool, then withdraw from the liquidity pool
-     * @param tokenOut withdraw token address
-     * @param amount withdraw amount, in wei
-     */
-    function withdraw(
-        address tokenOut,
-        uint256 amount,
-        uint256 minAmountOut
-    ) external validBpt(tokenOut) onlyOwner returns (uint256 tokenAmountOut) {
-        //
-        // Withdraw the liquidity pool tokens from RewardManager
-        //
-        super.unstakeLpToken(amount);
-
-        //
-        // Remove liquidity from the bpool
-        //
-        tokenAmountOut = IBPool(lpToken).exitswapPoolAmountIn(
-            tokenOut,
-            amount,
-            minAmountOut
-        );
-        IERC20(tokenOut).safeTransfer(msg.sender, tokenAmountOut);
-
-        emit LogWithdrawal(msg.sender, tokenAmountOut);
-    }
-
-    /**
-     * @dev Unstake from the reward pool, then withdraw from the liquidity pool
-     * @param amount withdraw amount, in wei
-     */
-    function withdraw(uint256 amount, uint256 minAmountOut)
+    function withdraw(uint256 amount, uint256)
         external
         onlyOwner
         returns (uint256 tokenAmountOut)
@@ -1052,19 +773,16 @@ contract BptConnector is BaseConnector {
         //
         // Withdraw the liquidity pool tokens from RewardManager
         //
-        super.unstakeLpToken(amount);
+        unstakeLpToken(amount);
 
         //
-        // Remove liquidity from the bpool
+        // Withdraw VLX from wvlx (lptoken)
         //
-        tokenAmountOut = IBPool(lpToken).exitswapPoolAmountInWTokenOut(
-            amount,
-            minAmountOut
-        );
-        require(
-            address(this).balance >= tokenAmountOut,
-            "ERR_BAL_INSUFFICIENT"
-        );
+        IWvlx(lpToken).withdraw(amount);
+
+        require(address(this).balance == amount, "ERR_VLX_RECEIVED");
+
+        tokenAmountOut = address(this).balance;
         msg.sender.transfer(tokenAmountOut);
 
         emit LogWithdrawal(msg.sender, tokenAmountOut);
