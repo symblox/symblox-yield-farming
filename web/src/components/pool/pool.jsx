@@ -203,6 +203,30 @@ export default function Pool(props) {
                                 {(parseFloat(data.allocPoint) * 100).toFixed(2)}{" "}
                                 %
                             </div>
+                            <div>
+                                {data.type == "seed" ? (
+                                    <>
+                                        <FormattedMessage id="TOTAL_STAKE" />:
+                                        {data.stakeAmount} {data.name}
+                                    </>
+                                ) : (
+                                    <>
+                                        <FormattedMessage id="LP_MY_SHARE" />:
+                                        {data.totalSupply > 0
+                                            ? (
+                                                  (parseFloat(
+                                                      data.stakeAmount
+                                                  ) /
+                                                      parseFloat(
+                                                          data.totalSupply
+                                                      )) *
+                                                  100
+                                              ).toFixed(2)
+                                            : "0.00"}{" "}
+                                        %
+                                    </>
+                                )}
+                            </div>
                         </React.Fragment>
                     }
                     enterTouchDelay={700}

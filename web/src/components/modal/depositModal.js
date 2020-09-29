@@ -355,10 +355,33 @@ class DepositModal extends Component {
                     )}
                     <Typography gutterBottom>
                         <span style={{color: "#ACAEBC"}}>
+                            <FormattedMessage id="TOTAL_STAKE" />
+                            {": "}
+                        </span>
+                        <span className={classes.rightText}>
+                            {pool.type == "seed"
+                                ? parseFloat(pool.stakeAmount).toFixed(4) +
+                                  pool.symbol
+                                : token == "SYX"
+                                ? (
+                                      (parseFloat(pool.stakeAmount) *
+                                          parseFloat(pool.BPTPrice)) /
+                                      parseFloat(pool.price)
+                                  ).toFixed(4) + " SYX"
+                                : (
+                                      parseFloat(pool.stakeAmount) *
+                                      parseFloat(pool.BPTPrice)
+                                  ).toFixed(4) +
+                                  " " +
+                                  pool.name}
+                        </span>
+                    </Typography>
+                    <Typography gutterBottom>
+                        <span style={{color: "#ACAEBC"}}>
                             <FormattedMessage id="POPUP_DEPOSITABLE_AMOUNT" />
                             {": "}
                         </span>
-                        <span style={{float: "right"}}>
+                        <span className={classes.rightText}>
                             {pool.type == "seed"
                                 ? this.getMaxAmount().toFixed(4) + pool.symbol
                                 : token == "SYX"
@@ -416,33 +439,6 @@ class DepositModal extends Component {
                             </Select>
                         </FormControl>
                     </div>
-                    <Typography gutterBottom>
-                        <span className={classes.text}>
-                            <FormattedMessage id="TOTAL_STAKE_AFTER_DEPOSIT" />
-                            {": "}
-                        </span>
-                        <span className={classes.rightText}>
-                            {pool.type == "seed"
-                                ? (
-                                      parseFloat(pool.stakeAmount) +
-                                      parseFloat(this.state.amount || 0)
-                                  ).toFixed(4) + pool.symbol
-                                : token == "SYX"
-                                ? (
-                                      (parseFloat(pool.stakeAmount) *
-                                          parseFloat(pool.BPTPrice)) /
-                                          parseFloat(pool.price) +
-                                      parseFloat(this.state.amount || 0)
-                                  ).toFixed(4) + " SYX"
-                                : (
-                                      parseFloat(pool.stakeAmount) *
-                                          parseFloat(pool.BPTPrice) +
-                                      parseFloat(this.state.amount || 0)
-                                  ).toFixed(4) +
-                                  " " +
-                                  pool.name}
-                        </span>
-                    </Typography>
                     <Typography gutterBottom>
                         <span className={classes.text}>
                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
