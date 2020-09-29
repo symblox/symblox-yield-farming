@@ -370,9 +370,9 @@ class Home extends Component {
                     type: GET_BALANCES_PERPETUAL,
                     content: {}
                 });
-        // this.setState(() => ({
-        //     modalOpen: true
-        // }));
+                // this.setState(() => ({
+                //     modalOpen: true
+                // }));
             }
         }, 2000);
     }
@@ -1246,7 +1246,10 @@ class Home extends Component {
         setTimeout(() => {
             const snackbarObj = {
                 snackbarMessage: error.toString(),
-                snackbarType: "Error"
+                snackbarType: "Error",
+                depositModalOpen: false,
+                withdrawRewardsModalOpen: false,
+                transactionModalOpen: false
             };
             that.setState(snackbarObj);
         });

@@ -17,6 +17,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
 import {GET_REWARDS, WITHDRAW} from "../../constants";
@@ -321,13 +322,13 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         let amount;
         if (this.state.pool.type === "seed") {
             amount = this.formatNumber(
@@ -383,13 +384,13 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         dispatcher.dispatch({
             type: GET_REWARDS,
             content: {
@@ -685,7 +686,11 @@ class WithdrawRewardsModal extends Component {
                             onClick={this.confirm}
                             fullWidth={true}
                         >
-                            <FormattedMessage id="LP_WITHDRAW" />
+                            {loading ? (
+                                <CircularProgress></CircularProgress>
+                            ) : (
+                                <FormattedMessage id="LP_WITHDRAW" />
+                            )}
                         </Button>
                     ) : (
                         <Button
@@ -695,7 +700,11 @@ class WithdrawRewardsModal extends Component {
                             onClick={this.onClaim}
                             fullWidth={true}
                         >
-                            <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                            {loading ? (
+                                <CircularProgress></CircularProgress>
+                            ) : (
+                                <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                            )}
                         </Button>
                     )}
                 </DialogActions>

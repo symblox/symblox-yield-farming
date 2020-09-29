@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {FormattedMessage} from "react-intl";
 import {withStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
@@ -14,8 +13,8 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
 import {
@@ -194,9 +193,9 @@ class TransactionModal extends Component {
     }
 
     setPrice(data) {
-        console.log({data});
         this.setState({
-            price: data.price
+            price: data.price,
+            loading: false
         });
         const price =
             data.tokenName == "SYX"
@@ -316,6 +315,7 @@ class TransactionModal extends Component {
 
     getPrice = (type, amount) => {
         if (type) {
+            this.setState({loading: true});
             dispatcher.dispatch({
                 type: CALCULATE_PRICE,
                 content: {
@@ -357,13 +357,13 @@ class TransactionModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         dispatcher.dispatch({
             type: TRADE,
             content: {
@@ -615,7 +615,11 @@ class TransactionModal extends Component {
                         className={classes.button}
                         fullWidth={true}
                     >
-                        <FormattedMessage id="POPUP_ACTION_CONFIRM" />
+                        {loading ? (
+                            <CircularProgress></CircularProgress>
+                        ) : (
+                            <FormattedMessage id="POPUP_ACTION_CONFIRM" />
+                        )}
                     </Button>
                 </DialogActions>
             </Dialog>

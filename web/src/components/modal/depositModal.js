@@ -14,6 +14,7 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
 import {DEPOSIT} from "../../constants";
@@ -277,13 +278,13 @@ class DepositModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         dispatcher.dispatch({
             type: DEPOSIT,
             content: {
@@ -456,7 +457,11 @@ class DepositModal extends Component {
                         className={classes.button}
                         fullWidth={true}
                     >
-                        <FormattedMessage id="LP_DEPOSIT_WITHDRAW_REWARD" />
+                        {loading ? (
+                            <CircularProgress></CircularProgress>
+                        ) : (
+                            <FormattedMessage id="LP_DEPOSIT_WITHDRAW_REWARD" />
+                        )}
                     </Button>
                 </DialogActions>
             </Dialog>
