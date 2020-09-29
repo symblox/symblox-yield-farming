@@ -1,7 +1,7 @@
 import React from "react";
 import "../../App.scss";
 import "./header.scss";
-import {Select, Container, Hidden} from "@material-ui/core";
+import {Select, Container, Hidden, MenuItem} from "@material-ui/core";
 import logo_xswap from "../../assets/symblox-logo@2x.png";
 import icon_user from "../../assets/icon_user.svg";
 
@@ -86,8 +86,8 @@ export default class App extends React.Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                <option value={"中文"}>{"中文"}</option>
-                                <option value={"EN"}>{"EN"}</option>
+                                <MenuItem value={"中文"}>{"中文"}</MenuItem>
+                                <MenuItem value={"EN"}>{"EN"}</MenuItem>
                             </Select>
                         </div>
                     </Hidden>
@@ -154,8 +154,8 @@ export default class App extends React.Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                <option value={"中文"}>{"中文"}</option>
-                                <option value={"EN"}>{"EN"}</option>
+                                <MenuItem value={"中文"}>{"中文"}</MenuItem>
+                                <MenuItem value={"EN"}>{"EN"}</MenuItem>
                             </Select>
                         </div>
                     </Hidden>

@@ -198,7 +198,8 @@ class TransactionModal extends Component {
     setPrice(data) {
         this.setState({
             price: data.price,
-            loading: false
+            loading: false,
+            last: null
         });
         const price =
             data.tokenName == "SYX"
@@ -215,26 +216,44 @@ class TransactionModal extends Component {
         }
     }
 
+    //函数防抖
+    debounce = (idle, action) => {
+        const that = this;
+        return function () {
+            var ctx = this,
+                args = arguments;
+            clearTimeout(that.state.last);
+            const id = setTimeout(function () {
+                action.apply(ctx, args); // 延迟idle毫秒后 执行action
+            }, idle);
+            that.setState({
+                last: id
+            });
+        };
+    };
+
     getPrice = (type, amount) => {
         if (type) {
             this.setState({loading: true});
-            dispatcher.dispatch({
-                type: CALCULATE_PRICE,
-                content: {
-                    asset: this.props.data,
-                    amount,
-                    type,
-                    tokenName: this.state.token,
-                    tokenIn:
-                        this.state.token == "SYX"
-                            ? this.props.data.rewardsAddress
-                            : this.props.data.erc20Address,
-                    tokenOut:
-                        this.state.buyToken == "SYX"
-                            ? this.props.data.rewardsAddress
-                            : this.props.data.erc20Address
-                }
-            });
+            this.debounce(1000, () => {
+                dispatcher.dispatch({
+                    type: CALCULATE_PRICE,
+                    content: {
+                        asset: this.props.data,
+                        amount,
+                        type,
+                        tokenName: this.state.token,
+                        tokenIn:
+                            this.state.token == "SYX"
+                                ? this.props.data.rewardsAddress
+                                : this.props.data.erc20Address,
+                        tokenOut:
+                            this.state.buyToken == "SYX"
+                                ? this.props.data.rewardsAddress
+                                : this.props.data.erc20Address
+                    }
+                });
+            })();
         } else {
             this.setState({price: this.props.data.price});
         }
