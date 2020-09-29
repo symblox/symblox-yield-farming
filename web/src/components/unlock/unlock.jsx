@@ -7,7 +7,7 @@ import {withNamespaces} from "react-i18next";
 
 import {Web3ReactProvider, useWeb3React} from "@web3-react/core";
 import {Web3Provider} from "@ethersproject/providers";
-import {useEagerConnect, useInactiveListener} from "./hooks";
+import {useInactiveListener} from "./hooks";
 
 import {
     ERROR,
@@ -241,18 +241,6 @@ function MyComponent(props) {
         }
     }, [account, active, closeModal, context, library]);
 
-    // React.useEffect(() => {
-    //   if (storeContext && storeContext.active && !active) {
-    //     console.log("we are deactive: "+storeContext.account)
-    //     store.setStore({ account: {}, web3context: null })
-    //   }
-    // }, [active, storeContext]);
-
-    // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
-    // const triedEager = useEagerConnect();
-
-    // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
-    // useInactiveListener(!triedEager || !!activatingConnector);
     const width = window.innerWidth;
 
     return (

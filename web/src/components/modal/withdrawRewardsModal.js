@@ -253,7 +253,6 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             curTab: newValue
         });
-        console.log(this.state.curTab);
     };
 
     handleChange = event => {
@@ -289,8 +288,10 @@ class WithdrawRewardsModal extends Component {
               parseFloat(pool.maxSyxOut)
                 ? formatNumberPrecision(pool.maxSyxOut)
                 : formatNumberPrecision(
-                      parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)
-                  ) / parseFloat(pool.price)
+                      (parseFloat(pool.stakeAmount) *
+                          parseFloat(pool.BPTPrice)) /
+                          parseFloat(pool.price)
+                  )
             : parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice) >
               parseFloat(pool.maxErc20Out)
             ? formatNumberPrecision(pool.maxErc20Out)
@@ -448,10 +449,13 @@ class WithdrawRewardsModal extends Component {
                                     value={this.state.pool.index}
                                     onChange={this.poolHandleChange.bind(this)}
                                 >
-                                    {data.map(v => {
+                                    {data.map((v, i) => {
                                         if (v.entryContractAddress) {
                                             return (
-                                                <MenuItem value={v.index}>
+                                                <MenuItem
+                                                    value={v.index}
+                                                    key={i}
+                                                >
                                                     {v.id}
                                                 </MenuItem>
                                             );
@@ -573,7 +577,6 @@ class WithdrawRewardsModal extends Component {
                                                                 : "1"
                                                     }}
                                                     disabled={loading}
-                                                    variant="outline"
                                                     onClick={this.max}
                                                 >
                                                     <FormattedMessage id="POPUP_INPUT_MAX" />
@@ -596,8 +599,8 @@ class WithdrawRewardsModal extends Component {
                                             id: "outlined-token"
                                         }}
                                     >
-                                        {this.state.pool.tokens.map(v => (
-                                            <MenuItem value={v}>
+                                        {this.state.pool.tokens.map((v, i) => (
+                                            <MenuItem value={v} key={i}>
                                                 <img
                                                     className={classes.icon}
                                                     src={"/" + v + ".png"}
@@ -669,10 +672,13 @@ class WithdrawRewardsModal extends Component {
                                     value={this.state.pool.index}
                                     onChange={this.poolHandleChange.bind(this)}
                                 >
-                                    {data.map(v => {
+                                    {data.map((v, i) => {
                                         if (v.entryContractAddress) {
                                             return (
-                                                <MenuItem value={v.index}>
+                                                <MenuItem
+                                                    value={v.index}
+                                                    key={i}
+                                                >
                                                     {v.id}
                                                 </MenuItem>
                                             );

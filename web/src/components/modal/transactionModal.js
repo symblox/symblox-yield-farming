@@ -215,6 +215,31 @@ class TransactionModal extends Component {
         }
     }
 
+    getPrice = (type, amount) => {
+        if (type) {
+            this.setState({loading: true});
+            dispatcher.dispatch({
+                type: CALCULATE_PRICE,
+                content: {
+                    asset: this.props.data,
+                    amount,
+                    type,
+                    tokenName: this.state.token,
+                    tokenIn:
+                        this.state.token == "SYX"
+                            ? this.props.data.rewardsAddress
+                            : this.props.data.erc20Address,
+                    tokenOut:
+                        this.state.buyToken == "SYX"
+                            ? this.props.data.rewardsAddress
+                            : this.props.data.erc20Address
+                }
+            });
+        } else {
+            this.setState({price: this.props.data.price});
+        }
+    };
+
     handleChange = event => {
         const token = event.target.name;
         this.setState({
@@ -316,31 +341,6 @@ class TransactionModal extends Component {
             });
 
             this.getPrice();
-        }
-    };
-
-    getPrice = (type, amount) => {
-        if (type) {
-            this.setState({loading: true});
-            dispatcher.dispatch({
-                type: CALCULATE_PRICE,
-                content: {
-                    asset: this.props.data,
-                    amount,
-                    type,
-                    tokenName: this.state.token,
-                    tokenIn:
-                        this.state.token == "SYX"
-                            ? this.props.data.rewardsAddress
-                            : this.props.data.erc20Address,
-                    tokenOut:
-                        this.state.buyToken == "SYX"
-                            ? this.props.data.rewardsAddress
-                            : this.props.data.erc20Address
-                }
-            });
-        } else {
-            this.setState({price: this.props.data.price});
         }
     };
 
@@ -460,7 +460,6 @@ class TransactionModal extends Component {
                                     parseFloat(this.state.amount) >
                                     availableAmount
                                 }
-                                helperText="Incorrect entry."
                                 className={classes.customInput}
                                 id="outlined-adornment-password"
                                 type={"text"}
@@ -482,7 +481,6 @@ class TransactionModal extends Component {
                                                         : "1"
                                             }}
                                             disabled={loading}
-                                            variant="outline"
                                             onClick={this.max}
                                         >
                                             <FormattedMessage id="POPUP_INPUT_MAX" />
@@ -512,8 +510,8 @@ class TransactionModal extends Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                {data.tokens.map(v => (
-                                    <MenuItem value={v}>
+                                {data.tokens.map((v, i) => (
+                                    <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
                                             src={"/" + v + ".png"}
@@ -592,8 +590,8 @@ class TransactionModal extends Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                {data.tokens.map(v => (
-                                    <MenuItem value={v}>
+                                {data.tokens.map((v, i) => (
+                                    <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
                                             src={"/" + v + ".png"}

@@ -333,10 +333,10 @@ class DepositModal extends Component {
                                 value={pool.index}
                                 onChange={this.poolHandleChange.bind(this)}
                             >
-                                {data.map(v => {
+                                {data.map((v, i) => {
                                     if (v.entryContractAddress) {
                                         return (
-                                            <MenuItem value={v.index}>
+                                            <MenuItem value={v.index} key={i}>
                                                 {v.id}
                                             </MenuItem>
                                         );
@@ -419,7 +419,6 @@ class DepositModal extends Component {
                                                         : "1"
                                             }}
                                             disabled={loading}
-                                            variant="outline"
                                             onClick={this.max}
                                         >
                                             <FormattedMessage id="POPUP_INPUT_MAX" />
@@ -442,8 +441,8 @@ class DepositModal extends Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                {pool.tokens.map(v => (
-                                    <MenuItem value={v}>
+                                {pool.tokens.map((v, i) => (
+                                    <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
                                             src={"/" + v + ".png"}
