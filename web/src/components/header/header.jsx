@@ -44,7 +44,7 @@ export default class App extends React.Component {
                             }}
                         >
                             {this.props.address && this.props.show && (
-                                <a className={"header__menu_wallet_sm"}>
+                                <div className={"header__menu_wallet_sm"}>
                                     <div
                                         onClick={() =>
                                             this.props.overlayClicked &&
@@ -62,10 +62,10 @@ export default class App extends React.Component {
                                         /> */}
                                         {this.props.address}
                                     </div>
-                                </a>
+                                </div>
                             )}
                             {!this.props.address && this.props.show && (
-                                <a
+                                <div
                                     className={"header__menu_wallet_sm"}
                                     onClick={() =>
                                         this.props.overlayClicked &&
@@ -73,7 +73,7 @@ export default class App extends React.Component {
                                     }
                                 >
                                     <FormattedMessage id="LABEL_CONNECT_WALLET" />
-                                </a>
+                                </div>
                             )}
                             <Select
                                 className={"header__menu_wallet_sm"}
@@ -112,7 +112,7 @@ export default class App extends React.Component {
                             }}
                         >
                             {this.props.address && this.props.show && (
-                                <a className={"header__menu_wallet"}>
+                                <div className={"header__menu_wallet"}>
                                     <div
                                         onClick={() =>
                                             this.props.overlayClicked &&
@@ -130,10 +130,10 @@ export default class App extends React.Component {
                                         />
                                         {this.props.address}
                                     </div>
-                                </a>
+                                </div>
                             )}
                             {!this.props.address && this.props.show && (
-                                <a
+                                <div
                                     className={"header__menu_wallet"}
                                     onClick={() =>
                                         this.props.overlayClicked &&
@@ -141,7 +141,7 @@ export default class App extends React.Component {
                                     }
                                 >
                                     <FormattedMessage id="LABEL_CONNECT_WALLET" />
-                                </a>
+                                </div>
                             )}
                             <Select
                                 className={"header__menu_wallet"}
