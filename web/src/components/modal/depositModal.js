@@ -294,9 +294,9 @@ class DepositModal extends Component {
                 asset: this.state.pool,
                 amount: this.formatNumber(this.state.amount, 18, 6),
                 token:
-                    this.state.pool.type == "seed"
+                    this.state.pool.type === "seed"
                         ? ""
-                        : this.state.token == "SYX"
+                        : this.state.token === "SYX"
                         ? this.state.pool.rewardsAddress
                         : this.state.pool.erc20Address
             }
@@ -340,6 +340,8 @@ class DepositModal extends Component {
                                                 {v.id}
                                             </MenuItem>
                                         );
+                                    } else {
+                                        return <></>;
                                     }
                                 })}
                             </Select>
@@ -363,10 +365,10 @@ class DepositModal extends Component {
                             {": "}
                         </span>
                         <span className={classes.rightText}>
-                            {pool.type == "seed"
+                            {pool.type === "seed"
                                 ? parseFloat(pool.stakeAmount).toFixed(4) +
                                   pool.symbol
-                                : token == "SYX"
+                                : token === "SYX"
                                 ? (
                                       (parseFloat(pool.stakeAmount) *
                                           parseFloat(pool.BPTPrice)) /
@@ -386,9 +388,9 @@ class DepositModal extends Component {
                             {": "}
                         </span>
                         <span className={classes.rightText}>
-                            {pool.type == "seed"
+                            {pool.type === "seed"
                                 ? this.getMaxAmount().toFixed(4) + pool.symbol
-                                : token == "SYX"
+                                : token === "SYX"
                                 ? this.getMaxAmount().toFixed(4) + " SYX"
                                 : this.getMaxAmount().toFixed(4) +
                                   " " +

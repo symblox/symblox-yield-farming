@@ -440,7 +440,7 @@ class Home extends Component {
             rewardsAvailable = 0,
             totalStakeAmount = 0;
         if (this.state.pools) {
-            this.state.pools.map(pool => {
+            this.state.pools.forEach(pool => {
                 const toSyxAmount =
                     (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
                     parseFloat(pool.price);
@@ -490,7 +490,6 @@ class Home extends Component {
                     overlayClicked={this.overlayClicked}
                     cur_language={this.props.cur_language}
                     linkTo={"/"}
-                    cur_language={this.props.cur_language}
                     setLanguage={this.props.setLanguage}
                 />
                 <Container>
@@ -618,7 +617,7 @@ class Home extends Component {
                                                     style={{marginTop: "9px"}}
                                                     variant="contained"
                                                     disabled={
-                                                        hasJoinedCount == 0 ||
+                                                        hasJoinedCount === 0 ||
                                                         loading
                                                     }
                                                     onClick={() =>
@@ -671,7 +670,7 @@ class Home extends Component {
                                                 }
                                                 variant="contained"
                                                 disabled={
-                                                    hasJoinedCount == 0 ||
+                                                    hasJoinedCount === 0 ||
                                                     loading
                                                 }
                                                 onClick={() => {
@@ -731,7 +730,7 @@ class Home extends Component {
                                                 }
                                                 variant="contained"
                                                 disabled={
-                                                    hasJoinedCount == 0 ||
+                                                    hasJoinedCount === 0 ||
                                                     loading
                                                 }
                                                 onClick={() => {
@@ -1178,7 +1177,8 @@ class Home extends Component {
                 {transactionModalOpen &&
                     this.renderTransactionModal(this.state.tradeData)}
                 {this.state.networkId &&
-                    this.state.networkId != config.requiredNetworkId &&
+                    this.state.networkId.toString() !==
+                        config.requiredNetworkId.toString() &&
                     this.renderNetworkErrModal()}
                 {snackbarMessage && this.renderSnackbar()}
 

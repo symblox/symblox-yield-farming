@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
-import {Switch, Route, Redirect} from "react-router-dom";
+import {Switch, Route} from "react-router-dom";
 import IpfsRouter from "ipfs-react-router";
 
 import "./i18n";

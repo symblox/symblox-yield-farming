@@ -279,9 +279,9 @@ class WithdrawRewardsModal extends Component {
         const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
-        return pool.type == "seed"
+        return pool.type === "seed"
             ? formatNumberPrecision(pool.stakeAmount)
-            : token == "SYX"
+            : token === "SYX"
             ? (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
                   parseFloat(pool.price) >
               parseFloat(pool.maxSyxOut)
@@ -348,7 +348,7 @@ class WithdrawRewardsModal extends Component {
                 }
             });
         } else {
-            if (this.state.token == "SYX") {
+            if (this.state.token === "SYX") {
                 amount = this.formatNumber(
                     (
                         (parseFloat(this.state.amount) *
@@ -375,7 +375,7 @@ class WithdrawRewardsModal extends Component {
                     asset: this.state.pool,
                     amount,
                     token:
-                        this.state.token == "SYX"
+                        this.state.token === "SYX"
                             ? this.state.pool.rewardsAddress
                             : this.state.pool.erc20Address
                 }
@@ -458,6 +458,8 @@ class WithdrawRewardsModal extends Component {
                                                     {v.id}
                                                 </MenuItem>
                                             );
+                                        } else {
+                                            return <></>;
                                         }
                                     })}
                                 </Select>
@@ -477,7 +479,7 @@ class WithdrawRewardsModal extends Component {
                                     <FormattedMessage id="POPUP_WITHDRAWABLE_AMOUNT" />
                                 </span>
                                 <span style={{float: "right"}}>
-                                    {this.state.token == "SYX" ? (
+                                    {this.state.token === "SYX" ? (
                                         <img
                                             className={classes.icon}
                                             src={"/SYX.png"}
@@ -494,11 +496,11 @@ class WithdrawRewardsModal extends Component {
                                             alt=""
                                         />
                                     )}
-                                    {this.state.pool.type == "seed"
+                                    {this.state.pool.type === "seed"
                                         ? parseFloat(
                                               this.state.pool.stakeAmount
                                           )
-                                        : this.state.token == "SYX"
+                                        : this.state.token === "SYX"
                                         ? (parseFloat(
                                               this.state.pool.stakeAmount
                                           ) *
@@ -681,6 +683,8 @@ class WithdrawRewardsModal extends Component {
                                                     {v.id}
                                                 </MenuItem>
                                             );
+                                        } else {
+                                            return <></>;
                                         }
                                     })}
                                 </Select>

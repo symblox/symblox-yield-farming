@@ -7,7 +7,6 @@ import {withNamespaces} from "react-i18next";
 
 import {Web3ReactProvider, useWeb3React} from "@web3-react/core";
 import {Web3Provider} from "@ethersproject/providers";
-import {useInactiveListener} from "./hooks";
 
 import {
     ERROR,

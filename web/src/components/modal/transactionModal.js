@@ -202,14 +202,14 @@ class TransactionModal extends Component {
             last: null
         });
         const price =
-            data.tokenName == "SYX"
+            data.tokenName === "SYX"
                 ? parseFloat(data.price)
                 : 1 / parseFloat(data.price);
-        if (data.type == "sell") {
+        if (data.type === "sell") {
             this.setState({
                 buyAmount: (parseFloat(data.amount) * price).toFixed(4)
             });
-        } else if (data.type == "buyIn") {
+        } else if (data.type === "buyIn") {
             this.setState({
                 amount: ((parseFloat(data.amount) * 1) / price).toFixed(4)
             });
@@ -244,11 +244,11 @@ class TransactionModal extends Component {
                         type,
                         tokenName: this.state.token,
                         tokenIn:
-                            this.state.token == "SYX"
+                            this.state.token === "SYX"
                                 ? this.props.data.rewardsAddress
                                 : this.props.data.erc20Address,
                         tokenOut:
-                            this.state.buyToken == "SYX"
+                            this.state.buyToken === "SYX"
                                 ? this.props.data.rewardsAddress
                                 : this.props.data.erc20Address
                     }
@@ -264,7 +264,7 @@ class TransactionModal extends Component {
         this.setState({
             [token]: event.target.value,
             buyToken:
-                this.state.tokens[0] == event.target.value
+                this.state.tokens[0] === event.target.value
                     ? this.state.tokens[this.state.tokens.length - 1]
                     : this.state.tokens[0],
             amount: 0.0,
@@ -278,7 +278,7 @@ class TransactionModal extends Component {
         this.setState({
             [token]: event.target.value,
             token:
-                this.state.tokens[0] == event.target.value
+                this.state.tokens[0] === event.target.value
                     ? this.state.tokens[this.state.tokens.length - 1]
                     : this.state.tokens[0],
             amount: 0.0,
@@ -336,7 +336,7 @@ class TransactionModal extends Component {
         const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
-        return token == "SYX"
+        return token === "SYX"
             ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
                 ? formatNumberPrecision(pool.rewardsBalance)
                 : formatNumberPrecision(pool.maxSyxIn)
@@ -395,15 +395,15 @@ class TransactionModal extends Component {
                 asset: this.props.data,
                 amount: this.formatNumber(this.state.amount, 18, 6),
                 price:
-                    this.state.token == "SYX"
+                    this.state.token === "SYX"
                         ? (1 / parseFloat(this.state.price)) * 1.1
                         : parseFloat(this.state.price) * 1.1,
                 token:
-                    this.state.token == "SYX"
+                    this.state.token === "SYX"
                         ? this.props.data.rewardsAddress
                         : this.props.data.erc20Address,
                 token2:
-                    this.state.buyToken == "SYX"
+                    this.state.buyToken === "SYX"
                         ? this.props.data.rewardsAddress
                         : this.props.data.erc20Address
             }
@@ -418,7 +418,7 @@ class TransactionModal extends Component {
         const fullScreen = window.innerWidth < 450;
 
         const availableAmount = parseFloat(
-            this.state.token == data.tokens[0]
+            this.state.token === data.tokens[0]
                 ? parseFloat(data.maxSyxIn) > parseFloat(data.rewardsBalance)
                     ? parseFloat(data.rewardsBalance)
                     : parseFloat(data.maxSyxIn).toFixed(4)
@@ -444,7 +444,7 @@ class TransactionModal extends Component {
                             <FormattedMessage id="POPUP_LABEL_FROM" />
                         </span>
                         <span className={classes.textPrimy}>
-                            {this.state.token == "SYX" ? (
+                            {this.state.token === "SYX" ? (
                                 <img
                                     className={classes.icon}
                                     src={"/SYX.png"}
@@ -459,7 +459,7 @@ class TransactionModal extends Component {
                             )}
                             <FormattedMessage id="POPUP_TRADEABLE_AMOUNT" />
                             {": "}
-                            {this.state.token == data.tokens[0]
+                            {this.state.token === data.tokens[0]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.rewardsBalance)
                                     ? parseFloat(data.rewardsBalance).toFixed(4)
@@ -557,7 +557,7 @@ class TransactionModal extends Component {
                             <FormattedMessage id="POPUP_LABEL_TO" />
                         </span>{" "}
                         <span className={classes.textPrimy}>
-                            {this.state.buyToken == "SYX" ? (
+                            {this.state.buyToken === "SYX" ? (
                                 <img
                                     className={classes.icon}
                                     src={"/SYX.png"}
@@ -572,7 +572,7 @@ class TransactionModal extends Component {
                             )}
                             <FormattedMessage id="POPUP_TRADEABLE_AMOUNT" />
                             {": "}
-                            {this.state.token == data.tokens[1]
+                            {this.state.token === data.tokens[1]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.rewardsBalance)
                                     ? parseFloat(data.rewardsBalance).toFixed(4)
@@ -633,7 +633,7 @@ class TransactionModal extends Component {
                                     tokenFrom: this.state.token,
                                     tokenTo: this.state.buyToken,
                                     rate: parseFloat(
-                                        this.state.token == "SYX"
+                                        this.state.token === "SYX"
                                             ? this.state.price
                                             : 1 / this.state.price
                                     ).toFixed(4)

@@ -1,6 +1,5 @@
 import config from "../config";
 import async from "async";
-import * as moment from "moment";
 import {
     ERROR,
     CONFIGURE,
@@ -205,7 +204,7 @@ class Store {
         let connectorAddress = store.getStore(keyName);
         if (
             (!connectorAddress ||
-                connectorAddress ==
+                connectorAddress ===
                     "0x0000000000000000000000000000000000000000") &&
             account &&
             account.address
@@ -222,7 +221,7 @@ class Store {
                     .call();
                 if (
                     !connectorAddress ||
-                    connectorAddress ==
+                    connectorAddress ===
                         "0x0000000000000000000000000000000000000000"
                 ) {
                     connectorAddress = null;
@@ -520,7 +519,7 @@ class Store {
             : "0." + str.slice(0, str.length - numStr.length) + numStr
         ).replace(/(0+)$/g, "");
 
-        if (decimalPlace == 0) return res.slice(0, res.indexOf("."));
+        if (decimalPlace === 0) return res.slice(0, res.indexOf("."));
 
         var length = res.indexOf(".") + 1 + decimalPlace;
         res = res
@@ -735,7 +734,7 @@ class Store {
                 price = this.toStringDecimals(price, asset.decimals);
                 callback(null, {
                     price:
-                        tokenIn == asset.rewardsAddress
+                        tokenIn === asset.rewardsAddress
                             ? 1 / parseFloat(price)
                             : parseFloat(price),
                     type,
@@ -782,7 +781,7 @@ class Store {
                 price = this.toStringDecimals(price, asset.decimals);
                 callback(null, {
                     price:
-                        tokenIn == asset.rewardsAddress
+                        tokenIn === asset.rewardsAddress
                             ? 1 / parseFloat(price)
                             : parseFloat(price),
                     type,
@@ -974,7 +973,7 @@ class Store {
             return emitter.emit(ERROR, "connector not create");
         if (
             asset.type === "seed" ||
-            (asset.type === "swap-native" && asset.erc20Address == token)
+            (asset.type === "swap-native" && asset.erc20Address === token)
         ) {
             this._callDeposit(asset, account, token, amount, (err, res) => {
                 if (err) {
@@ -1024,7 +1023,7 @@ class Store {
             );
 
             let amountToSend = web3.utils.toWei(amount, "ether");
-            if (asset.decimals != 18) {
+            if (asset.decimals !== 18) {
                 amountToSend = (
                     amount * Number(`1e+${asset.decimals}`)
                 ).toFixed(0);
@@ -1033,7 +1032,7 @@ class Store {
             let args;
             if (
                 asset.type === "seed" ||
-                (asset.type === "swap-native" && asset.erc20Address == token)
+                (asset.type === "swap-native" && asset.erc20Address === token)
             ) {
                 args = [0];
             } else {
@@ -1046,7 +1045,7 @@ class Store {
                     value:
                         asset.type === "seed" ||
                         (asset.type === "swap-native" &&
-                            asset.erc20Address == token)
+                            asset.erc20Address === token)
                             ? amountToSend
                             : "0",
                     from: account.address,
@@ -1061,7 +1060,7 @@ class Store {
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
-                    if (confirmationNumber == 2) {
+                    if (confirmationNumber === 2) {
                         dispatcher.dispatch({
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
@@ -1115,7 +1114,7 @@ class Store {
             );
 
             let amountToSend = web3.utils.toWei(amount, "ether");
-            if (asset.decimals != 18) {
+            if (asset.decimals !== 18) {
                 amountToSend = (
                     amount * Number(`1e+${asset.decimals}`)
                 ).toFixed(0);
@@ -1124,7 +1123,7 @@ class Store {
             let args;
             if (
                 asset.type === "seed" ||
-                (asset.type === "swap-native" && asset.erc20Address == token)
+                (asset.type === "swap-native" && asset.erc20Address === token)
             ) {
                 args = [amountToSend, 0];
             } else {
@@ -1146,7 +1145,7 @@ class Store {
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
-                    if (confirmationNumber == 2) {
+                    if (confirmationNumber === 2) {
                         dispatcher.dispatch({
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
@@ -1224,11 +1223,11 @@ class Store {
         );
 
         var amountToSend = web3.utils.toWei(amount, "ether");
-        if (asset.decimals != 18) {
+        if (asset.decimals !== 18) {
             amountToSend = (amount * Number(`1e+${asset.decimals}`)).toFixed(0);
         }
 
-        if (asset.type === "swap-native" && asset.erc20Address == token) {
+        if (asset.type === "swap-native" && asset.erc20Address === token) {
             yCurveFiContract.methods
                 .swapWTokenAmountIn(
                     token2,
@@ -1249,7 +1248,7 @@ class Store {
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
-                    if (confirmationNumber == 2) {
+                    if (confirmationNumber === 2) {
                         dispatcher.dispatch({
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
@@ -1301,7 +1300,7 @@ class Store {
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
-                    if (confirmationNumber == 2) {
+                    if (confirmationNumber === 2) {
                         dispatcher.dispatch({
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
@@ -1350,7 +1349,7 @@ class Store {
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
-                    if (confirmationNumber == 2) {
+                    if (confirmationNumber === 2) {
                         dispatcher.dispatch({
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
@@ -1413,7 +1412,7 @@ class Store {
                 callback(null, hash);
             })
             .on("confirmation", function (confirmationNumber, receipt) {
-                if (confirmationNumber == 2) {
+                if (confirmationNumber === 2) {
                     dispatcher.dispatch({
                         type: GET_BALANCES_PERPETUAL,
                         content: {}
@@ -1480,7 +1479,7 @@ class Store {
                     callback(null, hash);
                 })
                 .on("confirmation", function (confirmationNumber, receipt) {
-                    if (confirmationNumber == 2) {
+                    if (confirmationNumber === 2) {
                         dispatcher.dispatch({
                             type: GET_BALANCES_PERPETUAL,
                             content: {}
