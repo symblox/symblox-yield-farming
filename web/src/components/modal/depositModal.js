@@ -359,7 +359,7 @@ class DepositModal extends Component {
                     ) : (
                         <></>
                     )}
-                    <Typography gutterBottom>
+                    <Typography gutterBottom style={{overflow: "scroll"}}>
                         <span style={{color: "#ACAEBC"}}>
                             <FormattedMessage id="TOTAL_STAKE" />
                             {": "}
@@ -382,7 +382,7 @@ class DepositModal extends Component {
                                   pool.name}
                         </span>
                     </Typography>
-                    <Typography gutterBottom>
+                    <Typography gutterBottom style={{overflow: "scroll"}}>
                         <span style={{color: "#ACAEBC"}}>
                             <FormattedMessage id="POPUP_DEPOSITABLE_AMOUNT" />
                             {": "}
