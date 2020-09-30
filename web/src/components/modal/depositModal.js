@@ -292,7 +292,9 @@ class DepositModal extends Component {
             type: DEPOSIT,
             content: {
                 asset: this.state.pool,
-                amount: this.formatNumber(this.state.amount, 18, 6),
+                amount: parseFloat(
+                    this.formatNumber(this.state.amount, 18, 6)
+                ).toString(),
                 token:
                     this.state.pool.type === "seed"
                         ? ""

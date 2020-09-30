@@ -373,7 +373,7 @@ class WithdrawRewardsModal extends Component {
                 type: WITHDRAW,
                 content: {
                     asset: this.state.pool,
-                    amount,
+                    amount: parseFloat(amount).toString(),
                     token:
                         this.state.token === "SYX"
                             ? this.state.pool.rewardsAddress

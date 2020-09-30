@@ -393,7 +393,9 @@ class TransactionModal extends Component {
             type: TRADE,
             content: {
                 asset: this.props.data,
-                amount: this.formatNumber(this.state.amount, 18, 6),
+                amount: parseFloat(
+                    this.formatNumber(this.state.amount, 18, 6)
+                ).toString(),
                 price:
                     this.state.token === "SYX"
                         ? (1 / parseFloat(this.state.price)) * 1.1
