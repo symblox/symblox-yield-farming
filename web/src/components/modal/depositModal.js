@@ -14,6 +14,7 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
 import {DEPOSIT} from "../../constants";
@@ -132,6 +133,9 @@ const styles = theme => ({
         lineHeight: "22px",
         textAlign: "right",
         color: "#4E5B70"
+    },
+    maxBtn: {
+        padding: "10px 18px"
     }
 });
 
@@ -277,22 +281,24 @@ class DepositModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         dispatcher.dispatch({
             type: DEPOSIT,
             content: {
                 asset: this.state.pool,
-                amount: this.formatNumber(this.state.amount, 18, 6),
+                amount: parseFloat(
+                    this.formatNumber(this.state.amount, 18, 6)
+                ).toString(),
                 token:
-                    this.state.pool.type == "seed"
+                    this.state.pool.type === "seed"
                         ? ""
-                        : this.state.token == "SYX"
+                        : this.state.token === "SYX"
                         ? this.state.pool.rewardsAddress
                         : this.state.pool.erc20Address
             }
@@ -329,13 +335,15 @@ class DepositModal extends Component {
                                 value={pool.index}
                                 onChange={this.poolHandleChange.bind(this)}
                             >
-                                {data.map(v => {
+                                {data.map((v, i) => {
                                     if (v.entryContractAddress) {
                                         return (
-                                            <MenuItem value={v.index}>
+                                            <MenuItem value={v.index} key={i}>
                                                 {v.id}
                                             </MenuItem>
                                         );
+                                    } else {
+                                        return <></>;
                                     }
                                 })}
                             </Select>
@@ -353,16 +361,16 @@ class DepositModal extends Component {
                     ) : (
                         <></>
                     )}
-                    <Typography gutterBottom>
+                    <Typography gutterBottom style={{overflow: "scroll"}}>
                         <span style={{color: "#ACAEBC"}}>
                             <FormattedMessage id="TOTAL_STAKE" />
                             {": "}
                         </span>
                         <span className={classes.rightText}>
-                            {pool.type == "seed"
+                            {pool.type === "seed"
                                 ? parseFloat(pool.stakeAmount).toFixed(4) +
                                   pool.symbol
-                                : token == "SYX"
+                                : token === "SYX"
                                 ? (
                                       (parseFloat(pool.stakeAmount) *
                                           parseFloat(pool.BPTPrice)) /
@@ -376,15 +384,15 @@ class DepositModal extends Component {
                                   pool.name}
                         </span>
                     </Typography>
-                    <Typography gutterBottom>
+                    <Typography gutterBottom style={{overflow: "scroll"}}>
                         <span style={{color: "#ACAEBC"}}>
                             <FormattedMessage id="POPUP_DEPOSITABLE_AMOUNT" />
                             {": "}
                         </span>
                         <span className={classes.rightText}>
-                            {pool.type == "seed"
+                            {pool.type === "seed"
                                 ? this.getMaxAmount().toFixed(4) + pool.symbol
-                                : token == "SYX"
+                                : token === "SYX"
                                 ? this.getMaxAmount().toFixed(4) + " SYX"
                                 : this.getMaxAmount().toFixed(4) +
                                   " " +
@@ -402,8 +410,19 @@ class DepositModal extends Component {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Button
+                                            className={classes.maxBtn}
+                                            style={{
+                                                opacity:
+                                                    parseFloat(amount).toFixed(
+                                                        4
+                                                    ) ===
+                                                    this.getMaxAmount().toFixed(
+                                                        4
+                                                    )
+                                                        ? "0.6"
+                                                        : "1"
+                                            }}
                                             disabled={loading}
-                                            variant="outline"
                                             onClick={this.max}
                                         >
                                             <FormattedMessage id="POPUP_INPUT_MAX" />
@@ -426,8 +445,8 @@ class DepositModal extends Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                {pool.tokens.map(v => (
-                                    <MenuItem value={v}>
+                                {pool.tokens.map((v, i) => (
+                                    <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
                                             src={"/" + v + ".png"}
@@ -456,7 +475,11 @@ class DepositModal extends Component {
                         className={classes.button}
                         fullWidth={true}
                     >
-                        <FormattedMessage id="LP_DEPOSIT_WITHDRAW_REWARD" />
+                        {loading ? (
+                            <CircularProgress></CircularProgress>
+                        ) : (
+                            <FormattedMessage id="LP_DEPOSIT_WITHDRAW_REWARD" />
+                        )}
                     </Button>
                 </DialogActions>
             </Dialog>

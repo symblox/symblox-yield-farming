@@ -159,7 +159,7 @@ export default function Pool(props) {
                     <></>
                 )}
                 <div className={classes.title}>
-                    {data.type == "seed" ? (
+                    {data.type === "seed" ? (
                         <img className={classes.icon} src={tokenIcon} alt="" />
                     ) : (
                         <>
@@ -183,7 +183,7 @@ export default function Pool(props) {
                         <React.Fragment>
                             <div>
                                 <FormattedMessage id="TOTAL_SUPPLY" />:
-                                {data.type == "seed"
+                                {data.type === "seed"
                                     ? parseFloat(data.totalSupply || 0).toFixed(
                                           4
                                       )
@@ -204,7 +204,7 @@ export default function Pool(props) {
                                 %
                             </div>
                             <div>
-                                {data.type == "seed" ? (
+                                {data.type === "seed" ? (
                                     <>
                                         <FormattedMessage id="TOTAL_STAKE" />:
                                         {data.stakeAmount} {data.name}

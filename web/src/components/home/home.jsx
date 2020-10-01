@@ -370,9 +370,9 @@ class Home extends Component {
                     type: GET_BALANCES_PERPETUAL,
                     content: {}
                 });
-        // this.setState(() => ({
-        //     modalOpen: true
-        // }));
+                // this.setState(() => ({
+                //     modalOpen: true
+                // }));
             }
         }, 2000);
     }
@@ -392,6 +392,10 @@ class Home extends Component {
         emitter.removeListener(GET_REWARDS_RETURNED, this.showHash);
         emitter.removeListener(ERROR, this.errorReturned);
         emitter.removeListener(TX_CONFIRM, this.hideLoading);
+        emitter.removeListener(
+            CREATE_ENTRY_CONTRACT_RETURNED,
+            this.hideLoading
+        );
     }
 
     connectionConnected = async () => {
@@ -436,7 +440,7 @@ class Home extends Component {
             rewardsAvailable = 0,
             totalStakeAmount = 0;
         if (this.state.pools) {
-            this.state.pools.map(pool => {
+            this.state.pools.forEach(pool => {
                 const toSyxAmount =
                     (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
                     parseFloat(pool.price);
@@ -486,7 +490,6 @@ class Home extends Component {
                     overlayClicked={this.overlayClicked}
                     cur_language={this.props.cur_language}
                     linkTo={"/"}
-                    cur_language={this.props.cur_language}
                     setLanguage={this.props.setLanguage}
                 />
                 <Container>
@@ -614,7 +617,7 @@ class Home extends Component {
                                                     style={{marginTop: "9px"}}
                                                     variant="contained"
                                                     disabled={
-                                                        hasJoinedCount == 0 ||
+                                                        hasJoinedCount === 0 ||
                                                         loading
                                                     }
                                                     onClick={() =>
@@ -667,7 +670,7 @@ class Home extends Component {
                                                 }
                                                 variant="contained"
                                                 disabled={
-                                                    hasJoinedCount == 0 ||
+                                                    hasJoinedCount === 0 ||
                                                     loading
                                                 }
                                                 onClick={() => {
@@ -727,7 +730,7 @@ class Home extends Component {
                                                 }
                                                 variant="contained"
                                                 disabled={
-                                                    hasJoinedCount == 0 ||
+                                                    hasJoinedCount === 0 ||
                                                     loading
                                                 }
                                                 onClick={() => {
@@ -1174,7 +1177,8 @@ class Home extends Component {
                 {transactionModalOpen &&
                     this.renderTransactionModal(this.state.tradeData)}
                 {this.state.networkId &&
-                    this.state.networkId != config.requiredNetworkId &&
+                    this.state.networkId.toString() !==
+                        config.requiredNetworkId.toString() &&
                     this.renderNetworkErrModal()}
                 {snackbarMessage && this.renderSnackbar()}
 
@@ -1246,7 +1250,10 @@ class Home extends Component {
         setTimeout(() => {
             const snackbarObj = {
                 snackbarMessage: error.toString(),
-                snackbarType: "Error"
+                snackbarType: "Error",
+                depositModalOpen: false,
+                withdrawRewardsModalOpen: false,
+                transactionModalOpen: false
             };
             that.setState(snackbarObj);
         });

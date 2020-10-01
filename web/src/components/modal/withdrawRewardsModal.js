@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {FormattedMessage} from "react-intl";
 import {withStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
@@ -17,6 +16,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
 import {GET_REWARDS, WITHDRAW} from "../../constants";
@@ -159,6 +159,9 @@ const styles = theme => ({
         lineHeight: "22px",
         textAlign: "right",
         color: "#4E5B70"
+    },
+    maxBtn: {
+        padding: "10px 18px"
     }
 });
 
@@ -249,7 +252,6 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             curTab: newValue
         });
-        console.log(this.state.curTab);
     };
 
     handleChange = event => {
@@ -272,32 +274,34 @@ class WithdrawRewardsModal extends Component {
         });
     };
 
-    max = () => {
+    getMaxAmount = () => {
         const pool = this.state.pool;
         const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
-        let maxAmount =
-            pool.type == "seed"
-                ? formatNumberPrecision(pool.stakeAmount)
-                : token == "SYX"
-                ? (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
-                      parseFloat(pool.price) >
-                  parseFloat(pool.maxSyxOut)
-                    ? formatNumberPrecision(pool.maxSyxOut)
-                    : formatNumberPrecision(
-                          parseFloat(pool.stakeAmount) *
-                              parseFloat(pool.BPTPrice)
-                      ) / parseFloat(pool.price)
-                : parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice) >
-                  parseFloat(pool.maxErc20Out)
-                ? formatNumberPrecision(pool.maxErc20Out)
+        return pool.type === "seed"
+            ? formatNumberPrecision(pool.stakeAmount)
+            : token === "SYX"
+            ? (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
+                  parseFloat(pool.price) >
+              parseFloat(pool.maxSyxOut)
+                ? formatNumberPrecision(pool.maxSyxOut)
                 : formatNumberPrecision(
-                      parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)
-                  );
+                      (parseFloat(pool.stakeAmount) *
+                          parseFloat(pool.BPTPrice)) /
+                          parseFloat(pool.price)
+                  )
+            : parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice) >
+              parseFloat(pool.maxErc20Out)
+            ? formatNumberPrecision(pool.maxErc20Out)
+            : formatNumberPrecision(
+                  parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)
+              );
+    };
 
+    max = () => {
         this.setState({
-            amount: maxAmount + ""
+            amount: this.getMaxAmount() + ""
         });
     };
 
@@ -321,13 +325,13 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         let amount;
         if (this.state.pool.type === "seed") {
             amount = this.formatNumber(
@@ -344,7 +348,7 @@ class WithdrawRewardsModal extends Component {
                 }
             });
         } else {
-            if (this.state.token == "SYX") {
+            if (this.state.token === "SYX") {
                 amount = this.formatNumber(
                     (
                         (parseFloat(this.state.amount) *
@@ -369,9 +373,9 @@ class WithdrawRewardsModal extends Component {
                 type: WITHDRAW,
                 content: {
                     asset: this.state.pool,
-                    amount,
+                    amount: parseFloat(amount).toString(),
                     token:
-                        this.state.token == "SYX"
+                        this.state.token === "SYX"
                             ? this.state.pool.rewardsAddress
                             : this.state.pool.erc20Address
                 }
@@ -383,13 +387,13 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         dispatcher.dispatch({
             type: GET_REWARDS,
             content: {
@@ -444,13 +448,18 @@ class WithdrawRewardsModal extends Component {
                                     value={this.state.pool.index}
                                     onChange={this.poolHandleChange.bind(this)}
                                 >
-                                    {data.map(v => {
+                                    {data.map((v, i) => {
                                         if (v.entryContractAddress) {
                                             return (
-                                                <MenuItem value={v.index}>
+                                                <MenuItem
+                                                    value={v.index}
+                                                    key={i}
+                                                >
                                                     {v.id}
                                                 </MenuItem>
                                             );
+                                        } else {
+                                            return <></>;
                                         }
                                     })}
                                 </Select>
@@ -470,7 +479,7 @@ class WithdrawRewardsModal extends Component {
                                     <FormattedMessage id="POPUP_WITHDRAWABLE_AMOUNT" />
                                 </span>
                                 <span style={{float: "right"}}>
-                                    {this.state.token == "SYX" ? (
+                                    {this.state.token === "SYX" ? (
                                         <img
                                             className={classes.icon}
                                             src={"/SYX.png"}
@@ -487,11 +496,11 @@ class WithdrawRewardsModal extends Component {
                                             alt=""
                                         />
                                     )}
-                                    {this.state.pool.type == "seed"
+                                    {this.state.pool.type === "seed"
                                         ? parseFloat(
                                               this.state.pool.stakeAmount
                                           )
-                                        : this.state.token == "SYX"
+                                        : this.state.token === "SYX"
                                         ? (parseFloat(
                                               this.state.pool.stakeAmount
                                           ) *
@@ -555,8 +564,20 @@ class WithdrawRewardsModal extends Component {
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button
+                                                    className={classes.maxBtn}
+                                                    style={{
+                                                        opacity:
+                                                            parseFloat(
+                                                                this.state
+                                                                    .amount
+                                                            ).toFixed(4) ===
+                                                            this.getMaxAmount().toFixed(
+                                                                4
+                                                            )
+                                                                ? "0.6"
+                                                                : "1"
+                                                    }}
                                                     disabled={loading}
-                                                    variant="outline"
                                                     onClick={this.max}
                                                 >
                                                     <FormattedMessage id="POPUP_INPUT_MAX" />
@@ -579,8 +600,8 @@ class WithdrawRewardsModal extends Component {
                                             id: "outlined-token"
                                         }}
                                     >
-                                        {this.state.pool.tokens.map(v => (
-                                            <MenuItem value={v}>
+                                        {this.state.pool.tokens.map((v, i) => (
+                                            <MenuItem value={v} key={i}>
                                                 <img
                                                     className={classes.icon}
                                                     src={"/" + v + ".png"}
@@ -652,13 +673,18 @@ class WithdrawRewardsModal extends Component {
                                     value={this.state.pool.index}
                                     onChange={this.poolHandleChange.bind(this)}
                                 >
-                                    {data.map(v => {
+                                    {data.map((v, i) => {
                                         if (v.entryContractAddress) {
                                             return (
-                                                <MenuItem value={v.index}>
+                                                <MenuItem
+                                                    value={v.index}
+                                                    key={i}
+                                                >
                                                     {v.id}
                                                 </MenuItem>
                                             );
+                                        } else {
+                                            return <></>;
                                         }
                                     })}
                                 </Select>
@@ -685,7 +711,11 @@ class WithdrawRewardsModal extends Component {
                             onClick={this.confirm}
                             fullWidth={true}
                         >
-                            <FormattedMessage id="LP_WITHDRAW" />
+                            {loading ? (
+                                <CircularProgress></CircularProgress>
+                            ) : (
+                                <FormattedMessage id="LP_WITHDRAW" />
+                            )}
                         </Button>
                     ) : (
                         <Button
@@ -695,7 +725,11 @@ class WithdrawRewardsModal extends Component {
                             onClick={this.onClaim}
                             fullWidth={true}
                         >
-                            <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                            {loading ? (
+                                <CircularProgress></CircularProgress>
+                            ) : (
+                                <FormattedMessage id="RP_WITHDRAW_REWARDS" />
+                            )}
                         </Button>
                     )}
                 </DialogActions>

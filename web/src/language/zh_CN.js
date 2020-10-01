@@ -36,7 +36,6 @@ const zh_CN = {
     POPUP_TITLE_UNSTAKE: "取出资产",
     POPUP_STAKE_BALANCE: "当前抵押数",
     POPUP_AVAILABLE_STAKE: "可抵押余额",
-    POPUP_STAKE_NEW_BALANCE: "新抵押数 (估算)",
     POPUP_TITLE_SWAP: "交易",
     POPUP_LABEL_FROM: "卖出",
     POPUP_LABEL_TO: "买入 (估算)",

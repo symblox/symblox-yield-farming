@@ -53,6 +53,7 @@ export default class App extends React.Component {
                             <Grid item xs={2}>
                                 <a
                                     href="https://twitter.com/symbloxdefi"
+                                    rel="noopener noreferrer"
                                     target="_blank"
                                 >
                                     <img
@@ -63,7 +64,11 @@ export default class App extends React.Component {
                                 </a>
                             </Grid>
                             <Grid item xs={2}>
-                                <a href="https://t.me/symblox" target="_blank">
+                                <a
+                                    href="https://t.me/symblox"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                >
                                     <img
                                         src={"/terims.svg"}
                                         alt="terims"
@@ -74,6 +79,7 @@ export default class App extends React.Component {
                             <Grid item xs={2}>
                                 <a
                                     href="https://medium.com/@symbloxsyx"
+                                    rel="noopener noreferrer"
                                     target="_blank"
                                 >
                                     <img
@@ -86,6 +92,7 @@ export default class App extends React.Component {
                             <Grid item xs={2}>
                                 <a
                                     href="https://github.com/symblox/symblox-yield-farming"
+                                    rel="noopener noreferrer"
                                     target="_blank"
                                 >
                                     <img
@@ -140,6 +147,7 @@ export default class App extends React.Component {
                             <Grid item xs={3}>
                                 <a
                                     href="https://twitter.com/symbloxdefi"
+                                    rel="noopener noreferrer"
                                     target="_blank"
                                 >
                                     <img
@@ -150,7 +158,11 @@ export default class App extends React.Component {
                                 </a>
                             </Grid>
                             <Grid item xs={3}>
-                                <a href="https://t.me/symblox" target="_blank">
+                                <a
+                                    href="https://t.me/symblox"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                >
                                     <img
                                         src={"/terims.svg"}
                                         alt="terims"
@@ -161,6 +173,7 @@ export default class App extends React.Component {
                             <Grid item xs={3}>
                                 <a
                                     href="https://medium.com/@symbloxsyx"
+                                    rel="noopener noreferrer"
                                     target="_blank"
                                 >
                                     <img
@@ -173,6 +186,7 @@ export default class App extends React.Component {
                             <Grid item xs={3}>
                                 <a
                                     href="https://github.com/symblox/symblox-yield-farming"
+                                    rel="noopener noreferrer"
                                     target="_blank"
                                 >
                                     <img

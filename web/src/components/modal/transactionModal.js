@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {FormattedMessage} from "react-intl";
 import {withStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
@@ -14,8 +13,8 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
 import {
@@ -128,6 +127,9 @@ const styles = theme => ({
             lineHeight: "23px",
             color: "#ACAEBC"
         }
+    },
+    maxBtn: {
+        padding: "10px 18px"
     }
 });
 
@@ -194,31 +196,75 @@ class TransactionModal extends Component {
     }
 
     setPrice(data) {
-        console.log({data});
         this.setState({
-            price: data.price
+            price: data.price,
+            loading: false,
+            last: null
         });
         const price =
-            data.tokenName == "SYX"
+            data.tokenName === "SYX"
                 ? parseFloat(data.price)
                 : 1 / parseFloat(data.price);
-        if (data.type == "sell") {
+        if (data.type === "sell") {
             this.setState({
                 buyAmount: (parseFloat(data.amount) * price).toFixed(4)
             });
-        } else if (data.type == "buyIn") {
+        } else if (data.type === "buyIn") {
             this.setState({
                 amount: ((parseFloat(data.amount) * 1) / price).toFixed(4)
             });
         }
     }
 
+    //函数防抖
+    debounce = (idle, action) => {
+        const that = this;
+        return function () {
+            var ctx = this,
+                args = arguments;
+            clearTimeout(that.state.last);
+            const id = setTimeout(function () {
+                action.apply(ctx, args); // 延迟idle毫秒后 执行action
+            }, idle);
+            that.setState({
+                last: id
+            });
+        };
+    };
+
+    getPrice = (type, amount) => {
+        if (type) {
+            this.setState({loading: true});
+            this.debounce(1000, () => {
+                dispatcher.dispatch({
+                    type: CALCULATE_PRICE,
+                    content: {
+                        asset: this.props.data,
+                        amount,
+                        type,
+                        tokenName: this.state.token,
+                        tokenIn:
+                            this.state.token === "SYX"
+                                ? this.props.data.rewardsAddress
+                                : this.props.data.erc20Address,
+                        tokenOut:
+                            this.state.buyToken === "SYX"
+                                ? this.props.data.rewardsAddress
+                                : this.props.data.erc20Address
+                    }
+                });
+            })();
+        } else {
+            this.setState({price: this.props.data.price});
+        }
+    };
+
     handleChange = event => {
         const token = event.target.name;
         this.setState({
             [token]: event.target.value,
             buyToken:
-                this.state.tokens[0] == event.target.value
+                this.state.tokens[0] === event.target.value
                     ? this.state.tokens[this.state.tokens.length - 1]
                     : this.state.tokens[0],
             amount: 0.0,
@@ -232,7 +278,7 @@ class TransactionModal extends Component {
         this.setState({
             [token]: event.target.value,
             token:
-                this.state.tokens[0] == event.target.value
+                this.state.tokens[0] === event.target.value
                     ? this.state.tokens[this.state.tokens.length - 1]
                     : this.state.tokens[0],
             amount: 0.0,
@@ -285,19 +331,22 @@ class TransactionModal extends Component {
         }
     };
 
-    max = () => {
+    getMaxAmount = () => {
         const pool = this.props.data;
         const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
-        let maxAmount =
-            token == "SYX"
-                ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
-                    ? formatNumberPrecision(pool.rewardsBalance)
-                    : formatNumberPrecision(pool.maxSyxIn)
-                : parseFloat(pool.maxErc20In) > parseFloat(pool.erc20Balance)
-                ? formatNumberPrecision(pool.erc20Balance)
-                : formatNumberPrecision(pool.maxErc20In);
+        return token === "SYX"
+            ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
+                ? formatNumberPrecision(pool.rewardsBalance)
+                : formatNumberPrecision(pool.maxSyxIn)
+            : parseFloat(pool.maxErc20In) > parseFloat(pool.erc20Balance)
+            ? formatNumberPrecision(pool.erc20Balance)
+            : formatNumberPrecision(pool.maxErc20In);
+    };
+
+    max = () => {
+        const maxAmount = this.getMaxAmount();
 
         if (parseFloat(maxAmount) > 0) {
             this.setState({
@@ -311,30 +360,6 @@ class TransactionModal extends Component {
             });
 
             this.getPrice();
-        }
-    };
-
-    getPrice = (type, amount) => {
-        if (type) {
-            dispatcher.dispatch({
-                type: CALCULATE_PRICE,
-                content: {
-                    asset: this.props.data,
-                    amount,
-                    type,
-                    tokenName: this.state.token,
-                    tokenIn:
-                        this.state.token == "SYX"
-                            ? this.props.data.rewardsAddress
-                            : this.props.data.erc20Address,
-                    tokenOut:
-                        this.state.buyToken == "SYX"
-                            ? this.props.data.rewardsAddress
-                            : this.props.data.erc20Address
-                }
-            });
-        } else {
-            this.setState({price: this.props.data.price});
         }
     };
 
@@ -357,28 +382,30 @@ class TransactionModal extends Component {
         this.setState({
             loading: true
         });
-        setTimeout(
-            () =>
-                this.setState({
-                    loading: false
-                }),
-            5000
-        );
+        // setTimeout(
+        //     () =>
+        //         this.setState({
+        //             loading: false
+        //         }),
+        //     5000
+        // );
         dispatcher.dispatch({
             type: TRADE,
             content: {
                 asset: this.props.data,
-                amount: this.formatNumber(this.state.amount, 18, 6),
+                amount: parseFloat(
+                    this.formatNumber(this.state.amount, 18, 6)
+                ).toString(),
                 price:
-                    this.state.token == "SYX"
+                    this.state.token === "SYX"
                         ? (1 / parseFloat(this.state.price)) * 1.1
                         : parseFloat(this.state.price) * 1.1,
                 token:
-                    this.state.token == "SYX"
+                    this.state.token === "SYX"
                         ? this.props.data.rewardsAddress
                         : this.props.data.erc20Address,
                 token2:
-                    this.state.buyToken == "SYX"
+                    this.state.buyToken === "SYX"
                         ? this.props.data.rewardsAddress
                         : this.props.data.erc20Address
             }
@@ -393,7 +420,7 @@ class TransactionModal extends Component {
         const fullScreen = window.innerWidth < 450;
 
         const availableAmount = parseFloat(
-            this.state.token == data.tokens[0]
+            this.state.token === data.tokens[0]
                 ? parseFloat(data.maxSyxIn) > parseFloat(data.rewardsBalance)
                     ? parseFloat(data.rewardsBalance)
                     : parseFloat(data.maxSyxIn).toFixed(4)
@@ -419,7 +446,7 @@ class TransactionModal extends Component {
                             <FormattedMessage id="POPUP_LABEL_FROM" />
                         </span>
                         <span className={classes.textPrimy}>
-                            {this.state.token == "SYX" ? (
+                            {this.state.token === "SYX" ? (
                                 <img
                                     className={classes.icon}
                                     src={"/SYX.png"}
@@ -434,7 +461,7 @@ class TransactionModal extends Component {
                             )}
                             <FormattedMessage id="POPUP_TRADEABLE_AMOUNT" />
                             {": "}
-                            {this.state.token == data.tokens[0]
+                            {this.state.token === data.tokens[0]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.rewardsBalance)
                                     ? parseFloat(data.rewardsBalance).toFixed(4)
@@ -454,7 +481,6 @@ class TransactionModal extends Component {
                                     parseFloat(this.state.amount) >
                                     availableAmount
                                 }
-                                helperText="Incorrect entry."
                                 className={classes.customInput}
                                 id="outlined-adornment-password"
                                 type={"text"}
@@ -463,8 +489,19 @@ class TransactionModal extends Component {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Button
+                                            className={classes.maxBtn}
+                                            style={{
+                                                opacity:
+                                                    parseFloat(
+                                                        this.state.amount
+                                                    ).toFixed(4) ===
+                                                    this.getMaxAmount().toFixed(
+                                                        4
+                                                    )
+                                                        ? "0.6"
+                                                        : "1"
+                                            }}
                                             disabled={loading}
-                                            variant="outline"
                                             onClick={this.max}
                                         >
                                             <FormattedMessage id="POPUP_INPUT_MAX" />
@@ -494,8 +531,8 @@ class TransactionModal extends Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                {data.tokens.map(v => (
-                                    <MenuItem value={v}>
+                                {data.tokens.map((v, i) => (
+                                    <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
                                             src={"/" + v + ".png"}
@@ -522,7 +559,7 @@ class TransactionModal extends Component {
                             <FormattedMessage id="POPUP_LABEL_TO" />
                         </span>{" "}
                         <span className={classes.textPrimy}>
-                            {this.state.buyToken == "SYX" ? (
+                            {this.state.buyToken === "SYX" ? (
                                 <img
                                     className={classes.icon}
                                     src={"/SYX.png"}
@@ -537,7 +574,7 @@ class TransactionModal extends Component {
                             )}
                             <FormattedMessage id="POPUP_TRADEABLE_AMOUNT" />
                             {": "}
-                            {this.state.token == data.tokens[1]
+                            {this.state.token === data.tokens[1]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.rewardsBalance)
                                     ? parseFloat(data.rewardsBalance).toFixed(4)
@@ -574,8 +611,8 @@ class TransactionModal extends Component {
                                     id: "outlined-token"
                                 }}
                             >
-                                {data.tokens.map(v => (
-                                    <MenuItem value={v}>
+                                {data.tokens.map((v, i) => (
+                                    <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
                                             src={"/" + v + ".png"}
@@ -598,7 +635,7 @@ class TransactionModal extends Component {
                                     tokenFrom: this.state.token,
                                     tokenTo: this.state.buyToken,
                                     rate: parseFloat(
-                                        this.state.token == "SYX"
+                                        this.state.token === "SYX"
                                             ? this.state.price
                                             : 1 / this.state.price
                                     ).toFixed(4)
@@ -615,7 +652,11 @@ class TransactionModal extends Component {
                         className={classes.button}
                         fullWidth={true}
                     >
-                        <FormattedMessage id="POPUP_ACTION_CONFIRM" />
+                        {loading ? (
+                            <CircularProgress></CircularProgress>
+                        ) : (
+                            <FormattedMessage id="POPUP_ACTION_CONFIRM" />
+                        )}
                     </Button>
                 </DialogActions>
             </Dialog>
