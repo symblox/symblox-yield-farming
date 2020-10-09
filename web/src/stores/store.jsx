@@ -330,7 +330,7 @@ class Store {
                             this._getStakeTokenPrice(
                                 web3,
                                 pool,
-                                account,
+                                "1",
                                 callbackInner
                             );
                         },
@@ -811,7 +811,7 @@ class Store {
         }
     };
 
-    _getStakeTokenPrice = async (web3, asset, account, callback) => {
+    _getStakeTokenPrice = async (web3, asset, amount = "1", callback) => {
         if (asset.type === "seed") {
             //The token deposited in the seed pool is the token pledged to the reward pool, so the price is 1
             callback(null, "1");
@@ -838,7 +838,7 @@ class Store {
                         denorm,
                         totalSupply,
                         totalWeight,
-                        web3.utils.toWei("1", "ether"),
+                        web3.utils.toWei(amount + "", "ether"),
                         swapFee
                     )
                     .call();

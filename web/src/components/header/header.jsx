@@ -4,7 +4,7 @@ import "./header.scss";
 import {Select, Container, Hidden, MenuItem} from "@material-ui/core";
 import logo_xswap from "../../assets/symblox-logo@2x.png";
 import icon_user from "../../assets/icon_user.svg";
-
+import {ethToVlx} from "../../utils/vlxAddressConversion.js";
 // add i18n.
 import {IntlProvider, FormattedMessage} from "react-intl";
 import en_US from "../../language/en_US";
@@ -15,6 +15,17 @@ export default class App extends React.Component {
         super(props);
         this.state = {};
     }
+
+    formatAddress = function (address) {
+        address = ethToVlx(address);
+        if (address) {
+            return (
+                address.substring(0, 6) +
+                "..." +
+                address.substring(address.length - 4, address.length)
+            );
+        }
+    };
 
     render() {
         return (
@@ -60,7 +71,7 @@ export default class App extends React.Component {
                                                 marginRight: "5px"
                                             }}
                                         /> */}
-                                        {this.props.address}
+                                        {this.formatAddress(this.props.address)}
                                     </div>
                                 </div>
                             )}
@@ -128,7 +139,7 @@ export default class App extends React.Component {
                                                 marginRight: "5px"
                                             }}
                                         />
-                                        {this.props.address}
+                                        {this.formatAddress(this.props.address)}
                                     </div>
                                 </div>
                             )}
