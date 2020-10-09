@@ -281,20 +281,12 @@ class DepositModal extends Component {
         this.setState({
             loading: true
         });
-        // setTimeout(
-        //     () =>
-        //         this.setState({
-        //             loading: false
-        //         }),
-        //     5000
-        // );
+
         dispatcher.dispatch({
             type: DEPOSIT,
             content: {
                 asset: this.state.pool,
-                amount: parseFloat(
-                    this.formatNumber(this.state.amount, 18, 6)
-                ).toString(),
+                amount: parseFloat(this.state.amount).toString(),
                 token:
                     this.state.pool.type === "seed"
                         ? ""

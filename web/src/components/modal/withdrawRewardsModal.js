@@ -334,11 +334,7 @@ class WithdrawRewardsModal extends Component {
         // );
         let amount;
         if (this.state.pool.type === "seed") {
-            amount = this.formatNumber(
-                parseFloat(this.state.amount).toString(),
-                18,
-                12
-            );
+            amount = parseFloat(this.state.amount).toString();
             dispatcher.dispatch({
                 type: WITHDRAW,
                 content: {
@@ -349,24 +345,16 @@ class WithdrawRewardsModal extends Component {
             });
         } else {
             if (this.state.token === "SYX") {
-                amount = this.formatNumber(
-                    (
-                        (parseFloat(this.state.amount) *
-                            parseFloat(this.state.pool.price)) /
-                        parseFloat(this.state.pool.BPTPrice)
-                    ).toString(),
-                    18,
-                    12
-                );
+                amount = (
+                    (parseFloat(this.state.amount) *
+                        parseFloat(this.state.pool.price)) /
+                    parseFloat(this.state.pool.BPTPrice)
+                ).toString();
             } else {
-                amount = this.formatNumber(
-                    (
-                        parseFloat(this.state.amount) /
-                        parseFloat(this.state.pool.BPTPrice)
-                    ).toString(),
-                    18,
-                    12
-                );
+                amount = (
+                    parseFloat(this.state.amount) /
+                    parseFloat(this.state.pool.BPTPrice)
+                ).toString();
             }
 
             dispatcher.dispatch({

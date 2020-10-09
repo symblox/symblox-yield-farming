@@ -253,6 +253,7 @@ class Store {
             (pool, callback) => {
                 async.parallel(
                     [
+                        //0
                         callbackInner => {
                             this._getEntryContract(
                                 web3,
@@ -261,6 +262,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //1
                         callbackInner => {
                             this._getStakeAmount(
                                 web3,
@@ -269,6 +271,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //2
                         callbackInner => {
                             this._getRewardsAvailable(
                                 web3,
@@ -277,6 +280,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //3
                         callbackInner => {
                             this._getERC20TokenPrice(
                                 web3,
@@ -285,6 +289,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //4
                         callbackInner => {
                             this._getERC20Balance(
                                 web3,
@@ -293,6 +298,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //5
                         callbackInner => {
                             this._getRewardTokenBalance(
                                 web3,
@@ -301,6 +307,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //6
                         callbackInner => {
                             this._getRewardRate(
                                 web3,
@@ -309,6 +316,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //7
                         callbackInner => {
                             this._getAllocPoint(
                                 web3,
@@ -317,6 +325,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //8
                         callbackInner => {
                             this._getStakeTokenPrice(
                                 web3,
@@ -325,6 +334,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //9
                         callbackInner => {
                             this._getStakeTokenTotalSupply(
                                 web3,
@@ -333,9 +343,11 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //10
                         callbackInner => {
                             this._getWeight(web3, pool, account, callbackInner);
                         },
+                        //11
                         callbackInner => {
                             this._getBptTotalBalance(
                                 web3,
@@ -345,6 +357,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //12
                         callbackInner => {
                             this._getBptTotalBalance(
                                 web3,
@@ -354,6 +367,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //13
                         callbackInner => {
                             this._getBptMaxInRatio(
                                 web3,
@@ -362,6 +376,7 @@ class Store {
                                 callbackInner
                             );
                         },
+                        //14
                         callbackInner => {
                             this._getBptMaxOutRatio(
                                 web3,
