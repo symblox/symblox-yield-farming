@@ -19,9 +19,15 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
-import {GET_REWARDS, WITHDRAW} from "../../constants";
+import {
+    GET_REWARDS,
+    WITHDRAW,
+    CALCULATE_AMOUNT,
+    CALCULATE_AMOUNT_RETURNED
+} from "../../constants";
 
 const dispatcher = Store.dispatcher;
+const emitter = Store.emitter;
 
 const styles = theme => ({
     root: {
@@ -244,8 +250,12 @@ class WithdrawRewardsModal extends Component {
             pool: curPool,
             token: curPool.tokens[0],
             amount: "0",
-            loading: false
+            availableAmount: "0",
+            loading: false,
+            availableAmountLoading: true
         };
+
+        this.calculateAmount();
     }
 
     tapHandleChange = (event, newValue) => {
@@ -255,17 +265,29 @@ class WithdrawRewardsModal extends Component {
     };
 
     handleChange = event => {
+        const that = this;
         const token = event.target.name;
-        this.setState({
-            [token]: event.target.value
-        });
+        this.setState(
+            {
+                [token]: event.target.value
+            },
+            () => {
+                that.calculateAmount();
+            }
+        );
     };
 
     poolHandleChange = event => {
-        this.setState({
-            pool: this.props.data[event.target.value],
-            token: this.props.data[event.target.value].tokens[0]
-        });
+        const that = this;
+        this.setState(
+            {
+                pool: this.props.data[event.target.value],
+                token: this.props.data[event.target.value].tokens[0]
+            },
+            () => {
+                that.calculateAmount();
+            }
+        );
     };
 
     amountChange = event => {
@@ -281,22 +303,10 @@ class WithdrawRewardsModal extends Component {
 
         return pool.type === "seed"
             ? formatNumberPrecision(pool.stakeAmount)
-            : token === "SYX"
-            ? (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
-                  parseFloat(pool.price) >
+            : parseFloat(this.state.availableAmount) >
               parseFloat(pool.maxSyxOut)
-                ? formatNumberPrecision(pool.maxSyxOut)
-                : formatNumberPrecision(
-                      (parseFloat(pool.stakeAmount) *
-                          parseFloat(pool.BPTPrice)) /
-                          parseFloat(pool.price)
-                  )
-            : parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice) >
-              parseFloat(pool.maxErc20Out)
-            ? formatNumberPrecision(pool.maxErc20Out)
-            : formatNumberPrecision(
-                  parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)
-              );
+            ? formatNumberPrecision(pool.maxSyxOut)
+            : formatNumberPrecision(this.state.availableAmount);
     };
 
     max = () => {
@@ -344,18 +354,24 @@ class WithdrawRewardsModal extends Component {
                 }
             });
         } else {
-            if (this.state.token === "SYX") {
-                amount = (
-                    (parseFloat(this.state.amount) *
-                        parseFloat(this.state.pool.price)) /
-                    parseFloat(this.state.pool.BPTPrice)
-                ).toString();
-            } else {
-                amount = (
-                    parseFloat(this.state.amount) /
-                    parseFloat(this.state.pool.BPTPrice)
-                ).toString();
-            }
+            // if (this.state.token === "SYX") {
+            //     amount = (
+            //         (parseFloat(this.state.amount) *
+            //             parseFloat(this.state.pool.price)) /
+            //         parseFloat(this.state.pool.BPTPrice)
+            //     ).toString();
+            // } else {
+            //     amount = (
+            //         parseFloat(this.state.amount) /
+            //         parseFloat(this.state.pool.BPTPrice)
+            //     ).toString();
+            // }
+
+            amount = (
+                (parseFloat(this.state.pool.stakeAmount) /
+                    parseFloat(this.state.availableAmount)) *
+                parseFloat(this.state.amount)
+            ).toString();
 
             dispatcher.dispatch({
                 type: WITHDRAW,
@@ -369,6 +385,44 @@ class WithdrawRewardsModal extends Component {
                 }
             });
         }
+    };
+
+    componentWillMount() {
+        emitter.on(
+            CALCULATE_AMOUNT_RETURNED,
+            this.setAvailableAmount.bind(this)
+        );
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener(
+            CALCULATE_AMOUNT_RETURNED,
+            this.setAvailableAmount.bind(this)
+        );
+    }
+
+    setAvailableAmount(data) {
+        this.setState({
+            availableAmount: data,
+            availableAmountLoading: false
+        });
+    }
+
+    calculateAmount = () => {
+        this.setState({
+            availableAmountLoading: true
+        });
+        dispatcher.dispatch({
+            type: CALCULATE_AMOUNT,
+            content: {
+                asset: this.state.pool,
+                amount: this.state.pool.stakeAmount,
+                token:
+                    this.state.token === "SYX"
+                        ? this.state.pool.rewardsAddress
+                        : this.state.pool.erc20Address
+            }
+        });
     };
 
     onClaim = () => {
@@ -484,57 +538,25 @@ class WithdrawRewardsModal extends Component {
                                             alt=""
                                         />
                                     )}
-                                    {this.state.pool.type === "seed"
-                                        ? parseFloat(
-                                              this.state.pool.stakeAmount
-                                          )
-                                        : this.state.token === "SYX"
-                                        ? (parseFloat(
-                                              this.state.pool.stakeAmount
-                                          ) *
-                                              parseFloat(
-                                                  this.state.pool.BPTPrice
-                                              )) /
-                                              parseFloat(
-                                                  this.state.pool.price
-                                              ) >
-                                          parseFloat(this.state.pool.maxSyxOut)
-                                            ? parseFloat(
-                                                  this.state.pool.maxSyxOut
-                                              ).toFixed(4)
-                                            : (
-                                                  (parseFloat(
-                                                      this.state.pool
-                                                          .stakeAmount
-                                                  ) *
-                                                      parseFloat(
-                                                          this.state.pool
-                                                              .BPTPrice
-                                                      )) /
-                                                  parseFloat(
-                                                      this.state.pool.price
-                                                  )
-                                              ).toFixed(4)
-                                        : parseFloat(
-                                              this.state.pool.stakeAmount
-                                          ) *
-                                              parseFloat(
-                                                  this.state.pool.BPTPrice
-                                              ) >
-                                          parseFloat(
-                                              this.state.pool.maxErc20Out
-                                          )
-                                        ? parseFloat(
-                                              this.state.pool.maxErc20Out
-                                          ).toFixed(4)
-                                        : (
-                                              parseFloat(
-                                                  this.state.pool.stakeAmount
-                                              ) *
-                                              parseFloat(
-                                                  this.state.pool.BPTPrice
-                                              )
-                                          ).toFixed(4)}
+                                    {this.state.pool.type === "seed" ? (
+                                        parseFloat(this.state.pool.stakeAmount)
+                                    ) : this.state.availableAmountLoading ? (
+                                        <CircularProgress
+                                            style={{
+                                                width: "24px",
+                                                height: "24px"
+                                            }}
+                                        ></CircularProgress>
+                                    ) : parseFloat(this.state.availableAmount) >
+                                      parseFloat(this.state.pool.maxSyxOut) ? (
+                                        parseFloat(
+                                            this.state.pool.maxSyxOut
+                                        ).toFixed(4)
+                                    ) : (
+                                        parseFloat(
+                                            this.state.availableAmount
+                                        ).toFixed(4)
+                                    )}
                                     {" " + this.state.token}
                                 </span>
                             </Typography>

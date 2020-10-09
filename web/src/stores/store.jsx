@@ -18,6 +18,8 @@ import {
     CREATE_ENTRY_CONTRACT_RETURNED,
     CALCULATE_PRICE,
     CALCULATE_PRICE_RETURNED,
+    CALCULATE_AMOUNT,
+    CALCULATE_AMOUNT_RETURNED,
     TX_CONFIRM
 } from "../constants";
 import Web3 from "web3";
@@ -146,6 +148,9 @@ class Store {
                         break;
                     case CALCULATE_PRICE:
                         this.calculateTokenPrice(payload);
+                        break;
+                    case CALCULATE_AMOUNT:
+                        this.getStakeTokenPrice(payload);
                         break;
                     default: {
                     }
@@ -330,6 +335,7 @@ class Store {
                             this._getStakeTokenPrice(
                                 web3,
                                 pool,
+                                pool.erc20Address,
                                 "1",
                                 callbackInner
                             );
@@ -811,7 +817,25 @@ class Store {
         }
     };
 
-    _getStakeTokenPrice = async (web3, asset, amount = "1", callback) => {
+    getStakeTokenPrice = async payload => {
+        const web3 = await this.getWeb3();
+        const {asset, amount, token} = payload.content;
+        this._getStakeTokenPrice(web3, asset, token, amount, (err, res) => {
+            if (err) {
+                return emitter.emit(ERROR, err);
+            }
+
+            return emitter.emit(CALCULATE_AMOUNT_RETURNED, res);
+        });
+    };
+
+    _getStakeTokenPrice = async (
+        web3,
+        asset,
+        token,
+        amount = "1",
+        callback
+    ) => {
         if (asset.type === "seed") {
             //The token deposited in the seed pool is the token pledged to the reward pool, so the price is 1
             callback(null, "1");
@@ -819,10 +843,10 @@ class Store {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
                 const balance = await bptContract.methods
-                    .getBalance(asset.erc20Address)
+                    .getBalance(token)
                     .call();
                 const denorm = await bptContract.methods
-                    .getDenormalizedWeight(asset.erc20Address)
+                    .getDenormalizedWeight(token)
                     .call();
                 const totalSupply = await bptContract.methods
                     .totalSupply()
@@ -832,7 +856,7 @@ class Store {
                     .call();
                 const swapFee = await bptContract.methods.getSwapFee().call();
 
-                let price = await bptContract.methods
+                let amountOut = await bptContract.methods
                     .calcSingleOutGivenPoolIn(
                         balance,
                         denorm,
@@ -842,7 +866,10 @@ class Store {
                         swapFee
                     )
                     .call();
-                callback(null, this.toStringDecimals(price, asset.decimals));
+                callback(
+                    null,
+                    this.toStringDecimals(amountOut, asset.decimals)
+                );
             } catch (ex) {
                 return callback(ex);
             }
