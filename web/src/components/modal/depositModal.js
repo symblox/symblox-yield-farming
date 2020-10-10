@@ -17,10 +17,16 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Store from "../../stores";
-import {DEPOSIT} from "../../constants";
+import {
+    DEPOSIT,
+    CALCULATE_AMOUNT,
+    CALCULATE_AMOUNT_RETURNED
+} from "../../constants";
+
 import config from "../../config";
 
 const dispatcher = Store.dispatcher;
+const emitter = Store.emitter;
 
 const styles = theme => ({
     root: {
@@ -185,35 +191,91 @@ class DepositModal extends Component {
                 pool: curPool,
                 token: curPool.tokens[curPool.tokens.length - 1],
                 loading: false,
-                amount: "0"
+                amount: "0",
+                availableAmount: "0",
+                availableAmountLoading: true
             };
         } else {
             this.state = {
                 pool: props.data,
                 token: props.data.tokens[props.data.tokens.length - 1],
                 loading: false,
-                amount: "0"
+                amount: "0",
+                availableAmount: "0",
+                availableAmountLoading: true
             };
         }
+
+        this.calculateAmount();
     }
 
     handleChange = event => {
+        const that = this;
         const token = event.target.name;
-        this.setState({
-            [token]: event.target.value
-        });
+        this.setState(
+            {
+                [token]: event.target.value
+            },
+            () => {
+                that.calculateAmount();
+            }
+        );
     };
 
     poolHandleChange = event => {
-        this.setState({
-            pool: this.props.data[event.target.value],
-            token: this.props.data[event.target.value].tokens[0]
-        });
+        const that = this;
+        this.setState(
+            {
+                pool: this.props.data[event.target.value],
+                token: this.props.data[event.target.value].tokens[0]
+            },
+            () => {
+                that.calculateAmount();
+            }
+        );
     };
 
     amountChange = event => {
         this.setState({
             amount: event.target.value
+        });
+    };
+
+    componentWillMount() {
+        emitter.on(
+            CALCULATE_AMOUNT_RETURNED,
+            this.setAvailableAmount.bind(this)
+        );
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener(
+            CALCULATE_AMOUNT_RETURNED,
+            this.setAvailableAmount.bind(this)
+        );
+    }
+
+    setAvailableAmount(data) {
+        this.setState({
+            availableAmount: data,
+            availableAmountLoading: false
+        });
+    }
+
+    calculateAmount = () => {
+        this.setState({
+            availableAmountLoading: true
+        });
+        dispatcher.dispatch({
+            type: CALCULATE_AMOUNT,
+            content: {
+                asset: this.state.pool,
+                amount: this.state.pool.stakeAmount,
+                token:
+                    this.state.token === "SYX"
+                        ? this.state.pool.rewardsAddress
+                        : this.state.pool.erc20Address
+            }
         });
     };
 
@@ -281,20 +343,12 @@ class DepositModal extends Component {
         this.setState({
             loading: true
         });
-        // setTimeout(
-        //     () =>
-        //         this.setState({
-        //             loading: false
-        //         }),
-        //     5000
-        // );
+
         dispatcher.dispatch({
             type: DEPOSIT,
             content: {
                 asset: this.state.pool,
-                amount: parseFloat(
-                    this.formatNumber(this.state.amount, 18, 6)
-                ).toString(),
+                amount: parseFloat(this.state.amount).toString(),
                 token:
                     this.state.pool.type === "seed"
                         ? ""
@@ -367,21 +421,22 @@ class DepositModal extends Component {
                             {": "}
                         </span>
                         <span className={classes.rightText}>
-                            {pool.type === "seed"
-                                ? parseFloat(pool.stakeAmount).toFixed(4) +
-                                  pool.symbol
-                                : token === "SYX"
-                                ? (
-                                      (parseFloat(pool.stakeAmount) *
-                                          parseFloat(pool.BPTPrice)) /
-                                      parseFloat(pool.price)
-                                  ).toFixed(4) + " SYX"
-                                : (
-                                      parseFloat(pool.stakeAmount) *
-                                      parseFloat(pool.BPTPrice)
-                                  ).toFixed(4) +
-                                  " " +
-                                  pool.name}
+                            {pool.type === "seed" ? (
+                                parseFloat(pool.stakeAmount).toFixed(4) +
+                                pool.symbol
+                            ) : this.state.availableAmountLoading ? (
+                                <CircularProgress
+                                    style={{
+                                        width: "24px",
+                                        height: "24px"
+                                    }}
+                                ></CircularProgress>
+                            ) : (
+                                parseFloat(this.state.availableAmount).toFixed(
+                                    4
+                                )
+                            )}
+                            {" " + this.state.token}
                         </span>
                     </Typography>
                     <Typography gutterBottom style={{overflow: "scroll"}}>

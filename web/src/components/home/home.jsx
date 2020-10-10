@@ -422,16 +422,8 @@ class Home extends Component {
             snackbarMessage,
             loading
         } = this.state;
-        var address = null;
-        if (account.address) {
-            address =
-                account.address.substring(0, 6) +
-                "..." +
-                account.address.substring(
-                    account.address.length - 4,
-                    account.address.length
-                );
-        }
+        const address = account.address;
+        
         if (!rewardPools) {
             return null;
         }
