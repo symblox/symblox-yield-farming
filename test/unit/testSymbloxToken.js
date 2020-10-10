@@ -8,7 +8,7 @@ const {
 const {expect} = require("chai");
 const SymbloxToken = artifacts.require("SymbloxToken");
 
-const EIP712 = require("../scripts/EIP712.js");
+const EIP712 = require("../../scripts/EIP712.js");
 
 const Domain = contract => ({
     name: "Symblox",
