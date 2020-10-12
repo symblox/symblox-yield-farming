@@ -165,13 +165,13 @@ export default function Pool(props) {
                         <>
                             <img
                                 className={classes.icon}
-                                src={tokenIcon}
+                                src={"/SYX.png"}
                                 alt=""
                             />
                             <img
                                 className={classes.icon}
                                 style={{marginLeft: "-2px"}}
-                                src={"/SYX.png"}
+                                src={tokenIcon}
                                 alt=""
                             />
                         </>

@@ -90,7 +90,7 @@ class Store {
                     rewardsAvailable: 0
                 },
                 {
-                    id: "VLX/SYX",
+                    id: "SYX/VLX",
                     featured: false,
                     name: "VLX",
                     website: "Reward Pool",

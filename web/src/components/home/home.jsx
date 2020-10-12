@@ -423,7 +423,7 @@ class Home extends Component {
             loading
         } = this.state;
         const address = account.address;
-        
+
         if (!rewardPools) {
             return null;
         }
@@ -817,9 +817,7 @@ class Home extends Component {
                                                                         classes.icon
                                                                     }
                                                                     src={
-                                                                        "/" +
-                                                                        pool.name +
-                                                                        ".png"
+                                                                        "/SYX.png"
                                                                     }
                                                                     style={{
                                                                         marginRight:
@@ -832,10 +830,13 @@ class Home extends Component {
                                                                         classes.icon
                                                                     }
                                                                     src={
-                                                                        "/SYX.png"
+                                                                        "/" +
+                                                                        pool.name +
+                                                                        ".png"
                                                                     }
                                                                     alt=""
                                                                 />
+
                                                                 {pool.id}
                                                             </td>
                                                             <td>
