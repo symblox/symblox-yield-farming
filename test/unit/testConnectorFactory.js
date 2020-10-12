@@ -11,6 +11,12 @@ contract("ConnectorFactory", function () {
                 (await MockContract.new()).address // reward manager
             );
         });
+        it("constructor error when reward manager address is zero", async () => {
+            await expectRevert(
+                ConnectorFactory.new(constants.ZERO_ADDRESS),
+                "ERR_REWARD_MANAGER"
+            );
+        });
         it("should set connector implementation", async function () {
             const ConnectorImpl = await MockContract.new();
             const setImplTx = await this.factory.setConnectorImpl(
