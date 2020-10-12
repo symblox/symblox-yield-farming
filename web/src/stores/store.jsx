@@ -43,10 +43,10 @@ class Store {
             account: {},
             web3: null,
             connectorsByName: {
-                MetaMask: injected,
-                MYKEY: injected,
-                WalletConnect: walletconnect,
-                WalletLink: walletlink
+                VELAS: injected,
+                MetaMask: injected
+                // WalletConnect: walletconnect,
+                // WalletLink: walletlink
             },
             web3context: null,
             languages: [

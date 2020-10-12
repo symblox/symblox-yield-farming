@@ -227,6 +227,7 @@ function MyComponent(props) {
     const {closeModal, t} = props;
 
     const [activatingConnector, setActivatingConnector] = React.useState();
+    const [curClickWallet, setCurClickWallet] = React.useState();
     React.useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
@@ -253,7 +254,9 @@ function MyComponent(props) {
         >
             {Object.keys(connectorsByName).map(name => {
                 const currentConnector = connectorsByName[name];
-                const activating = currentConnector === activatingConnector;
+                const activating =
+                    currentConnector === activatingConnector &&
+                    curClickWallet === name;
                 const connected =
                     currentConnector === connector ||
                     currentConnector === localConnector;
@@ -263,6 +266,8 @@ function MyComponent(props) {
                 var display = name;
                 if (name === "MetaMask") {
                     url = require("../../assets/icn-metamask.svg");
+                } else if (name === "VELAS") {
+                    url = require("../../assets/VELAS.svg");
                 } else if (name === "WalletConnect") {
                     url = require("../../assets/walletConnectIcon.svg");
                 } else if (name === "MYKEY") {
@@ -297,6 +302,7 @@ function MyComponent(props) {
                             variant="outlined"
                             color="primary"
                             onClick={() => {
+                                setCurClickWallet(name);
                                 onConnectionClicked(
                                     currentConnector,
                                     name,
