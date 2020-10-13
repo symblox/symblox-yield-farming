@@ -27,9 +27,9 @@ contract WvlxConnector is BaseConnector {
         address payable recipient = address(uint160(address(lpToken)));
         // Send to wrap VLX contract
         recipient.sendValue(msg.value);
-        // Make sure the amount received is the same as the one sent
+        // Ensure the amount received from WVLX is at least more than the one sent
         wvlxAmount = IERC20(lpToken).balanceOf(address(this));
-        require(wvlxAmount == msg.value, "ERR_WVLX_RECEIVED");
+        require(wvlxAmount >= msg.value, "ERR_WVLX_RECEIVED");
         //
         // Deposit to the RewardManager
         //
@@ -53,7 +53,8 @@ contract WvlxConnector is BaseConnector {
         //
         IWvlx(lpToken).withdraw(amount);
 
-        require(address(this).balance == amount, "ERR_VLX_RECEIVED");
+        // Make sure to have enough balance to withdraw
+        require(address(this).balance >= amount, "ERR_VLX_RECEIVED");
 
         tokenAmountOut = address(this).balance;
         msg.sender.transfer(tokenAmountOut);
