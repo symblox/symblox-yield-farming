@@ -51,6 +51,13 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
         assert.equal((await this.rewardMgr.devaddr()).valueOf(), alice);
     });
 
+    it("getMultiplier when from block > reward deadline block", async () => {
+        assert.equal(
+            (await this.rewardMgr.getMultiplier(99999, 100000)).toString(),
+            "0"
+        );
+    });
+
     context("With ERC/LP token added to the field", () => {
         beforeEach(async () => {
             this.lp = await MockERC20.new("LPToken", "LP", 18, "10000000000", {
@@ -211,11 +218,19 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
             assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "0");
             assert.equal((await this.lp.balanceOf(bob)).valueOf(), "990");
             await time.advanceBlockTo(currBlock.addn(219));
+
             await this.rewardMgr.withdraw(0, "10", {from: bob}); // block 220
             assert.equal((await this.symblox.totalSupply()).valueOf(), "3300");
             assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "3000");
             assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "300");
             assert.equal((await this.lp.balanceOf(bob)).valueOf(), "1000");
+
+            await expectRevert(
+                this.rewardMgr.withdraw(0, "9999999999999999999", {
+                    from: bob
+                }),
+                "withdraw: not good"
+            );
         });
 
         it("should distribute Symblox properly for each staker", async () => {
@@ -406,6 +421,26 @@ contract("RewardManager", ([alice, bob, carol, dev, minter]) => {
                 (await this.symblox.balanceOf(alice)).valueOf(),
                 "3600"
             );
+        });
+
+        it("update pool allocation point", async () => {
+            let res;
+            const rewardMgr = await RewardManager.new(
+                this.symblox.address,
+                dev,
+                "1000",
+                "0",
+                "1000",
+                "1000",
+                {from: alice}
+            );
+            await rewardMgr.add("11", this.lp.address, false);
+            res = await rewardMgr.poolInfo("0");
+            assert.equal(res.allocPoint.toString(), "11");
+
+            await rewardMgr.set("0", "22", true);
+            res = await rewardMgr.poolInfo("0");
+            assert.equal(res.allocPoint.toString(), "22");
         });
     });
 });

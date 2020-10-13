@@ -129,32 +129,4 @@ contract BaseConnector is syxOwnable {
         emit LogReward(msg.sender, syxAmount);
         emit LogUnstake(msg.sender, lpTokenAmount);
     }
-
-    //
-    // Function placeholders, and need to be implemented by child contracts
-    //
-    function deposit(uint256 minAmountOut)
-        external
-        payable
-        onlyOwner
-        returns (uint256 lpTokenAmount)
-    {}
-
-    function withdraw(uint256 amount, uint256 minAmountOut)
-        external
-        onlyOwner
-        returns (uint256 tokenAmountOut)
-    {}
-
-    function deposit(address tokenIn, uint256 tokenAmountIn)
-        external
-        onlyOwner
-        returns (uint256 lpTokenAmount)
-    {}
-
-    function withdraw(
-        address tokenOut,
-        uint256 amount,
-        uint256 tokenAmountIn
-    ) external onlyOwner returns (uint256 tokenAmountOut) {}
 }

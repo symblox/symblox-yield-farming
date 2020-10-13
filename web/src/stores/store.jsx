@@ -43,10 +43,10 @@ class Store {
             account: {},
             web3: null,
             connectorsByName: {
-                MetaMask: injected,
-                MYKEY: injected,
-                WalletConnect: walletconnect,
-                WalletLink: walletlink
+                VELAS: injected,
+                MetaMask: injected
+                // WalletConnect: walletconnect,
+                // WalletLink: walletlink
             },
             web3context: null,
             languages: [
@@ -90,7 +90,7 @@ class Store {
                     rewardsAvailable: 0
                 },
                 {
-                    id: "VLX/SYX",
+                    id: "SYX/VLX",
                     featured: false,
                     name: "VLX",
                     website: "Reward Pool",

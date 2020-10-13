@@ -104,7 +104,7 @@ const useStyles = makeStyles({
         fontWeight: 500,
         fontSize: "20px",
         color: "#FFFFFF",
-        margin: "24px",
+        margin: "12px 24px 24px 24px",
         minWidth: "213px",
         "&:hover": {
             background:
@@ -124,7 +124,7 @@ const useStyles = makeStyles({
         fontWeight: 500,
         fontSize: "20px",
         color: "#FFFFFF",
-        margin: "20px",
+        margin: "12px 24px 24px 24px",
         minWidth: "213px",
         "&:hover": {
             background:
@@ -165,13 +165,13 @@ export default function Pool(props) {
                         <>
                             <img
                                 className={classes.icon}
-                                src={tokenIcon}
+                                src={"/SYX.png"}
                                 alt=""
                             />
                             <img
                                 className={classes.icon}
                                 style={{marginLeft: "-2px"}}
-                                src={"/SYX.png"}
+                                src={tokenIcon}
                                 alt=""
                             />
                         </>
@@ -202,30 +202,6 @@ export default function Pool(props) {
                                 :{" "}
                                 {(parseFloat(data.allocPoint) * 100).toFixed(2)}{" "}
                                 %
-                            </div>
-                            <div>
-                                {data.type === "seed" ? (
-                                    <>
-                                        <FormattedMessage id="TOTAL_STAKE" />:
-                                        {data.stakeAmount} {data.name}
-                                    </>
-                                ) : (
-                                    <>
-                                        <FormattedMessage id="LP_MY_SHARE" />:
-                                        {data.totalSupply > 0
-                                            ? (
-                                                  (parseFloat(
-                                                      data.stakeAmount
-                                                  ) /
-                                                      parseFloat(
-                                                          data.totalSupply
-                                                      )) *
-                                                  100
-                                              ).toFixed(2)
-                                            : "0.00"}{" "}
-                                        %
-                                    </>
-                                )}
                             </div>
                         </React.Fragment>
                     }
@@ -259,6 +235,36 @@ export default function Pool(props) {
                         {parseFloat(data.rewardsAvailable).toFixed(4)}{" "}
                         {data.rewardsSymbol}
                     </span>
+                </Typography>
+                <Typography className={classes.textThird}>
+                    {data.type === "seed" ? (
+                        <>
+                            <FormattedMessage id="TOTAL_STAKE" />:
+                            <span
+                                style={{float: "right"}}
+                                className={classes.textThirdColor}
+                            >
+                                {data.stakeAmount} {data.name}
+                            </span>
+                        </>
+                    ) : (
+                        <>
+                            <FormattedMessage id="LP_MY_SHARE" />:
+                            <span
+                                style={{float: "right"}}
+                                className={classes.textThirdColor}
+                            >
+                                {data.totalSupply > 0
+                                    ? (
+                                          (parseFloat(data.stakeAmount) /
+                                              parseFloat(data.totalSupply)) *
+                                          100
+                                      ).toFixed(2)
+                                    : "0.00"}{" "}
+                                %
+                            </span>
+                        </>
+                    )}
                 </Typography>
             </CardContent>
             <CardActions className={classes.bar}>
