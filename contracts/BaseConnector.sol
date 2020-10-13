@@ -36,7 +36,7 @@ contract BaseConnector is syxOwnable {
         address _rewardManager,
         address _lpToken,
         uint8 _rewardPoolId
-    ) external {
+    ) public initializer {
         require(_owner != address(0), "ERR_OWNER_INVALID");
         require(_rewardManager != address(0), "ERR_REWARD_MANAGER");
         require(_lpToken != address(0), "ERR_LP_TOKEN");
