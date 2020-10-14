@@ -458,6 +458,10 @@ class DepositModal extends Component {
                         <FormControl variant="outlined" style={{flex: "4"}}>
                             <OutlinedInput
                                 className={classes.customInput}
+                                error={
+                                    parseFloat(amount) >
+                                    parseFloat(this.getMaxAmount())
+                                }
                                 id="outlined-adornment-password"
                                 type={"text"}
                                 value={amount}
@@ -485,6 +489,14 @@ class DepositModal extends Component {
                                     </InputAdornment>
                                 }
                             />
+                            {parseFloat(amount) >
+                            parseFloat(this.getMaxAmount()) ? (
+                                <span style={{color: "red"}}>
+                                    <FormattedMessage id="TRADE_ERROR_BALANCE" />
+                                </span>
+                            ) : (
+                                <></>
+                            )}
                         </FormControl>
                         <FormControl
                             variant="outlined"
