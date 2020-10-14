@@ -284,6 +284,9 @@ contract RewardManager is Ownable {
         uint256 _endBlock;
         uint256 _startBlock;
 
+        // Ensure _from is not smaller than startBlock
+        _from = _from > _startBlock ? _from : _startBlock;
+
         if (_to > endBlock) {
             _endBlock = endBlock;
         } else {
