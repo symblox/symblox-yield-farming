@@ -102,6 +102,7 @@ contract RewardManager is Ownable {
         if (_withUpdate) {
             massUpdatePools();
         }
+        checkDuplicatePool(_lpToken);
         uint256 lastRewardBlock = block.number > startBlock
             ? block.number
             : startBlock;
@@ -327,5 +328,12 @@ contract RewardManager is Ownable {
     function dev(address _devaddr) external {
         require(msg.sender == devaddr, "dev: wut?");
         devaddr = _devaddr;
+    }
+
+    function checkDuplicatePool(IERC20 _lpToken) internal view {
+        uint256 length = poolInfo.length;
+        for (uint256 pid = 0; pid < length; pid++) {
+            require(poolInfo[pid].lpToken != _lpToken, "add: pool duplicated");
+        }
     }
 }
