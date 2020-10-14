@@ -88,37 +88,37 @@ class Store {
                     poolAddress: config.rewardPool,
                     poolABI: config.rewardPoolABI,
                     rewardsAvailable: 0
-                },
-                {
-                    id: "SYX/VLX",
-                    featured: false,
-                    name: "VLX",
-                    website: "Reward Pool",
-                    index: 1,
-                    address: config.bpt,
-                    symbol: "BPT",
-                    ROI: "DF",
-                    type: "swap-native",
-                    tokens: ["SYX", "VLX"], //reward token must in first
-                    totalSupply: 0,
-                    abi: config.bptABI,
-                    decimals: 18,
-                    erc20Address: config.wvlx,
-                    erc20ABI: config.erc20ABI,
-                    erc20Balance: 0,
-                    entryContractABI: config.bptConnectorABI,
-                    entryContractFactoryAddress: config.connectorFactory,
-                    entryContractFactoryABI: config.bptConnectorABI,
-                    weight: "",
-                    rewardsAddress: config.syx,
-                    rewardsABI: config.syxABI,
-                    rewardsSymbol: "SYX",
-                    rewardsDecimal: 0,
-                    rewardsBalance: 0,
-                    poolAddress: config.rewardPool,
-                    poolABI: config.rewardPoolABI,
-                    rewardsAvailable: 0
                 }
+                // {
+                //     id: "SYX/VLX",
+                //     featured: false,
+                //     name: "VLX",
+                //     website: "Reward Pool",
+                //     index: 1,
+                //     address: config.bpt,
+                //     symbol: "BPT",
+                //     ROI: "DF",
+                //     type: "swap-native",
+                //     tokens: ["SYX", "VLX"], //reward token must in first
+                //     totalSupply: 0,
+                //     abi: config.bptABI,
+                //     decimals: 18,
+                //     erc20Address: config.wvlx,
+                //     erc20ABI: config.erc20ABI,
+                //     erc20Balance: 0,
+                //     entryContractABI: config.bptConnectorABI,
+                //     entryContractFactoryAddress: config.connectorFactory,
+                //     entryContractFactoryABI: config.bptConnectorABI,
+                //     weight: "",
+                //     rewardsAddress: config.syx,
+                //     rewardsABI: config.syxABI,
+                //     rewardsSymbol: "SYX",
+                //     rewardsDecimal: 0,
+                //     rewardsBalance: 0,
+                //     poolAddress: config.rewardPool,
+                //     poolABI: config.rewardPoolABI,
+                //     rewardsAvailable: 0
+                // }
             ]
         };
 
