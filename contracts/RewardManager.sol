@@ -72,6 +72,11 @@ contract RewardManager is Ownable {
         uint256 amount
     );
 
+    modifier validPool(uint256 _pid) {
+        require(_pid < poolInfo.length, "pool existed.");
+        _;
+    }
+
     constructor(
         address _syx,
         address _devaddr,
@@ -122,7 +127,7 @@ contract RewardManager is Ownable {
         uint256 _pid,
         uint256 _allocPoint,
         bool _withUpdate
-    ) public onlyOwner {
+    ) public validPool(_pid) onlyOwner {
         if (_withUpdate) {
             massUpdatePools();
         }
@@ -145,7 +150,7 @@ contract RewardManager is Ownable {
     }
 
     // Update reward variables of the given pool to be up-to-date.
-    function updatePool(uint256 _pid) public {
+    function updatePool(uint256 _pid) public validPool(_pid) {
         PoolInfo storage pool = poolInfo[_pid];
         if (block.number <= pool.lastRewardBlock) {
             return;
@@ -176,7 +181,11 @@ contract RewardManager is Ownable {
      * @param _amount Amount of LP tokens to deposit
      * @return Total amount of the user's LP tokens
      */
-    function deposit(uint256 _pid, uint256 _amount) public returns (uint256) {
+    function deposit(uint256 _pid, uint256 _amount)
+        public
+        validPool(_pid)
+        returns (uint256)
+    {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
@@ -205,7 +214,11 @@ contract RewardManager is Ownable {
      * @param _amount Amount of LP tokens to withdraw
      * @return Total amount of the user's LP tokens
      */
-    function withdraw(uint256 _pid, uint256 _amount) public returns (uint256) {
+    function withdraw(uint256 _pid, uint256 _amount)
+        public
+        validPool(_pid)
+        returns (uint256)
+    {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
@@ -221,7 +234,7 @@ contract RewardManager is Ownable {
         return user.amount;
     }
 
-    function getReward(uint256 _pid) public returns (uint256) {
+    function getReward(uint256 _pid) public validPool(_pid) returns (uint256) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
@@ -234,7 +247,7 @@ contract RewardManager is Ownable {
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
-    function emergencyWithdraw(uint256 _pid) public {
+    function emergencyWithdraw(uint256 _pid) public validPool(_pid) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         pool.lpToken.safeTransfer(address(msg.sender), user.amount);
@@ -298,6 +311,7 @@ contract RewardManager is Ownable {
     function pendingSyx(uint256 _pid, address _user)
         external
         view
+        validPool(_pid)
         returns (uint256)
     {
         PoolInfo storage pool = poolInfo[_pid];
