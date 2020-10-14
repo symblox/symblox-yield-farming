@@ -189,16 +189,16 @@ contract RewardManager is Ownable {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
-        if (user.amount > 0) {
-            uint256 pending = user
-                .amount
-                .mul(pool.accSyxPerShare)
-                .div(1e12)
-                .sub(user.rewardDebt);
-            safeSyxTransfer(msg.sender, pending);
-        }
+        uint256 prevAmount = user.amount;
+        uint256 prevRewardDebt = user.rewardDebt;
         user.amount = user.amount.add(_amount);
         user.rewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        if (prevAmount > 0) {
+            uint256 pending = prevAmount.mul(pool.accSyxPerShare).div(1e12).sub(
+                prevRewardDebt
+            );
+            safeSyxTransfer(msg.sender, pending);
+        }
         pool.lpToken.safeTransferFrom(
             address(msg.sender),
             address(this),
@@ -226,9 +226,9 @@ contract RewardManager is Ownable {
         uint256 pending = user.amount.mul(pool.accSyxPerShare).div(1e12).sub(
             user.rewardDebt
         );
-        safeSyxTransfer(msg.sender, pending);
         user.amount = user.amount.sub(_amount);
         user.rewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        safeSyxTransfer(msg.sender, pending);
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
         emit Withdraw(msg.sender, _pid, _amount);
         return user.amount;
@@ -250,10 +250,11 @@ contract RewardManager is Ownable {
     function emergencyWithdraw(uint256 _pid) public validPool(_pid) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
-        pool.lpToken.safeTransfer(address(msg.sender), user.amount);
-        emit EmergencyWithdraw(msg.sender, _pid, user.amount);
+        uint256 amount = user.amount;
         user.amount = 0;
         user.rewardDebt = 0;
+        pool.lpToken.safeTransfer(address(msg.sender), amount);
+        emit EmergencyWithdraw(msg.sender, _pid, amount);
     }
 
     // Safe SYX transfer function, just in case if rounding error causes pool to not have enough SYX.
