@@ -727,37 +727,11 @@ class Store {
                     )
                     .call({from: account.address});
 
-                let price = await bptContract.methods
-                    .calcSpotPrice(
-                        web3.utils.toWei(
-                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
-                                amount +
-                                "",
-                            "ether"
-                        ),
-                        denormIn,
-                        web3.utils.toWei(
-                            parseFloat(
-                                web3.utils.fromWei(balanceOut, "ether")
-                            ) -
-                                parseFloat(
-                                    web3.utils.fromWei(tokenAmountOut, "ether")
-                                ) +
-                                "",
-                            "ether"
-                        ),
+                let price =
+                    web3.utils.fromWei(tokenAmountOut + "", "ether") / amount;
 
-                        denormOut,
-                        swapFee
-                    )
-                    .call({from: account.address});
-
-                price = this.toStringDecimals(price, asset.decimals);
                 callback(null, {
-                    price:
-                        tokenIn === asset.rewardsAddress
-                            ? 1 / parseFloat(price)
-                            : parseFloat(price),
+                    price,
                     type,
                     tokenName,
                     amount
@@ -774,37 +748,11 @@ class Store {
                     )
                     .call({from: account.address});
 
-                let price = await bptContract.methods
-                    .calcSpotPrice(
-                        web3.utils.toWei(
-                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
-                                parseFloat(
-                                    web3.utils.fromWei(tokenAmountIn, "ether")
-                                ) +
-                                "",
-                            "ether"
-                        ),
-                        denormIn,
-                        web3.utils.toWei(
-                            parseFloat(
-                                web3.utils.fromWei(balanceOut, "ether")
-                            ) -
-                                amount +
-                                "",
-                            "ether"
-                        ),
+                let price =
+                    amount / web3.utils.fromWei(tokenAmountIn + "", "ether");
 
-                        denormOut,
-                        swapFee
-                    )
-                    .call({from: account.address});
-
-                price = this.toStringDecimals(price, asset.decimals);
                 callback(null, {
-                    price:
-                        tokenIn === asset.rewardsAddress
-                            ? 1 / parseFloat(price)
-                            : parseFloat(price),
+                    price,
                     type,
                     tokenName,
                     amount

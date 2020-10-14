@@ -201,10 +201,7 @@ class TransactionModal extends Component {
             loading: false,
             last: null
         });
-        const price =
-            data.tokenName === "SYX"
-                ? parseFloat(data.price)
-                : 1 / parseFloat(data.price);
+        const price = parseFloat(data.price);
         if (data.type === "sell") {
             this.setState({
                 buyAmount: (parseFloat(data.amount) * price).toFixed(4)
@@ -255,7 +252,12 @@ class TransactionModal extends Component {
                 });
             })();
         } else {
-            this.setState({price: this.props.data.price});
+            this.setState({
+                price:
+                    this.state.token === "SYX"
+                        ? this.props.data.price
+                        : 1 / this.props.data.price
+            });
         }
     };
 
@@ -269,7 +271,7 @@ class TransactionModal extends Component {
                     : this.state.tokens[0],
             amount: 0.0,
             buyAmount: 0.0,
-            price: this.props.data.price
+            price: 1 / this.state.price
         });
     };
 
@@ -283,7 +285,7 @@ class TransactionModal extends Component {
                     : this.state.tokens[0],
             amount: 0.0,
             buyAmount: 0.0,
-            price: this.props.data.price
+            price: 1 / this.state.price
         });
     };
 
@@ -382,22 +384,13 @@ class TransactionModal extends Component {
         this.setState({
             loading: true
         });
-        // setTimeout(
-        //     () =>
-        //         this.setState({
-        //             loading: false
-        //         }),
-        //     5000
-        // );
+
         dispatcher.dispatch({
             type: TRADE,
             content: {
                 asset: this.props.data,
                 amount: parseFloat(this.state.amount).toString(),
-                price:
-                    this.state.token === "SYX"
-                        ? (1 / parseFloat(this.state.price)) * 1.1
-                        : parseFloat(this.state.price) * 1.1,
+                price: (1 / parseFloat(this.state.price)) * 1.1,
                 token:
                     this.state.token === "SYX"
                         ? this.props.data.rewardsAddress
@@ -632,11 +625,9 @@ class TransactionModal extends Component {
                                 values={{
                                     tokenFrom: this.state.token,
                                     tokenTo: this.state.buyToken,
-                                    rate: parseFloat(
-                                        this.state.token === "SYX"
-                                            ? this.state.price
-                                            : 1 / this.state.price
-                                    ).toFixed(4)
+                                    rate: parseFloat(this.state.price).toFixed(
+                                        4
+                                    )
                                 }}
                             />
                         </span>
