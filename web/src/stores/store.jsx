@@ -88,7 +88,7 @@ class Store {
                     poolAddress: config.rewardPool,
                     poolABI: config.rewardPoolABI,
                     rewardsAvailable: 0
-                }
+                },
                 {
                     id: "SYX/VLX",
                     featured: false,
