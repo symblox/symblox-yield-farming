@@ -36,6 +36,10 @@ module.exports = async function (deployer, network, accounts) {
         vlxtest: {
             BFactory: "0xC825DC4ea4c91E779545c0EB761C1c0cBcaA4195",
             WVLX: "0x78f18612775a2c54efc74c2911542aa034fe8d3f"
+        },
+        vlxmain: {
+            BFactory: "0x31f7550e296d8fBF91B3ae056815C0bdD9e6b81d",
+            WVLX: "0x2b1aBEb48f875465bf0D3A262a2080ab1C7A3E39"
         }
     };
 
@@ -95,6 +99,8 @@ module.exports = async function (deployer, network, accounts) {
     const wvlxPoolId = 0;
 
     const wvlxConn = await deployer.deploy(WvlxConnector);
+
+    console.log(`WvlxConnector: ${wvlxConn.address}`);
 
     await connFactory.setConnectorImpl(wvlxPoolId, wvlxConn.address);
 

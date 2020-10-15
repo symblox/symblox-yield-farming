@@ -23,6 +23,12 @@ module.exports = async function (deployer, network, accounts) {
                 startBlock: "1052894",
                 bonusEndBlock: "1294814",
                 endBlock: "2020574"
+            },
+            vlxmain: {
+                rewardsPerBlock: "688932980599647000", // 0.688932980599647
+                startBlock: "3326255",
+                bonusEndBlock: "3568175",
+                endBlock: "4293935"
             }
         }
     };
@@ -36,7 +42,7 @@ module.exports = async function (deployer, network, accounts) {
     const rewardMgr = await deployer.deploy(
         RewardManager,
         syx.address, // reward token
-        ADMIN, // dev address
+        "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d", // dev address
         contractSettings["RewardManager"][network]["rewardsPerBlock"],
         contractSettings["RewardManager"][network]["startBlock"],
         contractSettings["RewardManager"][network]["bonusEndBlock"],

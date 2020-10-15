@@ -28,5 +28,5 @@ export const walletconnect = new WalletConnectConnector({
 
 export const walletlink = new WalletLinkConnector({
     url: RPC_URLS[106],
-    appName: "ygov.finance"
+    appName: "symblox"
 });
