@@ -279,6 +279,22 @@ class WithdrawRewardsModal extends Component {
         );
     }
 
+    //函数防抖
+    debounce = (idle, action) => {
+        const that = this;
+        return function () {
+            var ctx = this,
+                args = arguments;
+            clearTimeout(that.state.last);
+            const id = setTimeout(function () {
+                action.apply(ctx, args); // 延迟idle毫秒后 执行action
+            }, idle);
+            that.setState({
+                last: id
+            });
+        };
+    };
+
     tapHandleChange = (event, newValue) => {
         this.setState({
             curTab: newValue
@@ -380,25 +396,6 @@ class WithdrawRewardsModal extends Component {
                 }
             });
         } else {
-            // if (this.state.token === "SYX") {
-            //     amount = (
-            //         (parseFloat(this.state.amount) *
-            //             parseFloat(this.state.pool.price)) /
-            //         parseFloat(this.state.pool.BPTPrice)
-            //     ).toString();
-            // } else {
-            //     amount = (
-            //         parseFloat(this.state.amount) /
-            //         parseFloat(this.state.pool.BPTPrice)
-            //     ).toString();
-            // }
-
-            // amount = (
-            //     (parseFloat(this.state.pool.stakeAmount) /
-            //         parseFloat(this.state.availableAmount)) *
-            //     parseFloat(this.state.amount)
-            // ).toString();
-
             dispatcher.dispatch({
                 type: WITHDRAW,
                 content: {
@@ -448,17 +445,19 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             loading: true
         });
-        dispatcher.dispatch({
-            type: CALCULATE_BPT_AMOUNT,
-            content: {
-                asset: this.state.pool,
-                amount: this.state.amount,
-                token:
-                    this.state.token === "SYX"
-                        ? this.state.pool.rewardsAddress
-                        : this.state.pool.erc20Address
-            }
-        });
+        this.debounce(1000, () => {
+            dispatcher.dispatch({
+                type: CALCULATE_BPT_AMOUNT,
+                content: {
+                    asset: this.state.pool,
+                    amount: this.state.amount,
+                    token:
+                        this.state.token === "SYX"
+                            ? this.state.pool.rewardsAddress
+                            : this.state.pool.erc20Address
+                }
+            });
+        })();
     };
 
     onClaim = () => {
