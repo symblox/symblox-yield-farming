@@ -199,11 +199,12 @@ class TransactionModal extends Component {
 
     setPrice(data) {
         this.setState({
-            price: data.price,
+            price: data.price.tradePrice,
+            finallPrice: data.price.finallPrice,
             loading: false,
             last: null
         });
-        const price = parseFloat(data.price);
+        const price = parseFloat(data.price.tradePrice);
         if (data.type === "sell") {
             this.setState({
                 buyAmount: (parseFloat(data.amount) * price).toFixed(4)
@@ -328,12 +329,19 @@ class TransactionModal extends Component {
         const pool = this.props.data;
         const token = this.state.token;
 
+        let erc20Balance;
+        if(pool.erc20Balance>0.1){
+            erc20Balance = parseFloat(pool.erc20Balance)-0.1;
+        }else{
+            return 0;
+        }
+
         return token === "SYX"
             ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
                 ? formatNumberPrecision(pool.rewardsBalance)
                 : formatNumberPrecision(pool.maxSyxIn)
-            : parseFloat(pool.maxErc20In) > parseFloat(pool.erc20Balance)
-            ? formatNumberPrecision(pool.erc20Balance)
+            : parseFloat(pool.maxErc20In) > erc20Balance
+            ? formatNumberPrecision(erc20Balance+'')
             : formatNumberPrecision(pool.maxErc20In);
     };
 
@@ -361,6 +369,7 @@ class TransactionModal extends Component {
             isNaN(parseFloat(this.state.amount))
         )
             return;
+            
         this.setState({
             loading: true
         });
@@ -370,7 +379,7 @@ class TransactionModal extends Component {
             content: {
                 asset: this.props.data,
                 amount: parseFloat(this.state.amount).toString(),
-                price: (1 / parseFloat(this.state.price)) * 1.1,
+                price: (parseFloat(this.state.finallPrice)*1.1).toString(),
                 token:
                     this.state.token === "SYX"
                         ? this.props.data.rewardsAddress
@@ -381,8 +390,6 @@ class TransactionModal extends Component {
                         : this.props.data.erc20Address
             }
         });
-
-        // this.props.closeModal();
     };
 
     render() {

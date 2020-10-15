@@ -705,11 +705,41 @@ class Store {
                     )
                     .call({from: account.address});
 
-                let price =
+                //Trading price
+                let tradePrice =
                     web3.utils.fromWei(tokenAmountOut + "", "ether") / amount;
 
+                //Post-trade price
+                let finallPrice = await bptContract.methods
+                    .calcSpotPrice(
+                        web3.utils.toWei(
+                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                                amount +
+                                "",
+                            "ether"
+                        ),
+                        denormIn,
+                        web3.utils.toWei(
+                            parseFloat(
+                                web3.utils.fromWei(balanceOut, "ether")
+                            ) -
+                                parseFloat(
+                                    web3.utils.fromWei(tokenAmountOut, "ether")
+                                ) +
+                                "",
+                            "ether"
+                        ),
+                        denormOut,
+                        swapFee
+                    )
+                    .call({from: account.address});
+                finallPrice = toStringDecimals(finallPrice, asset.decimals);
+
                 callback(null, {
-                    price,
+                    price: {
+                        tradePrice,
+                        finallPrice
+                    },
                     type,
                     tokenName,
                     amount
@@ -726,11 +756,41 @@ class Store {
                     )
                     .call({from: account.address});
 
-                let price =
+                //Trading price
+                let tradePrice =
                     amount / web3.utils.fromWei(tokenAmountIn + "", "ether");
 
+                //Post-trade price
+                let finallPrice = await bptContract.methods.calcSpotPrice(
+                        web3.utils.toWei(
+                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                                parseFloat(
+                                    web3.utils.fromWei(tokenAmountIn, "ether")
+                                ) +
+                                "",
+                            "ether"
+                        ),
+                        denormIn,
+                        web3.utils.toWei(
+                            parseFloat(
+                                web3.utils.fromWei(balanceOut, "ether")
+                            ) -
+                                amount +
+                                "",
+                            "ether"
+                        ),
+                        denormOut,
+                        swapFee
+                    )
+                    .call({from: account.address});
+
+                finallPrice = toStringDecimals(finallPrice, asset.decimals);
+
                 callback(null, {
-                    price,
+                    price: {
+                        tradePrice,
+                        finallPrice
+                    },
                     type,
                     tokenName,
                     amount
