@@ -213,7 +213,7 @@ class TransactionModal extends Component {
         }
     }
 
-    //函数防抖
+    //rate limiting
     debounce = (idle, action) => {
         const that = this;
         return function () {
@@ -221,7 +221,7 @@ class TransactionModal extends Component {
                 args = arguments;
             clearTimeout(that.state.last);
             const id = setTimeout(function () {
-                action.apply(ctx, args); // 延迟idle毫秒后 执行action
+                action.apply(ctx, args); // take action after `idle` amount of milliseconds delay
             }, idle);
             that.setState({
                 last: id
