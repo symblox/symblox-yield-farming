@@ -23,7 +23,9 @@ import {
     GET_REWARDS,
     WITHDRAW,
     CALCULATE_AMOUNT,
-    CALCULATE_AMOUNT_RETURNED
+    CALCULATE_AMOUNT_RETURNED,
+    CALCULATE_BPT_AMOUNT,
+    CALCULATE_BPT_AMOUNT_RETURNED
 } from "../../constants";
 
 const dispatcher = Store.dispatcher;
@@ -258,6 +260,25 @@ class WithdrawRewardsModal extends Component {
         this.calculateAmount();
     }
 
+    componentWillMount() {
+        emitter.on(
+            CALCULATE_AMOUNT_RETURNED,
+            this.setAvailableAmount.bind(this)
+        );
+        emitter.on(CALCULATE_BPT_AMOUNT_RETURNED, this.setBptAmount.bind(this));
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener(
+            CALCULATE_AMOUNT_RETURNED,
+            this.setAvailableAmount.bind(this)
+        );
+        emitter.removeListener(
+            CALCULATE_BPT_AMOUNT_RETURNED,
+            this.setBptAmount.bind(this)
+        );
+    }
+
     tapHandleChange = (event, newValue) => {
         this.setState({
             curTab: newValue
@@ -291,14 +312,19 @@ class WithdrawRewardsModal extends Component {
     };
 
     amountChange = event => {
-        this.setState({
-            amount: event.target.value
-        });
+        const that = this;
+        this.setState(
+            {
+                amount: event.target.value
+            },
+            () => {
+                that.calculateBptAmount();
+            }
+        );
     };
 
     getMaxAmount = () => {
         const pool = this.state.pool;
-        const token = this.state.token;
         const formatNumberPrecision = this.formatNumberPrecision;
 
         return pool.type === "seed"
@@ -310,9 +336,15 @@ class WithdrawRewardsModal extends Component {
     };
 
     max = () => {
-        this.setState({
-            amount: this.getMaxAmount() + ""
-        });
+        const that = this;
+        this.setState(
+            {
+                amount: that.getMaxAmount() + ""
+            },
+            () => {
+                that.calculateBptAmount();
+            }
+        );
     };
 
     formatNumberPrecision = (data, decimals = 6) => {
@@ -335,13 +367,7 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             loading: true
         });
-        // setTimeout(
-        //     () =>
-        //         this.setState({
-        //             loading: false
-        //         }),
-        //     5000
-        // );
+
         let amount;
         if (this.state.pool.type === "seed") {
             amount = parseFloat(this.state.amount).toString();
@@ -367,17 +393,17 @@ class WithdrawRewardsModal extends Component {
             //     ).toString();
             // }
 
-            amount = (
-                (parseFloat(this.state.pool.stakeAmount) /
-                    parseFloat(this.state.availableAmount)) *
-                parseFloat(this.state.amount)
-            ).toString();
+            // amount = (
+            //     (parseFloat(this.state.pool.stakeAmount) /
+            //         parseFloat(this.state.availableAmount)) *
+            //     parseFloat(this.state.amount)
+            // ).toString();
 
             dispatcher.dispatch({
                 type: WITHDRAW,
                 content: {
                     asset: this.state.pool,
-                    amount: parseFloat(amount).toString(),
+                    amount: this.state.bptAmount,
                     token:
                         this.state.token === "SYX"
                             ? this.state.pool.rewardsAddress
@@ -387,24 +413,17 @@ class WithdrawRewardsModal extends Component {
         }
     };
 
-    componentWillMount() {
-        emitter.on(
-            CALCULATE_AMOUNT_RETURNED,
-            this.setAvailableAmount.bind(this)
-        );
-    }
-
-    componentWillUnmount() {
-        emitter.removeListener(
-            CALCULATE_AMOUNT_RETURNED,
-            this.setAvailableAmount.bind(this)
-        );
-    }
-
     setAvailableAmount(data) {
         this.setState({
             availableAmount: data,
             availableAmountLoading: false
+        });
+    }
+
+    setBptAmount(data) {
+        this.setState({
+            loading: false,
+            bptAmount: data
         });
     }
 
@@ -425,17 +444,28 @@ class WithdrawRewardsModal extends Component {
         });
     };
 
+    calculateBptAmount = () => {
+        this.setState({
+            loading: true
+        });
+        dispatcher.dispatch({
+            type: CALCULATE_BPT_AMOUNT,
+            content: {
+                asset: this.state.pool,
+                amount: this.state.amount,
+                token:
+                    this.state.token === "SYX"
+                        ? this.state.pool.rewardsAddress
+                        : this.state.pool.erc20Address
+            }
+        });
+    };
+
     onClaim = () => {
         this.setState({
             loading: true
         });
-        // setTimeout(
-        //     () =>
-        //         this.setState({
-        //             loading: false
-        //         }),
-        //     5000
-        // );
+
         dispatcher.dispatch({
             type: GET_REWARDS,
             content: {

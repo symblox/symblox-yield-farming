@@ -20,6 +20,8 @@ import {
     CALCULATE_PRICE_RETURNED,
     CALCULATE_AMOUNT,
     CALCULATE_AMOUNT_RETURNED,
+    CALCULATE_BPT_AMOUNT,
+    CALCULATE_BPT_AMOUNT_RETURNED,
     TX_CONFIRM
 } from "../constants";
 import Web3 from "web3";
@@ -151,6 +153,9 @@ class Store {
                         break;
                     case CALCULATE_AMOUNT:
                         this.getStakeTokenPrice(payload);
+                        break;
+                    case CALCULATE_BPT_AMOUNT:
+                        this.getBPTAmount(payload);
                         break;
                     default: {
                     }
@@ -762,6 +767,59 @@ class Store {
             }
         } catch (ex) {
             return callback(ex);
+        }
+    };
+
+    getBPTAmount = async payload => {
+        const web3 = await this.getWeb3();
+        const {asset, amount, token} = payload.content;
+        this._getBPTAmount(web3, asset, token, amount, (err, res) => {
+            if (err) {
+                return emitter.emit(ERROR, err);
+            }
+
+            return emitter.emit(CALCULATE_BPT_AMOUNT_RETURNED, res);
+        });
+    };
+
+    _getBPTAmount = async (web3, asset, token, amount, callback) => {
+        if (asset.type === "seed") {
+            //The token deposited in the seed pool is the token pledged to the reward pool, so the price is 1
+            callback(null, "0");
+        } else {
+            let bptContract = new web3.eth.Contract(asset.abi, asset.address);
+            try {
+                const balance = await bptContract.methods
+                    .getBalance(token)
+                    .call();
+                const denorm = await bptContract.methods
+                    .getDenormalizedWeight(token)
+                    .call();
+                const totalSupply = await bptContract.methods
+                    .totalSupply()
+                    .call();
+                const totalWeight = await bptContract.methods
+                    .getTotalDenormalizedWeight()
+                    .call();
+                const swapFee = await bptContract.methods.getSwapFee().call();
+
+                let amountOut = await bptContract.methods
+                    .calcPoolInGivenSingleOut(
+                        balance,
+                        denorm,
+                        totalSupply,
+                        totalWeight,
+                        web3.utils.toWei(amount + "", "ether"),
+                        swapFee
+                    )
+                    .call();
+                callback(
+                    null,
+                    this.toStringDecimals(amountOut, asset.decimals)
+                );
+            } catch (ex) {
+                return callback(ex);
+            }
         }
     };
 
