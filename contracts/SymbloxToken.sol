@@ -106,8 +106,8 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
     }
 
     /**
-     * @notice Delegate votes from `msg.sender` to `delegatee`
-     * @param delegator The address to get delegatee for
+     * @notice Return the address of `delegatee`
+     * @param delegator The address of the delegator
      */
     function delegates(address delegator) external view returns (address) {
         return _delegates[delegator];

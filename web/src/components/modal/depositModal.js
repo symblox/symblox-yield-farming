@@ -15,6 +15,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {formatNumberPrecision} from "../../utils/numberFormat.js";
 
 import Store from "../../stores";
 import {
@@ -282,7 +283,6 @@ class DepositModal extends Component {
     getMaxAmount = () => {
         const pool = this.state.pool;
         const token = this.state.token;
-        const formatNumberPrecision = this.formatNumberPrecision;
 
         let balance = parseFloat(pool.erc20Balance);
         if (pool.type === "seed" || pool.type === "swap-native") {
@@ -322,16 +322,6 @@ class DepositModal extends Component {
         this.setState({
             amount: this.getMaxAmount() + ""
         });
-    };
-
-    formatNumberPrecision = (data, decimals = 6) => {
-        return Math.floor(parseFloat(data) * 10 ** decimals) / 10 ** decimals;
-    };
-
-    formatNumber = (amount, decimals, decimalPlace = decimals) => {
-        let roundAmount = amount.replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-        let index = roundAmount.indexOf(".");
-        return roundAmount.slice(0, index - 1 + decimalPlace);
     };
 
     confirm = () => {

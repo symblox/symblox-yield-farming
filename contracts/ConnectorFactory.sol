@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 contract ConnectorFactory is ProxyFactory, Ownable {
     // ( reward pool id => connector implementation address )
-    mapping(uint8 => address) private connectorImpls;
+    mapping(uint8 => address) public connectorImpls;
     // user address => ( reward pool id => connector address )
     mapping(address => mapping(uint8 => address)) public connectors;
 

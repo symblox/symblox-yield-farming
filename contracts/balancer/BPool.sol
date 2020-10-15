@@ -307,6 +307,10 @@ contract BPool is BBronze, BToken, BMath {
     // Absorb any tokens that have been sent to this contract into the pool
     function gulp(address token) external _logs_ _lock_ {
         require(_records[token].bound, "ERR_NOT_BOUND");
+        uint256 coinBalance = address(this).balance;
+        if (coinBalance > 0) {
+            IWrappedToken(wToken).deposit.value(coinBalance)();
+        }
         _records[token].balance = IERC20(token).balanceOf(address(this));
     }
 
