@@ -521,23 +521,6 @@ class WithdrawRewardsModal extends Component {
                                     <FormattedMessage id="POPUP_WITHDRAWABLE_AMOUNT" />
                                 </span>
                                 <span style={{float: "right"}}>
-                                    {this.state.token === "SYX" ? (
-                                        <img
-                                            className={classes.icon}
-                                            src={"/SYX.png"}
-                                            alt=""
-                                        />
-                                    ) : (
-                                        <img
-                                            className={classes.icon}
-                                            src={
-                                                "/" +
-                                                this.state.pool.name +
-                                                ".png"
-                                            }
-                                            alt=""
-                                        />
-                                    )}
                                     {this.state.pool.type === "seed" ? (
                                         parseFloat(this.state.pool.stakeAmount)
                                     ) : this.state.availableAmountLoading ? (
