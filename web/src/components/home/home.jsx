@@ -1268,7 +1268,7 @@ class Home extends Component {
 
         window.setTimeout(() => {
             dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
-        }, 15000);
+        }, 10000);
     };
 
     overlayClicked = () => {
