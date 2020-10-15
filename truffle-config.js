@@ -2,12 +2,18 @@ require("dotenv").config();
 const mnemonic = process.env.MNEMONIC;
 const privateKey = process.env.PRIVATE_KEY;
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+const VLX_MAIN_RPC = "https://explorer.velas.com/rpc";
+const VLX_TEST_RPC = "https://tn.yopta.net";
 
-const configVlxNetwok = (networkId, gasPrice = 1e9, gas = 3000000) => ({
+const configVlxNetwok = (networkId, gasPrice = 22000, gas = 3000000) => ({
     provider: () =>
-        mnemonic
-            ? new HDWalletProvider(mnemonic, "https://tn.yopta.net", 0)
-            : new HDWalletProvider(privateKey, "https://tn.yopta.net", 0),
+        networkId == 106
+            ? mnemonic
+                ? new HDWalletProvider(mnemonic, VLX_MAIN_RPC, 0)
+                : new HDWalletProvider(privateKey, VLX_MAIN_RPC, 0)
+            : mnemonic
+            ? new HDWalletProvider(mnemonic, VLX_TEST_RPC, 0)
+            : new HDWalletProvider(privateKey, VLX_TEST_RPC, 0),
     network_id: networkId,
     gas,
     gasPrice
@@ -30,7 +36,8 @@ module.exports = {
             gas: 8000000,
             gasPrice: 1000000000 // web3.eth.gasPrice
         },
-        vlxtest: configVlxNetwok(111)
+        vlxtest: configVlxNetwok(111),
+        vlxmain: configVlxNetwok(106)
     },
     compilers: {
         solc: {
