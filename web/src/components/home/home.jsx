@@ -390,12 +390,9 @@ class Home extends Component {
         emitter.removeListener(WITHDRAW_RETURNED, this.showHash);
         emitter.removeListener(TRADE_RETURNED, this.showHash);
         emitter.removeListener(GET_REWARDS_RETURNED, this.showHash);
+        emitter.removeListener(CREATE_ENTRY_CONTRACT_RETURNED, this.showHash);
         emitter.removeListener(ERROR, this.errorReturned);
         emitter.removeListener(TX_CONFIRM, this.hideLoading);
-        emitter.removeListener(
-            CREATE_ENTRY_CONTRACT_RETURNED,
-            this.hideLoading
-        );
     }
 
     connectionConnected = async () => {

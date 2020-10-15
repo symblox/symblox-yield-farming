@@ -15,6 +15,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {debounce} from "../../utils/debounce.js";
+import {formatNumberPrecision} from "../../utils/numberFormat.js";
 
 import Store from "../../stores";
 import {
@@ -213,44 +215,33 @@ class TransactionModal extends Component {
         }
     }
 
-    //rate limiting
-    debounce = (idle, action) => {
-        const that = this;
-        return function () {
-            var ctx = this,
-                args = arguments;
-            clearTimeout(that.state.last);
-            const id = setTimeout(function () {
-                action.apply(ctx, args); // take action after `idle` amount of milliseconds delay
-            }, idle);
-            that.setState({
-                last: id
-            });
-        };
-    };
-
     getPrice = (type, amount) => {
         if (type) {
             this.setState({loading: true});
-            this.debounce(1000, () => {
-                dispatcher.dispatch({
-                    type: CALCULATE_PRICE,
-                    content: {
-                        asset: this.props.data,
-                        amount,
-                        type,
-                        tokenName: this.state.token,
-                        tokenIn:
-                            this.state.token === "SYX"
-                                ? this.props.data.rewardsAddress
-                                : this.props.data.erc20Address,
-                        tokenOut:
-                            this.state.buyToken === "SYX"
-                                ? this.props.data.rewardsAddress
-                                : this.props.data.erc20Address
-                    }
-                });
-            })();
+            const that = this;
+            debounce(
+                1000,
+                () => {
+                    dispatcher.dispatch({
+                        type: CALCULATE_PRICE,
+                        content: {
+                            asset: that.props.data,
+                            amount,
+                            type,
+                            tokenName: that.state.token,
+                            tokenIn:
+                                that.state.token === "SYX"
+                                    ? that.props.data.rewardsAddress
+                                    : that.props.data.erc20Address,
+                            tokenOut:
+                                that.state.buyToken === "SYX"
+                                    ? that.props.data.rewardsAddress
+                                    : that.props.data.erc20Address
+                        }
+                    });
+                },
+                that
+            )();
         } else {
             this.setState({
                 price:
@@ -336,7 +327,6 @@ class TransactionModal extends Component {
     getMaxAmount = () => {
         const pool = this.props.data;
         const token = this.state.token;
-        const formatNumberPrecision = this.formatNumberPrecision;
 
         return token === "SYX"
             ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
@@ -363,16 +353,6 @@ class TransactionModal extends Component {
 
             this.getPrice();
         }
-    };
-
-    formatNumberPrecision = (data, decimals = 6) => {
-        return Math.floor(parseFloat(data) * 10 ** decimals) / 10 ** decimals;
-    };
-
-    formatNumber = (amount, decimals, decimalPlace = decimals) => {
-        let roundAmount = amount.replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-        let index = roundAmount.indexOf(".");
-        return roundAmount.slice(0, index - 1 + decimalPlace);
     };
 
     confirm = () => {
@@ -414,7 +394,7 @@ class TransactionModal extends Component {
             this.state.token === data.tokens[0]
                 ? parseFloat(data.maxSyxIn) > parseFloat(data.rewardsBalance)
                     ? parseFloat(data.rewardsBalance)
-                    : parseFloat(data.maxSyxIn).toFixed(4)
+                    : parseFloat(data.maxSyxIn)
                 : parseFloat(data.maxErc20In) > parseFloat(data.erc20Balance)
                 ? parseFloat(data.erc20Balance)
                 : parseFloat(data.maxErc20In)

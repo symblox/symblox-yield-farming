@@ -17,7 +17,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import {debounce} from "../../utils/debounce.js";
+import {formatNumberPrecision} from "../../utils/numberFormat.js";
 import Store from "../../stores";
 import {
     GET_REWARDS,
@@ -256,7 +257,9 @@ class WithdrawRewardsModal extends Component {
             loading: false,
             availableAmountLoading: true
         };
+    }
 
+    componentDidMount() {
         this.calculateAmount();
     }
 
@@ -278,22 +281,6 @@ class WithdrawRewardsModal extends Component {
             this.setBptAmount.bind(this)
         );
     }
-
-    //rate limiting
-    debounce = (idle, action) => {
-        const that = this;
-        return function () {
-            var ctx = this,
-                args = arguments;
-            clearTimeout(that.state.last);
-            const id = setTimeout(function () {
-                action.apply(ctx, args); // take action after `idle` amount of milliseconds delay
-            }, idle);
-            that.setState({
-                last: id
-            });
-        };
-    };
 
     tapHandleChange = (event, newValue) => {
         this.setState({
@@ -341,7 +328,6 @@ class WithdrawRewardsModal extends Component {
 
     getMaxAmount = () => {
         const pool = this.state.pool;
-        const formatNumberPrecision = this.formatNumberPrecision;
 
         return pool.type === "seed"
             ? formatNumberPrecision(pool.stakeAmount)
@@ -361,16 +347,6 @@ class WithdrawRewardsModal extends Component {
                 that.calculateBptAmount();
             }
         );
-    };
-
-    formatNumberPrecision = (data, decimals = 6) => {
-        return Math.floor(parseFloat(data) * 10 ** decimals) / 10 ** decimals;
-    };
-
-    formatNumber = (amount, decimals, decimalPlace = decimals) => {
-        let roundAmount = amount.replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-        let index = roundAmount.indexOf(".");
-        return roundAmount.slice(0, index - 1 + decimalPlace);
     };
 
     confirm = () => {
@@ -445,19 +421,24 @@ class WithdrawRewardsModal extends Component {
         this.setState({
             loading: true
         });
-        this.debounce(1000, () => {
-            dispatcher.dispatch({
-                type: CALCULATE_BPT_AMOUNT,
-                content: {
-                    asset: this.state.pool,
-                    amount: this.state.amount,
-                    token:
-                        this.state.token === "SYX"
-                            ? this.state.pool.rewardsAddress
-                            : this.state.pool.erc20Address
-                }
-            });
-        })();
+        const that = this;
+        debounce(
+            1000,
+            () => {
+                dispatcher.dispatch({
+                    type: CALCULATE_BPT_AMOUNT,
+                    content: {
+                        asset: that.state.pool,
+                        amount: that.state.amount,
+                        token:
+                            that.state.token === "SYX"
+                                ? that.state.pool.rewardsAddress
+                                : that.state.pool.erc20Address
+                    }
+                });
+            },
+            that
+        )();
     };
 
     onClaim = () => {
@@ -529,8 +510,6 @@ class WithdrawRewardsModal extends Component {
                                                     {v.id}
                                                 </MenuItem>
                                             );
-                                        } else {
-                                            return <></>;
                                         }
                                     })}
                                 </Select>
@@ -545,7 +524,8 @@ class WithdrawRewardsModal extends Component {
                                     alt=""
                                 />
                             </div>
-                            <Typography gutterBottom>
+
+                            <div style={{fontSize: "16px"}}>
                                 <span style={{color: "#ACAEBC"}}>
                                     <FormattedMessage id="POPUP_WITHDRAWABLE_AMOUNT" />
                                 </span>
@@ -571,7 +551,7 @@ class WithdrawRewardsModal extends Component {
                                     )}
                                     {" " + this.state.token}
                                 </span>
-                            </Typography>
+                            </div>
                             <div className={classes.formContent}>
                                 <FormControl
                                     variant="outlined"
@@ -705,8 +685,6 @@ class WithdrawRewardsModal extends Component {
                                                     {v.id}
                                                 </MenuItem>
                                             );
-                                        } else {
-                                            return <></>;
                                         }
                                     })}
                                 </Select>
