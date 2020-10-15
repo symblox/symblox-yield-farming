@@ -1,5 +1,6 @@
 import config from "../config";
 import async from "async";
+import {toStringDecimals} from "../utils/numberFormat.js";
 import {
     ERROR,
     CONFIGURE,
@@ -26,7 +27,7 @@ import {
 } from "../constants";
 import Web3 from "web3";
 
-import {injected, walletconnect, walletlink} from "./connectors";
+import {injected} from "./connectors";
 
 const rp = require("request-promise");
 
@@ -47,8 +48,6 @@ class Store {
             connectorsByName: {
                 VELAS: injected,
                 MetaMask: injected
-                // WalletConnect: walletconnect,
-                // WalletLink: walletlink
             },
             web3context: null,
             languages: [
@@ -528,32 +527,6 @@ class Store {
         }
     };
 
-    // toStringDecimals
-    toStringDecimals = (numStr, decimals, decimalPlace = decimals) => {
-        numStr = numStr.toLocaleString().replace(/,/g, "");
-        decimals = decimals.toString();
-
-        var str = Number(`1e+${decimals}`)
-            .toLocaleString()
-            .replace(/,/g, "")
-            .slice(1);
-
-        var res = (numStr.length > decimals
-            ? numStr.slice(0, numStr.length - decimals) +
-              "." +
-              numStr.slice(numStr.length - decimals)
-            : "0." + str.slice(0, str.length - numStr.length) + numStr
-        ).replace(/(0+)$/g, "");
-
-        if (decimalPlace === 0) return res.slice(0, res.indexOf("."));
-
-        var length = res.indexOf(".") + 1 + decimalPlace;
-        res = res
-            .slice(0, length >= res.length ? res.length : length)
-            .replace(/(0+)$/g, "");
-        return res.slice(-1) === "." ? res + "00" : res;
-    };
-
     _getEntryContract = async (web3, asset, account, callback) => {
         const entryContractAddress = await this.getEntryContract(asset.index);
 
@@ -580,7 +553,7 @@ class Store {
                     .call();
                 callback(
                     null,
-                    this.toStringDecimals(userInfo.amount, asset.decimals)
+                    toStringDecimals(userInfo.amount, asset.decimals)
                 );
             } catch (ex) {
                 return callback(ex);
@@ -593,7 +566,7 @@ class Store {
         if (asset.type === "seed" || asset.type === "swap-native") {
             try {
                 let balance = await web3.eth.getBalance(account.address);
-                callback(null, this.toStringDecimals(balance, asset.decimals));
+                callback(null, toStringDecimals(balance, asset.decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -606,7 +579,7 @@ class Store {
                 let balance = await erc20Contract.methods
                     .balanceOf(account.address)
                     .call();
-                callback(null, this.toStringDecimals(balance, asset.decimals));
+                callback(null, toStringDecimals(balance, asset.decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -623,7 +596,7 @@ class Store {
             let balance = await erc20Contract.methods
                 .balanceOf(account.address)
                 .call();
-            callback(null, this.toStringDecimals(balance, asset.decimals));
+            callback(null, toStringDecimals(balance, asset.decimals));
         } catch (ex) {
             return callback(ex);
         }
@@ -637,7 +610,7 @@ class Store {
         try {
             let rate = await erc20Contract.methods.syxPerBlock().call();
 
-            callback(null, this.toStringDecimals(rate, 18));
+            callback(null, toStringDecimals(rate, 18));
         } catch (ex) {
             return callback(ex);
         }
@@ -732,11 +705,41 @@ class Store {
                     )
                     .call({from: account.address});
 
-                let price =
+                //Trading price
+                let tradePrice =
                     web3.utils.fromWei(tokenAmountOut + "", "ether") / amount;
 
+                //Post-trade price
+                let finallPrice = await bptContract.methods
+                    .calcSpotPrice(
+                        web3.utils.toWei(
+                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                                amount +
+                                "",
+                            "ether"
+                        ),
+                        denormIn,
+                        web3.utils.toWei(
+                            parseFloat(
+                                web3.utils.fromWei(balanceOut, "ether")
+                            ) -
+                                parseFloat(
+                                    web3.utils.fromWei(tokenAmountOut, "ether")
+                                ) +
+                                "",
+                            "ether"
+                        ),
+                        denormOut,
+                        swapFee
+                    )
+                    .call({from: account.address});
+                finallPrice = toStringDecimals(finallPrice, asset.decimals);
+
                 callback(null, {
-                    price,
+                    price: {
+                        tradePrice,
+                        finallPrice
+                    },
                     type,
                     tokenName,
                     amount
@@ -753,11 +756,41 @@ class Store {
                     )
                     .call({from: account.address});
 
-                let price =
+                //Trading price
+                let tradePrice =
                     amount / web3.utils.fromWei(tokenAmountIn + "", "ether");
 
+                //Post-trade price
+                let finallPrice = await bptContract.methods.calcSpotPrice(
+                        web3.utils.toWei(
+                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                                parseFloat(
+                                    web3.utils.fromWei(tokenAmountIn, "ether")
+                                ) +
+                                "",
+                            "ether"
+                        ),
+                        denormIn,
+                        web3.utils.toWei(
+                            parseFloat(
+                                web3.utils.fromWei(balanceOut, "ether")
+                            ) -
+                                amount +
+                                "",
+                            "ether"
+                        ),
+                        denormOut,
+                        swapFee
+                    )
+                    .call({from: account.address});
+
+                finallPrice = toStringDecimals(finallPrice, asset.decimals);
+
                 callback(null, {
-                    price,
+                    price: {
+                        tradePrice,
+                        finallPrice
+                    },
                     type,
                     tokenName,
                     amount
@@ -815,7 +848,7 @@ class Store {
                     .call();
                 callback(
                     null,
-                    this.toStringDecimals(amountOut, asset.decimals)
+                    toStringDecimals(amountOut, asset.decimals)
                 );
             } catch (ex) {
                 return callback(ex);
@@ -874,7 +907,7 @@ class Store {
                     .call();
                 callback(
                     null,
-                    this.toStringDecimals(amountOut, asset.decimals)
+                    toStringDecimals(amountOut, asset.decimals)
                 );
             } catch (ex) {
                 return callback(ex);
@@ -889,7 +922,7 @@ class Store {
             totalSupply = await contract.methods
                 .balanceOf(asset.poolAddress)
                 .call();
-            callback(null, this.toStringDecimals(totalSupply, asset.decimals));
+            callback(null, toStringDecimals(totalSupply, asset.decimals));
         } catch (ex) {
             return callback(ex);
         }
@@ -909,9 +942,9 @@ class Store {
                     .call();
                 callback(
                     null,
-                    parseInt(this.toStringDecimals(weight1, asset.decimals)) +
+                    parseInt(toStringDecimals(weight1, asset.decimals)) +
                         ":" +
-                        parseInt(this.toStringDecimals(weight2, asset.decimals))
+                        parseInt(toStringDecimals(weight2, asset.decimals))
                 );
             } catch (ex) {
                 return callback(ex);
@@ -943,7 +976,7 @@ class Store {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
                 let amount = await bptContract.methods.getBalance(token).call();
-                callback(null, this.toStringDecimals(amount, asset.decimals));
+                callback(null, toStringDecimals(amount, asset.decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -957,7 +990,7 @@ class Store {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
                 let ratio = await bptContract.methods.MAX_IN_RATIO().call();
-                callback(null, this.toStringDecimals(ratio, asset.decimals));
+                callback(null, toStringDecimals(ratio, asset.decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -971,7 +1004,7 @@ class Store {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
                 let ratio = await bptContract.methods.MAX_OUT_RATIO().call();
-                callback(null, this.toStringDecimals(ratio, asset.decimals));
+                callback(null, toStringDecimals(ratio, asset.decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -987,7 +1020,7 @@ class Store {
                 let price = await contract.methods
                     .getSpotPrice(asset.erc20Address, asset.rewardsAddress)
                     .call();
-                callback(null, this.toStringDecimals(price, asset.decimals));
+                callback(null, toStringDecimals(price, asset.decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -1006,7 +1039,7 @@ class Store {
 
             try {
                 let earned = await contract.methods.earned().call();
-                callback(null, this.toStringDecimals(earned, 18));
+                callback(null, toStringDecimals(earned, 18));
             } catch (ex) {
                 return callback(ex);
             }

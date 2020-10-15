@@ -142,6 +142,7 @@ class MySnackbar extends Component {
                         size="small"
                         onClick={() => window.open(snackbarMessage, "_blank")}
                         style={{minWidth: "30px"}}
+                        key="1"
                     >
                         View
                     </Button>,
@@ -149,6 +150,7 @@ class MySnackbar extends Component {
                         key="close"
                         aria-label="Close"
                         onClick={this.handleClose}
+                        key="2"
                     >
                         <CloseIcon />
                     </IconButton>
