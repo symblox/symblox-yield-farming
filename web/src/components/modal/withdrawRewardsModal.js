@@ -331,10 +331,13 @@ class WithdrawRewardsModal extends Component {
 
         return pool.type === "seed"
             ? formatNumberPrecision(pool.stakeAmount)
-            : parseFloat(this.state.availableAmount) >
+            : this.state.token == "SYX" ? (parseFloat(this.state.availableAmount) >
               parseFloat(pool.maxSyxOut)
             ? formatNumberPrecision(pool.maxSyxOut)
-            : formatNumberPrecision(this.state.availableAmount);
+            : formatNumberPrecision(this.state.availableAmount)):(parseFloat(this.state.availableAmount) >
+              parseFloat(pool.maxErc20Out)
+            ? formatNumberPrecision(pool.maxErc20Out)
+            : formatNumberPrecision(this.state.availableAmount));
     };
 
     max = () => {
@@ -539,7 +542,7 @@ class WithdrawRewardsModal extends Component {
                                                 height: "24px"
                                             }}
                                         ></CircularProgress>
-                                    ) : parseFloat(this.state.availableAmount) >
+                                    ) : this.state.token === "SYX"?(parseFloat(this.state.availableAmount) >
                                       parseFloat(this.state.pool.maxSyxOut) ? (
                                         parseFloat(
                                             this.state.pool.maxSyxOut
@@ -548,7 +551,16 @@ class WithdrawRewardsModal extends Component {
                                         parseFloat(
                                             this.state.availableAmount
                                         ).toFixed(4)
-                                    )}
+                                    )):(parseFloat(this.state.availableAmount) >
+                                      parseFloat(this.state.pool.maxErc20Out) ? (
+                                        parseFloat(
+                                            this.state.pool.maxErc20Out
+                                        ).toFixed(4)
+                                    ) : (
+                                        parseFloat(
+                                            this.state.availableAmount
+                                        ).toFixed(4)
+                                    ))}
                                     {" " + this.state.token}
                                 </span>
                             </div>
