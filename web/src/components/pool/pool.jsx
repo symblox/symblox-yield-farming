@@ -96,6 +96,10 @@ const useStyles = makeStyles({
         color: props =>
             props.data && props.data.featured ? "#FFFFFF" : "#1E304B"
     },
+    tooltip: {
+        fontSize: "16px",
+        margin: "8px 0"
+    },
     button: {
         background:
             "linear-gradient(135deg, #42D9FE 0%, #2872FA 100%, #42D9FE)",
@@ -181,12 +185,12 @@ export default function Pool(props) {
                 <Tooltip
                     title={
                         <React.Fragment>
-                            <div>
-                                <FormattedMessage id="TOTAL_SUPPLY" />:
+                            <div className={classes.tooltip}>
+                                <FormattedMessage id="TOTAL_SUPPLY" />: 
                                 {data.type === "seed"
                                     ? parseFloat(data.totalSupply || 0).toFixed(
                                           4
-                                      )
+                                      ) + "VLX"
                                     : parseFloat(data.bptVlxBalance).toFixed(
                                           4
                                       ) +
@@ -197,7 +201,7 @@ export default function Pool(props) {
                                       ) +
                                       "SYX"}
                             </div>
-                            <div>
+                            <div className={classes.tooltip}>
                                 <FormattedMessage id="REWARD_DISTRIBUTION_RATIO" />
                                 :{" "}
                                 {(parseFloat(data.allocPoint) * 100).toFixed(2)}{" "}
