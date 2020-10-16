@@ -1297,11 +1297,13 @@ class Store {
         price,
         callback
     ) => {
+        price = parseFloat(price).toFixed(12);
+        
         const web3 = await this.getWeb3();
         const yCurveFiContract = new web3.eth.Contract(
             asset.abi,
             asset.address
-        );
+        ); 
 
         var amountToSend = web3.utils.toWei(amount, "ether");
         if (asset.decimals !== 18) {
