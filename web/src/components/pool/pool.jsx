@@ -186,20 +186,15 @@ export default function Pool(props) {
                     title={
                         <React.Fragment>
                             <div className={classes.tooltip}>
-                                <FormattedMessage id="TOTAL_SUPPLY" />: 
-                                {data.type === "seed"
-                                    ? parseFloat(data.totalSupply || 0).toFixed(
-                                          4
-                                      ) + "VLX"
-                                    : parseFloat(data.bptVlxBalance).toFixed(
-                                          4
-                                      ) +
-                                      data.name +
-                                      " " +
-                                      parseFloat(data.bptSyxBalance).toFixed(
-                                          4
-                                      ) +
-                                      "SYX"}
+                                <FormattedMessage id="TOTAL_SUPPLY" />: {' '}
+                                    {data.type === "seed"?
+                                        parseFloat(data.totalSupply || 0).toFixed(4) + " VLX"
+                                    :
+                                    <>
+                                        {parseFloat(data.bptVlxBalance).toFixed(4) + " "+data.name}
+                                        <div style={{margin:"10px 0 0 95px"}}>{parseFloat(data.bptSyxBalance).toFixed(4) +" SYX"}</div>
+                                    </>
+                                    }
                             </div>
                             <div className={classes.tooltip}>
                                 <FormattedMessage id="REWARD_DISTRIBUTION_RATIO" />
