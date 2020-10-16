@@ -279,8 +279,7 @@ class Home extends Component {
             modalOpen: false,
             depositModalOpen: false,
             withdrawRewardsModalOpen: false,
-            transactionModalOpen: false,
-            showAlert: true
+            transactionModalOpen: false
         };
     }
 
@@ -461,18 +460,6 @@ class Home extends Component {
 
         return (
             <div>
-                {this.state.showAlert ? (
-                    <Alert
-                        severity="warning"
-                        onClose={() => this.setState({showAlert: false})}
-                        className={classes.customAlert}
-                    >
-                        <FormattedMessage id="RISK_WARNING" />
-                    </Alert>
-                ) : (
-                    <></>
-                )}
-
                 <Header
                     show={true}
                     address={address}
