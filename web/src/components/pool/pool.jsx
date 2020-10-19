@@ -7,6 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
+import NumberFormat from 'react-number-format';
 
 const useStyles = makeStyles({
     root: {
@@ -186,21 +187,20 @@ export default function Pool(props) {
                     title={
                         <React.Fragment>
                             <div className={classes.tooltip}>
-                                <FormattedMessage id="TOTAL_SUPPLY" />: {' '}
+                                <FormattedMessage id="TOTAL_SUPPLY" />: {' '}                            
                                     {data.type === "seed"?
-                                        parseFloat(data.totalSupply || 0).toFixed(4) + " VLX"
+                                        <NumberFormat value={data.totalSupply} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'VLX'} decimalScale={4} fixedDecimalScale={true} />
                                     :
                                     <>
-                                        {parseFloat(data.bptVlxBalance).toFixed(4) + " "+data.name}
-                                        <div style={{margin:"10px 0 0 95px"}}>{parseFloat(data.bptSyxBalance).toFixed(4) +" SYX"}</div>
+                                        <NumberFormat value={data.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.name} decimalScale={4} fixedDecimalScale={true} />
+                                        <NumberFormat value={data.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} renderText={value => <div style={{margin:"10px 0 0 95px"}}>{value}</div>}/>
                                     </>
                                     }
                             </div>
                             <div className={classes.tooltip}>
                                 <FormattedMessage id="REWARD_DISTRIBUTION_RATIO" />
                                 :{" "}
-                                {(parseFloat(data.allocPoint) * 100).toFixed(2)}{" "}
-                                %
+                                <NumberFormat value={parseFloat(data.allocPoint) * 100} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'%'} decimalScale={2} fixedDecimalScale={true} />
                             </div>
                         </React.Fragment>
                     }
@@ -217,51 +217,24 @@ export default function Pool(props) {
 
                 <Typography className={classes.textSecondary}>
                     <FormattedMessage id="TOTAL_STAKING_APR" />:{" "}
-                    <span
-                        className={classes.textSecondaryColor}
-                        style={{float: "right"}}
-                    >
-                        {data.rewardApr}%
-                    </span>
+                    <NumberFormat value={data.rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={1} fixedDecimalScale={true} renderText={value => <span className={classes.textSecondaryColor} style={{float: "right"}}>{value}</span>}/>
                 </Typography>
 
                 <Typography className={classes.textThird}>
                     <FormattedMessage id="WITHDRAWABLE_REWARDS" />:{" "}
-                    <span
-                        style={{float: "right"}}
-                        className={classes.textThirdColor}
-                    >
-                        {parseFloat(data.rewardsAvailable).toFixed(4)}{" "}
-                        {data.rewardsSymbol}
-                    </span>
+                    <NumberFormat value={data.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.textSecondaryColor} style={{float: "right"}}>{value}</span>}/>
                 </Typography>
                 <Typography className={classes.textThird}>
                     {data.type === "seed" ? (
                         <>
                             <FormattedMessage id="TOTAL_STAKE" />:
-                            <span
-                                style={{float: "right"}}
-                                className={classes.textThirdColor}
-                            >
-                                {data.stakeAmount} {data.name}
-                            </span>
+                            <NumberFormat value={data.stakeAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.name} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.textThirdColor} style={{float: "right"}}>{value}</span>}/>
                         </>
                     ) : (
                         <>
                             <FormattedMessage id="LP_MY_SHARE" />:
-                            <span
-                                style={{float: "right"}}
-                                className={classes.textThirdColor}
-                            >
-                                {data.totalSupply > 0
-                                    ? (
-                                          (parseFloat(data.stakeAmount) /
-                                              parseFloat(data.totalSupply)) *
-                                          100
-                                      ).toFixed(2)
-                                    : "0.00"}{" "}
-                                %
-                            </span>
+                            <NumberFormat value={data.totalSupply > 0
+                            ? (parseFloat(data.stakeAmount) / parseFloat(data.totalSupply)) * 100 : 0} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={6} fixedDecimalScale={true} renderText={value => <span className={classes.textThirdColor} style={{float: "right"}}>{value}</span>}/>
                         </>
                     )}
                 </Typography>

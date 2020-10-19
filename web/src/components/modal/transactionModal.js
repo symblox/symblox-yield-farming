@@ -15,6 +15,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import NumberFormat from 'react-number-format';
 import {debounce} from "../../utils/debounce.js";
 import {formatNumberPrecision} from "../../utils/numberFormat.js";
 
@@ -442,14 +443,13 @@ class TransactionModal extends Component {
                             {this.state.token === data.tokens[0]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.rewardsBalance)
-                                    ? parseFloat(data.rewardsBalance).toFixed(4)
-                                    : parseFloat(data.maxSyxIn).toFixed(4) +
-                                      data.tokens[0]
+                                    ? <NumberFormat value={data.rewardsBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                    : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
                                 : parseFloat(data.maxErc20In) >
                                   parseFloat(data.erc20Balance)
-                                ? parseFloat(data.erc20Balance).toFixed(4)
-                                : parseFloat(data.maxErc20In).toFixed(4) +
-                                  data.tokens[1]}
+                                ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
+                                : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
+                                  }
                         </span>
                     </Typography>
                     <div className={classes.formContent}>
@@ -555,14 +555,12 @@ class TransactionModal extends Component {
                             {this.state.token === data.tokens[1]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.rewardsBalance)
-                                    ? parseFloat(data.rewardsBalance).toFixed(4)
-                                    : parseFloat(data.maxSyxIn).toFixed(4) +
-                                      data.tokens[0]
+                                    ? <NumberFormat value={data.rewardsBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                    : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
                                 : parseFloat(data.maxErc20In) >
                                   parseFloat(data.erc20Balance)
-                                ? parseFloat(data.erc20Balance).toFixed(4)
-                                : parseFloat(data.maxErc20In).toFixed(4) +
-                                  data.tokens[1]}
+                                ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
+                                : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />}
                         </span>
                     </Typography>
                     <div className={classes.formContent}>

@@ -17,6 +17,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import NumberFormat from 'react-number-format';
 import {debounce} from "../../utils/debounce.js";
 import {formatNumberPrecision} from "../../utils/numberFormat.js";
 import Store from "../../stores";
@@ -534,7 +535,7 @@ class WithdrawRewardsModal extends Component {
                                 </span>
                                 <span style={{float: "right"}}>
                                     {this.state.pool.type === "seed" ? (
-                                        parseFloat(this.state.pool.stakeAmount)
+                                        <NumberFormat value={this.state.pool.stakeAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                     ) : this.state.availableAmountLoading ? (
                                         <CircularProgress
                                             style={{
@@ -543,24 +544,19 @@ class WithdrawRewardsModal extends Component {
                                             }}
                                         ></CircularProgress>
                                     ) : this.state.token === "SYX"?(parseFloat(this.state.availableAmount) >
-                                      parseFloat(this.state.pool.maxSyxOut) ? (
-                                        parseFloat(
-                                            this.state.pool.maxSyxOut
-                                        ).toFixed(4)
-                                    ) : (
-                                        parseFloat(
-                                            this.state.availableAmount
-                                        ).toFixed(4)
-                                    )):(parseFloat(this.state.availableAmount) >
-                                      parseFloat(this.state.pool.maxErc20Out) ? (
-                                        parseFloat(
-                                            this.state.pool.maxErc20Out
-                                        ).toFixed(4)
-                                    ) : (
-                                        parseFloat(
-                                            this.state.availableAmount
-                                        ).toFixed(4)
-                                    ))}
+                                      parseFloat(this.state.pool.maxSyxOut) ? 
+                                          <NumberFormat value={this.state.pool.maxSyxOut} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                     
+                                     : 
+                                        <NumberFormat value={this.state.availableAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                     
+                                    ):(parseFloat(this.state.availableAmount) >
+                                      parseFloat(this.state.pool.maxErc20Out) ? 
+                                          <NumberFormat value={this.state.pool.maxErc20Out} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                        
+                                     : 
+                                        <NumberFormat value={this.state.availableAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                    )}
                                     {" " + this.state.token}
                                 </span>
                             </div>
@@ -633,21 +629,14 @@ class WithdrawRewardsModal extends Component {
                                         <span className={classes.text}>
                                             <FormattedMessage id="POPUP_WITHDRAW_AMOUNT" />
                                         </span>
-                                        <span className={classes.rightText}>
-                                            {this.state.amount || "0"}{" "}
-                                            {this.state.token}
-                                        </span>
+                                        <NumberFormat value={this.state.amount} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.token} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                                        
                                     </Typography>
                                     <Typography gutterBottom>
                                         <span className={classes.text}>
                                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                                         </span>
-                                        <span className={classes.rightText}>
-                                            {parseFloat(
-                                                this.state.pool.rewardsAvailable
-                                            ).toFixed(4)}{" "}
-                                            SYX
-                                        </span>
+                                        <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                                     </Typography>
                                 </>
                             ) : (
@@ -670,9 +659,7 @@ class WithdrawRewardsModal extends Component {
                                         src={"/SYX.png"}
                                         alt=""
                                     />{" "}
-                                    {parseFloat(
-                                        this.state.pool.rewardsAvailable
-                                    ).toFixed(4) + " SYX"}
+                                    <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} />
                                 </span>
                             </Typography>
                             <div className={classes.customSelect}>

@@ -1,5 +1,6 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
+import NumberFormat from 'react-number-format';
 
 const useStyles = makeStyles({
     root: {
@@ -32,8 +33,7 @@ export default function Balance(props) {
     return (
         <div className={classes.root}>
             <img src={tokenIcon} alt="" />
-            <span>{parseFloat(balance).toFixed(4)}</span>
-            {name}
+            <NumberFormat value={balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={name} decimalScale={4} fixedDecimalScale={true} />
         </div>
     );
 }

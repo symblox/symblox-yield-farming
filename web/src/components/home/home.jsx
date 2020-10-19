@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import {FormattedMessage} from "react-intl";
+import NumberFormat from 'react-number-format';
 import config from "../../config";
 import Snackbar from "../snackbar";
 import Header from "../header";
@@ -568,8 +569,7 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                {rewardApr ? rewardApr : "-"}
-                                                <span> %</span>
+                                                <NumberFormat value={rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={1} fixedDecimalScale={true} />
                                             </Typography>
                                             {hasJoinedCount === 0 ? (
                                                 <Button
@@ -634,10 +634,7 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                {rewardsAvailable
-                                                    ? rewardsAvailable
-                                                    : "-"}{" "}
-                                                <span>SYX</span>
+                                                <NumberFormat value={rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} />
                                             </Typography>
                                             <Button
                                                 style={{marginTop: "9px"}}
@@ -671,7 +668,7 @@ class Home extends Component {
                         <Card className={classes.root}>
                             <CardActions className={classes.actionsSm}>
                                 <FormattedMessage id="TOTAL_STAKING_APR" />
-                                <span>{rewardApr ? rewardApr : "-"}%</span>
+                                <NumberFormat value={rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={1} fixedDecimalScale={true} />
                             </CardActions>
                             <Divider />
                             <CardContent>
@@ -694,10 +691,7 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                {rewardsAvailable
-                                                    ? rewardsAvailable
-                                                    : "-"}{" "}
-                                                <span>SYX</span>
+                                                <NumberFormat value={rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} />
                                             </Typography>
                                             <Button
                                                 style={{marginTop: "9px"}}
@@ -823,27 +817,19 @@ class Home extends Component {
                                                                 {pool.id}
                                                             </td>
                                                             <td>
-                                                                {parseFloat(
-                                                                    pool.price
-                                                                ).toFixed(4)}
-                                                                {pool.name}
+                                                                <NumberFormat value={pool.price} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.name} decimalScale={4} fixedDecimalScale={true} />
                                                             </td>
-                                                            <td>
+                                                            <td>                                                              
                                                                 {pool.totalSupply >
                                                                 0
-                                                                    ? (
-                                                                          (parseFloat(
+                                                                    ? <NumberFormat value={(parseFloat(
                                                                               pool.stakeAmount
                                                                           ) /
                                                                               parseFloat(
                                                                                   pool.totalSupply
                                                                               )) *
-                                                                          100
-                                                                      ).toFixed(
-                                                                          2
-                                                                      )
-                                                                    : "0.00"}{" "}
-                                                                %
+                                                                          100} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'%'} decimalScale={2} fixedDecimalScale={true} />
+                                                                    : "0.00 %"}
                                                             </td>
                                                             <td>
                                                                 <div>
@@ -979,6 +965,7 @@ class Home extends Component {
                                                                     ).toFixed(
                                                                         4
                                                                     )}
+                                                                    <NumberFormat value={pool.price} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                                                     <div
                                                                         style={{
                                                                             color:
@@ -1036,20 +1023,12 @@ class Home extends Component {
                                                                             pool.name
                                                                         }
                                                                         :
-                                                                        <span
-                                                                            style={{
+                                                                        <NumberFormat value={pool.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} renderText={value => <span style={{
                                                                                 color:
                                                                                     "#1E304B",
                                                                                 paddingLeft:
                                                                                     "5px"
-                                                                            }}
-                                                                        >
-                                                                            {parseFloat(
-                                                                                pool.bptVlxBalance
-                                                                            ).toFixed(
-                                                                                4
-                                                                            )}
-                                                                        </span>
+                                                                            }}>{value}</span>}/>                                                                     
                                                                     </Grid>
                                                                     <Grid
                                                                         item
@@ -1067,19 +1046,16 @@ class Home extends Component {
                                                                         >
                                                                             {pool.totalSupply >
                                                                             0
-                                                                                ? (
-                                                                                      (parseFloat(
+                                                                                ? 
+                                                                                  <NumberFormat value={(parseFloat(
                                                                                           pool.stakeAmount
                                                                                       ) /
                                                                                           parseFloat(
                                                                                               pool.totalSupply
                                                                                           )) *
-                                                                                      100
-                                                                                  ).toFixed(
-                                                                                      2
-                                                                                  )
-                                                                                : "0.00"}{" "}
-                                                                            %
+                                                                                      100} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={2} fixedDecimalScale={true} />
+                                                                                : "0.00 %"}
+                                                                            
                                                                         </span>
                                                                     </Grid>
                                                                     <Grid
@@ -1090,20 +1066,17 @@ class Home extends Component {
                                                                             pool.rewardsSymbol
                                                                         }
                                                                         :
-                                                                        <span
+                                                                        
+                                                                            
+                                                                            <NumberFormat value={pool.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} renderText={value => <span
                                                                             style={{
                                                                                 color:
                                                                                     "#1E304B",
                                                                                 paddingLeft:
                                                                                     "5px"
                                                                             }}
-                                                                        >
-                                                                            {parseFloat(
-                                                                                pool.bptSyxBalance
-                                                                            ).toFixed(
-                                                                                4
-                                                                            )}
-                                                                        </span>
+                                                                        >{value}</span>}/>
+                                                                       
                                                                     </Grid>
                                                                     <Grid
                                                                         item

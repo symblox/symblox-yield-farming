@@ -2,12 +2,6 @@ export function formatNumberPrecision(data, decimals = 6) {
     return Math.floor(parseFloat(data) * 10 ** decimals) / 10 ** decimals;
 }
 
-export function formatNumber(amount, decimals, decimalPlace = decimals) {
-    let roundAmount = amount.replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-    let index = roundAmount.indexOf(".");
-    return roundAmount.slice(0, index - 1 + decimalPlace);
-}
-
 export function toStringDecimals (numStr, decimals, decimalPlace = decimals) {
     numStr = numStr.toLocaleString().replace(/,/g, "");
     decimals = decimals.toString();
