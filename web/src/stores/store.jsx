@@ -42,7 +42,7 @@ class Store {
     constructor() {
         this.store = {
             currentBlock: 0,
-            universalGasPrice: "20",
+            universalGasPrice: "0.00003",
             account: {},
             web3: null,
             connectorsByName: {
@@ -1115,6 +1115,25 @@ class Store {
                 args = [token, amountToSend, 0];
             }
 
+            let gasLimit;
+            try {
+                gasLimit = await yCurveFiContract.methods.deposit(...args).estimateGas({
+                    value:
+                        asset.type === "seed" ||
+                        (asset.type === "swap-native" &&
+                            asset.erc20Address === token)
+                            ? amountToSend
+                            : "0",
+                    from: account.address,
+                    gasPrice: web3.utils.toWei(
+                        await this._getGasPrice(),
+                        "gwei"
+                    )
+                })    
+            } catch (err) {
+                gasLimit = "1000000";
+            }
+
             yCurveFiContract.methods
                 .deposit(...args)
                 .send({
@@ -1128,7 +1147,8 @@ class Store {
                     gasPrice: web3.utils.toWei(
                         await this._getGasPrice(),
                         "gwei"
-                    )
+                    ),
+                    gasLimit
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
@@ -1206,6 +1226,19 @@ class Store {
                 args = [token, amountToSend, 0];
             }
 
+            let gasLimit;
+            try {
+                gasLimit = await yCurveFiContract.methods.withdraw(...args).estimateGas({
+                    from: account.address,
+                    gasPrice: web3.utils.toWei(
+                        await this._getGasPrice(),
+                        "gwei"
+                    )
+                })
+            } catch (err) {
+                gasLimit = "1000000";
+            }
+
             yCurveFiContract.methods
                 .withdraw(...args)
                 .send({
@@ -1213,7 +1246,8 @@ class Store {
                     gasPrice: web3.utils.toWei(
                         await this._getGasPrice(),
                         "gwei"
-                    )
+                    ),
+                    gasLimit
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
@@ -1305,7 +1339,25 @@ class Store {
             amountToSend = (amount * Number(`1e+${asset.decimals}`)).toFixed(0);
         }
 
+        let gasLimit;
         if (asset.type === "swap-native" && asset.erc20Address === token) {
+            try {
+                gasLimit = await yCurveFiContract.methods.swapWTokenAmountIn(
+                    token2,
+                    "0",
+                    web3.utils.toWei(price + "", "ether")
+                ).estimateGas({
+                    value: amountToSend,
+                    from: account.address,
+                    gasPrice: web3.utils.toWei(
+                        await this._getGasPrice(),
+                        "gwei"
+                    )
+                })
+            } catch (err) {
+                gasLimit = "1000000";
+            }
+
             yCurveFiContract.methods
                 .swapWTokenAmountIn(
                     token2,
@@ -1318,7 +1370,8 @@ class Store {
                     gasPrice: web3.utils.toWei(
                         await this._getGasPrice(),
                         "gwei"
-                    )
+                    ),
+                    gasLimit
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
@@ -1357,11 +1410,27 @@ class Store {
             asset.type === "swap-native" &&
             asset.erc20Address !== token
         ) {
+            try {
+                gasLimit = await yCurveFiContract.methods.swapExactAmountInWTokenOut(
+                    token,
+                    amountToSend,
+                    "0",
+                    web3.utils.toWei(price + "", "ether")
+                ).estimateGas({
+                    from: account.address,
+                    gasPrice: web3.utils.toWei(
+                        await this._getGasPrice(),
+                        "gwei"
+                    )
+                })
+            } catch (err) {
+                gasLimit = "1000000";
+            }
+
             yCurveFiContract.methods
                 .swapExactAmountInWTokenOut(
                     token,
                     amountToSend,
-
                     "0",
                     web3.utils.toWei(price + "", "ether")
                 )
@@ -1370,7 +1439,8 @@ class Store {
                     gasPrice: web3.utils.toWei(
                         await this._getGasPrice(),
                         "gwei"
-                    )
+                    ),
+                    gasLimit
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
@@ -1406,6 +1476,24 @@ class Store {
                     }
                 });
         } else {
+            try {
+                gasLimit = await yCurveFiContract.methods.swapExactAmountIn(
+                    token,
+                    amountToSend,
+                    token2,
+                    "0",
+                    web3.utils.toWei(price + "", "ether")
+                ).estimateGas({
+                    from: account.address,
+                    gasPrice: web3.utils.toWei(
+                        await this._getGasPrice(),
+                        "gwei"
+                    )
+                })
+            } catch (err) {
+                gasLimit = "1000000";
+            }
+
             yCurveFiContract.methods
                 .swapExactAmountIn(
                     token,
@@ -1419,7 +1507,8 @@ class Store {
                     gasPrice: web3.utils.toWei(
                         await this._getGasPrice(),
                         "gwei"
-                    )
+                    ),
+                    gasLimit
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
@@ -1478,11 +1567,22 @@ class Store {
             config.connectorFactory
         );
 
+        let gasLimit;
+        try {
+            gasLimit = await yCurveFiContract.methods.createConnector(asset.address, asset.index).estimateGas({
+                from: account.address,
+                gasPrice: web3.utils.toWei(await this._getGasPrice(), "gwei")
+            })
+        } catch (err) {
+            gasLimit = "1000000";
+        }
+
         yCurveFiContract.methods
             .createConnector(asset.address, asset.index)
             .send({
                 from: account.address,
-                gasPrice: web3.utils.toWei(await this._getGasPrice(), "gwei")
+                gasPrice: web3.utils.toWei(await this._getGasPrice(), "gwei"),
+                gasLimit
             })
             .on("transactionHash", function (hash) {
                 console.log(hash);
@@ -1543,6 +1643,19 @@ class Store {
                 entryContractAddress
             );
 
+            let gasLimit;
+            try {
+                gasLimit = await yCurveFiContract.methods.getReward().estimateGas({
+                    from: account.address,
+                    gasPrice: web3.utils.toWei(
+                        await this._getGasPrice(),
+                        "gwei"
+                    )
+                })
+            } catch (err) {
+                gasLimit = "1000000";
+            }
+
             yCurveFiContract.methods
                 .getReward()
                 .send({
@@ -1550,7 +1663,8 @@ class Store {
                     gasPrice: web3.utils.toWei(
                         await this._getGasPrice(),
                         "gwei"
-                    )
+                    ),
+                    gasLimit
                 })
                 .on("transactionHash", function (hash) {
                     console.log(hash);
