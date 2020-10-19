@@ -16,6 +16,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {formatNumberPrecision} from "../../utils/numberFormat.js";
+import NumberFormat from 'react-number-format';
 
 import Store from "../../stores";
 import {
@@ -412,8 +413,7 @@ class DepositModal extends Component {
                         </span>
                         <span className={classes.rightText}>
                             {pool.type === "seed" ? (
-                                parseFloat(pool.stakeAmount).toFixed(4) +
-                                pool.symbol
+                                <NumberFormat value={pool.stakeAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                             ) : this.state.availableAmountLoading ? (
                                 <CircularProgress
                                     style={{
@@ -422,9 +422,7 @@ class DepositModal extends Component {
                                     }}
                                 ></CircularProgress>
                             ) : (
-                                parseFloat(this.state.availableAmount).toFixed(
-                                    4
-                                )
+                                <NumberFormat value={this.state.availableAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                             )}
                             {" " + this.state.token}
                         </span>
@@ -434,15 +432,7 @@ class DepositModal extends Component {
                             <FormattedMessage id="POPUP_DEPOSITABLE_AMOUNT" />
                             {": "}
                         </span>
-                        <span className={classes.rightText}>
-                            {pool.type === "seed"
-                                ? this.getMaxAmount().toFixed(4) + pool.symbol
-                                : token === "SYX"
-                                ? this.getMaxAmount().toFixed(4) + " SYX"
-                                : this.getMaxAmount().toFixed(4) +
-                                  " " +
-                                  pool.name}
-                        </span>
+                        <NumberFormat value={this.getMaxAmount()} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.type === "seed"?pool.symbol:(token === "SYX"?"SYX":pool.name)} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                     </Typography>
                     <div className={classes.formContent}>
                         <FormControl variant="outlined" style={{flex: "4"}}>
@@ -519,9 +509,7 @@ class DepositModal extends Component {
                         <span className={classes.text}>
                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                         </span>
-                        <span className={classes.rightText}>
-                            {parseFloat(pool.rewardsAvailable).toFixed(4)} SYX
-                        </span>
+                        <NumberFormat value={pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                     </Typography>
                 </DialogContent>
                 <DialogActions>
