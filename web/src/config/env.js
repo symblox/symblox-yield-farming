@@ -26,6 +26,8 @@ function env() {
             connectorFactory: "0xE1532372F4592E4B6D4fB666F5F2027847a81A8A",
             wvlxConnector: "0xf56DE4B7D4A5e399edaA10DbF3e041793Bce4141",
             bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
+            timelock: "0x75209945A8a3c1463bbf54fd9081EFEACf50edBA",
+            governor: "0x60676b40a61a6860D4Bd61E3287E8DAd7f521dcF",
             erc20ABI: abis.erc20ABI,
             rewardPoolABI: abis.rewardPoolABI,
             bptABI: abis.bptABI,
