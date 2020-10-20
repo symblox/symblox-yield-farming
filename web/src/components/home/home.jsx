@@ -222,7 +222,7 @@ const styles = theme => ({
         color: "#1E304B",
         paddingTop: "18px",
 
-        "& span": {
+        "& .small-text": {
             fontSize: "20px",
             lineHeight: "28px",
             color: "#454862"
@@ -582,7 +582,8 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                <NumberFormat value={rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={1} fixedDecimalScale={true} />
+                                                <NumberFormat value={rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={1} fixedDecimalScale={true} />
+                                                <span className="small-text"> %</span>
                                             </Typography>
                                             {hasJoinedCount === 0 ? (
                                                 <Button
@@ -647,7 +648,8 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                <NumberFormat value={rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} />
+                                                <NumberFormat value={rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                                <span className="small-text">SYX</span>
                                             </Typography>
                                             <Button
                                                 style={{marginTop: "9px"}}
