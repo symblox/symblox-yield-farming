@@ -973,11 +973,6 @@ class Home extends Component {
                                                                     </span>
                                                                 </td>
                                                                 <td>
-                                                                    {parseFloat(
-                                                                        pool.price
-                                                                    ).toFixed(
-                                                                        4
-                                                                    )}
                                                                     <NumberFormat value={pool.price} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                                                     <div
                                                                         style={{
