@@ -233,8 +233,8 @@ export default function Pool(props) {
                     ) : (
                         <>
                             <FormattedMessage id="LP_MY_SHARE" />:
-                            <NumberFormat value={data.totalSupply > 0
-                            ? (parseFloat(data.stakeAmount) / parseFloat(data.totalSupply)) * 100 : 0} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={6} fixedDecimalScale={true} renderText={value => <span className={classes.textThirdColor} style={{float: "right"}}>{value}</span>}/>
+                            <NumberFormat value={(data.totalSupply > 0
+                            ? (parseFloat(data.stakeAmount) / parseFloat(data.totalSupply)) * 100 : 0).toLocaleString(undefined, {maximumFractionDigits:10})} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={6} fixedDecimalScale={true} renderText={value => <span className={classes.textThirdColor} style={{float: "right"}}>{value}</span>}/>
                         </>
                     )}
                 </Typography>

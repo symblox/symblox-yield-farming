@@ -835,13 +835,13 @@ class Home extends Component {
                                                             <td>                                                              
                                                                 {pool.totalSupply >
                                                                 0
-                                                                    ? <NumberFormat value={(parseFloat(
+                                                                    ? <NumberFormat value={((parseFloat(
                                                                               pool.stakeAmount
                                                                           ) /
                                                                               parseFloat(
                                                                                   pool.totalSupply
                                                                               )) *
-                                                                          100} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'%'} decimalScale={2} fixedDecimalScale={true} />
+                                                                          100).toLocaleString(undefined, {maximumFractionDigits:10})} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'%'} decimalScale={2} fixedDecimalScale={true} />
                                                                     : "0.00 %"}
                                                             </td>
                                                             <td>
@@ -1055,13 +1055,13 @@ class Home extends Component {
                                                                             {pool.totalSupply >
                                                                             0
                                                                                 ? 
-                                                                                  <NumberFormat value={(parseFloat(
+                                                                                  <NumberFormat value={((parseFloat(
                                                                                           pool.stakeAmount
                                                                                       ) /
                                                                                           parseFloat(
                                                                                               pool.totalSupply
                                                                                           )) *
-                                                                                      100} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={2} fixedDecimalScale={true} />
+                                                                                      100).toLocaleString(undefined, {maximumFractionDigits:10})} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={2} fixedDecimalScale={true} />
                                                                                 : "0.00 %"}
                                                                             
                                                                         </span>
