@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import {FormattedMessage} from "react-intl";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 import config from "../../config";
 import Snackbar from "../snackbar";
 import Header from "../header";
@@ -569,8 +569,19 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                <NumberFormat value={rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={1} fixedDecimalScale={true} />
-                                                <span className="small-text"> %</span>
+                                                <NumberFormat
+                                                    value={rewardApr}
+                                                    defaultValue={"-"}
+                                                    displayType={"text"}
+                                                    thousandSeparator={true}
+                                                    isNumericString={true}
+                                                    decimalScale={1}
+                                                    fixedDecimalScale={true}
+                                                />
+                                                <span className="small-text">
+                                                    {" "}
+                                                    %
+                                                </span>
                                             </Typography>
                                             {hasJoinedCount === 0 ? (
                                                 <Button
@@ -635,8 +646,18 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                <NumberFormat value={rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
-                                                <span className="small-text">SYX</span>
+                                                <NumberFormat
+                                                    value={rewardsAvailable}
+                                                    defaultValue={"-"}
+                                                    displayType={"text"}
+                                                    thousandSeparator={true}
+                                                    isNumericString={true}
+                                                    decimalScale={4}
+                                                    fixedDecimalScale={true}
+                                                />
+                                                <span className="small-text">
+                                                    SYX
+                                                </span>
                                             </Typography>
                                             <Button
                                                 style={{marginTop: "9px"}}
@@ -670,7 +691,16 @@ class Home extends Component {
                         <Card className={classes.root}>
                             <CardActions className={classes.actionsSm}>
                                 <FormattedMessage id="TOTAL_STAKING_APR" />
-                                <NumberFormat value={rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={1} fixedDecimalScale={true} />
+                                <NumberFormat
+                                    value={rewardApr}
+                                    defaultValue={"-"}
+                                    displayType={"text"}
+                                    thousandSeparator={true}
+                                    isNumericString={true}
+                                    suffix={"%"}
+                                    decimalScale={1}
+                                    fixedDecimalScale={true}
+                                />
                             </CardActions>
                             <Divider />
                             <CardContent>
@@ -693,7 +723,16 @@ class Home extends Component {
                                                 }
                                                 gutterBottom
                                             >
-                                                <NumberFormat value={rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} />
+                                                <NumberFormat
+                                                    value={rewardsAvailable}
+                                                    defaultValue={"-"}
+                                                    displayType={"text"}
+                                                    thousandSeparator={true}
+                                                    isNumericString={true}
+                                                    suffix={"SYX"}
+                                                    decimalScale={4}
+                                                    fixedDecimalScale={true}
+                                                />
                                             </Typography>
                                             <Button
                                                 style={{marginTop: "9px"}}
@@ -780,18 +819,6 @@ class Home extends Component {
                                                             }
                                                         >
                                                             <td>
-                                                                {pool.stakeAmount >
-                                                                0.0001 ? (
-                                                                    <div
-                                                                        className={
-                                                                            "hold-left"
-                                                                        }
-                                                                    >
-                                                                        <FormattedMessage id="HOLD" />
-                                                                    </div>
-                                                                ) : (
-                                                                    <></>
-                                                                )}
                                                                 <img
                                                                     className={
                                                                         classes.icon
@@ -819,19 +846,76 @@ class Home extends Component {
                                                                 {pool.id}
                                                             </td>
                                                             <td>
-                                                                <NumberFormat value={pool.price} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.name} decimalScale={4} fixedDecimalScale={true} />
+                                                                <NumberFormat
+                                                                    value={
+                                                                        pool.price
+                                                                    }
+                                                                    defaultValue={
+                                                                        "-"
+                                                                    }
+                                                                    displayType={
+                                                                        "text"
+                                                                    }
+                                                                    thousandSeparator={
+                                                                        true
+                                                                    }
+                                                                    isNumericString={
+                                                                        true
+                                                                    }
+                                                                    suffix={
+                                                                        pool.name
+                                                                    }
+                                                                    decimalScale={
+                                                                        4
+                                                                    }
+                                                                    fixedDecimalScale={
+                                                                        true
+                                                                    }
+                                                                />
                                                             </td>
-                                                            <td>                                                              
+                                                            <td>
                                                                 {pool.totalSupply >
-                                                                0
-                                                                    ? <NumberFormat value={((parseFloat(
-                                                                              pool.stakeAmount
-                                                                          ) /
-                                                                              parseFloat(
-                                                                                  pool.totalSupply
-                                                                              )) *
-                                                                          100).toLocaleString(undefined, {maximumFractionDigits:10})} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'%'} decimalScale={2} fixedDecimalScale={true} />
-                                                                    : "0.00 %"}
+                                                                0 ? (
+                                                                    <NumberFormat
+                                                                        value={(
+                                                                            (parseFloat(
+                                                                                pool.stakeAmount
+                                                                            ) /
+                                                                                parseFloat(
+                                                                                    pool.totalSupply
+                                                                                )) *
+                                                                            100
+                                                                        ).toLocaleString(
+                                                                            undefined,
+                                                                            {
+                                                                                maximumFractionDigits: 10
+                                                                            }
+                                                                        )}
+                                                                        defaultValue={
+                                                                            "-"
+                                                                        }
+                                                                        displayType={
+                                                                            "text"
+                                                                        }
+                                                                        thousandSeparator={
+                                                                            true
+                                                                        }
+                                                                        isNumericString={
+                                                                            true
+                                                                        }
+                                                                        suffix={
+                                                                            "%"
+                                                                        }
+                                                                        decimalScale={
+                                                                            2
+                                                                        }
+                                                                        fixedDecimalScale={
+                                                                            true
+                                                                        }
+                                                                    />
+                                                                ) : (
+                                                                    "0.00 %"
+                                                                )}
                                                             </td>
                                                             <td>
                                                                 <div>
@@ -914,18 +998,6 @@ class Home extends Component {
                                                                 }
                                                             >
                                                                 <td>
-                                                                    {pool.stakeAmount >
-                                                                    0.0001 ? (
-                                                                        <div
-                                                                            className={
-                                                                                "hold-left"
-                                                                            }
-                                                                        >
-                                                                            <FormattedMessage id="HOLD" />
-                                                                        </div>
-                                                                    ) : (
-                                                                        <></>
-                                                                    )}
                                                                     <img
                                                                         className={
                                                                             classes.icon
@@ -962,7 +1034,29 @@ class Home extends Component {
                                                                     </span>
                                                                 </td>
                                                                 <td>
-                                                                    <NumberFormat value={pool.price} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                                                    <NumberFormat
+                                                                        value={
+                                                                            pool.price
+                                                                        }
+                                                                        defaultValue={
+                                                                            "-"
+                                                                        }
+                                                                        displayType={
+                                                                            "text"
+                                                                        }
+                                                                        thousandSeparator={
+                                                                            true
+                                                                        }
+                                                                        isNumericString={
+                                                                            true
+                                                                        }
+                                                                        decimalScale={
+                                                                            4
+                                                                        }
+                                                                        fixedDecimalScale={
+                                                                            true
+                                                                        }
+                                                                    />
                                                                     <div
                                                                         style={{
                                                                             color:
@@ -1020,12 +1114,43 @@ class Home extends Component {
                                                                             pool.name
                                                                         }
                                                                         :
-                                                                        <NumberFormat value={pool.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} renderText={value => <span style={{
-                                                                                color:
-                                                                                    "#1E304B",
-                                                                                paddingLeft:
-                                                                                    "5px"
-                                                                            }}>{value}</span>}/>                                                                     
+                                                                        <NumberFormat
+                                                                            value={
+                                                                                pool.bptVlxBalance
+                                                                            }
+                                                                            defaultValue={
+                                                                                "-"
+                                                                            }
+                                                                            displayType={
+                                                                                "text"
+                                                                            }
+                                                                            thousandSeparator={
+                                                                                true
+                                                                            }
+                                                                            isNumericString={
+                                                                                true
+                                                                            }
+                                                                            decimalScale={
+                                                                                4
+                                                                            }
+                                                                            fixedDecimalScale={
+                                                                                true
+                                                                            }
+                                                                            renderText={value => (
+                                                                                <span
+                                                                                    style={{
+                                                                                        color:
+                                                                                            "#1E304B",
+                                                                                        paddingLeft:
+                                                                                            "5px"
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        value
+                                                                                    }
+                                                                                </span>
+                                                                            )}
+                                                                        />
                                                                     </Grid>
                                                                     <Grid
                                                                         item
@@ -1042,17 +1167,47 @@ class Home extends Component {
                                                                             }}
                                                                         >
                                                                             {pool.totalSupply >
-                                                                            0
-                                                                                ? 
-                                                                                  <NumberFormat value={((parseFloat(
-                                                                                          pool.stakeAmount
-                                                                                      ) /
-                                                                                          parseFloat(
-                                                                                              pool.totalSupply
-                                                                                          )) *
-                                                                                      100).toLocaleString(undefined, {maximumFractionDigits:10})} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={2} fixedDecimalScale={true} />
-                                                                                : "0.00 %"}
-                                                                            
+                                                                            0 ? (
+                                                                                <NumberFormat
+                                                                                    value={(
+                                                                                        (parseFloat(
+                                                                                            pool.stakeAmount
+                                                                                        ) /
+                                                                                            parseFloat(
+                                                                                                pool.totalSupply
+                                                                                            )) *
+                                                                                        100
+                                                                                    ).toLocaleString(
+                                                                                        undefined,
+                                                                                        {
+                                                                                            maximumFractionDigits: 10
+                                                                                        }
+                                                                                    )}
+                                                                                    defaultValue={
+                                                                                        "-"
+                                                                                    }
+                                                                                    displayType={
+                                                                                        "text"
+                                                                                    }
+                                                                                    thousandSeparator={
+                                                                                        true
+                                                                                    }
+                                                                                    isNumericString={
+                                                                                        true
+                                                                                    }
+                                                                                    suffix={
+                                                                                        "%"
+                                                                                    }
+                                                                                    decimalScale={
+                                                                                        2
+                                                                                    }
+                                                                                    fixedDecimalScale={
+                                                                                        true
+                                                                                    }
+                                                                                />
+                                                                            ) : (
+                                                                                "0.00 %"
+                                                                            )}
                                                                         </span>
                                                                     </Grid>
                                                                     <Grid
@@ -1063,17 +1218,43 @@ class Home extends Component {
                                                                             pool.rewardsSymbol
                                                                         }
                                                                         :
-                                                                        
-                                                                            
-                                                                            <NumberFormat value={pool.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} renderText={value => <span
-                                                                            style={{
-                                                                                color:
-                                                                                    "#1E304B",
-                                                                                paddingLeft:
-                                                                                    "5px"
-                                                                            }}
-                                                                        >{value}</span>}/>
-                                                                       
+                                                                        <NumberFormat
+                                                                            value={
+                                                                                pool.bptSyxBalance
+                                                                            }
+                                                                            defaultValue={
+                                                                                "-"
+                                                                            }
+                                                                            displayType={
+                                                                                "text"
+                                                                            }
+                                                                            thousandSeparator={
+                                                                                true
+                                                                            }
+                                                                            isNumericString={
+                                                                                true
+                                                                            }
+                                                                            decimalScale={
+                                                                                4
+                                                                            }
+                                                                            fixedDecimalScale={
+                                                                                true
+                                                                            }
+                                                                            renderText={value => (
+                                                                                <span
+                                                                                    style={{
+                                                                                        color:
+                                                                                            "#1E304B",
+                                                                                        paddingLeft:
+                                                                                            "5px"
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        value
+                                                                                    }
+                                                                                </span>
+                                                                            )}
+                                                                        />
                                                                     </Grid>
                                                                     <Grid
                                                                         item

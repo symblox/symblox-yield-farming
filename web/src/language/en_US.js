@@ -61,7 +61,7 @@ const en_US = {
         "Symblox is a decentralized synthetic asset issuance and trading protocol",
     JOIN: "Join",
     TOTAL_SUPPLY: "Total supply",
-    HOLD: "hold",
+    HOLD: "Staked",
     TOTAL_STAKE_AFTER_DEPOSIT: "Total amount after deposit",
     TOTAL_STAKE: "My Deposit",
     TRADE_ERROR_BALANCE: "Available balance not enough",
