@@ -47,7 +47,8 @@ const useStyles = makeStyles({
     },
     icon: {
         width: "48px",
-        height: "48px"
+        height: "48px",
+        position: "relative"
     },
     iconSecondary: {
         width: "51px",
@@ -170,12 +171,12 @@ export default function Pool(props) {
                         <>
                             <img
                                 className={classes.icon}
+                                style={{marginRight: "-4px",zIndex: 2}}
                                 src={"/SYX.png"}
                                 alt=""
                             />
                             <img
                                 className={classes.icon}
-                                style={{marginLeft: "-2px"}}
                                 src={tokenIcon}
                                 alt=""
                             />

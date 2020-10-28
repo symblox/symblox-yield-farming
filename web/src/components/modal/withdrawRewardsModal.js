@@ -422,27 +422,29 @@ class WithdrawRewardsModal extends Component {
     };
 
     calculateBptAmount = () => {
-        this.setState({
-            loading: true
-        });
         const that = this;
-        debounce(
-            1000,
-            () => {
-                dispatcher.dispatch({
-                    type: CALCULATE_BPT_AMOUNT,
-                    content: {
-                        asset: that.state.pool,
-                        amount: that.state.amount,
-                        token:
-                            that.state.token === "SYX"
-                                ? that.state.pool.rewardsAddress
-                                : that.state.pool.erc20Address
-                    }
-                });
-            },
-            that
-        )();
+        if(!Number.isNaN(parseFloat(that.state.amount))){
+            that.setState({
+                loading: true
+            });
+            debounce(
+                1000,
+                () => {
+                    dispatcher.dispatch({
+                        type: CALCULATE_BPT_AMOUNT,
+                        content: {
+                            asset: that.state.pool,
+                            amount: parseFloat(that.state.amount),
+                            token:
+                                that.state.token === "SYX"
+                                    ? that.state.pool.rewardsAddress
+                                    : that.state.pool.erc20Address
+                        }
+                    });
+                },
+                that
+            )();
+        }  
     };
 
     onClaim = () => {
