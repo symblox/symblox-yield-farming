@@ -423,13 +423,13 @@ class WithdrawRewardsModal extends Component {
 
     calculateBptAmount = () => {
         const that = this;
-        if(!Number.isNaN(parseFloat(that.state.amount))){
-            that.setState({
-                loading: true
-            });
-            debounce(
-                1000,
-                () => {
+        that.setState({
+            loading: true
+        });
+        debounce(
+            1000,
+            () => {
+                if(!Number.isNaN(parseFloat(that.state.amount))){
                     dispatcher.dispatch({
                         type: CALCULATE_BPT_AMOUNT,
                         content: {
@@ -441,10 +441,14 @@ class WithdrawRewardsModal extends Component {
                                     : that.state.pool.erc20Address
                         }
                     });
-                },
-                that
-            )();
-        }  
+                }else{
+                    that.setState({
+                        loading: false
+                    });
+                }
+            },
+            that
+        )();
     };
 
     onClaim = () => {
