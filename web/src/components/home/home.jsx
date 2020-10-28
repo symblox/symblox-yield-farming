@@ -119,6 +119,7 @@ const styles = theme => ({
     icon: {
         width: "36px",
         height: "36px",
+        position: "relative",
         marginTop: "-6px",
         marginRight: "8px",
         display: "inline-block",
@@ -828,7 +829,8 @@ class Home extends Component {
                                                                     }
                                                                     style={{
                                                                         marginRight:
-                                                                            "-2px"
+                                                                            "-4px",
+                                                                        zIndex: 2
                                                                     }}
                                                                     alt=""
                                                                 />
@@ -1009,7 +1011,8 @@ class Home extends Component {
                                                                         }
                                                                         style={{
                                                                             marginRight:
-                                                                                "-2px"
+                                                                                "-4px",
+                                                                            zIndex: 2
                                                                         }}
                                                                         alt=""
                                                                     />
