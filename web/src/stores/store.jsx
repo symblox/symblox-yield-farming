@@ -608,9 +608,15 @@ class Store {
             asset.poolAddress
         );
         try {
-            let rate = await erc20Contract.methods.syxPerBlock().call();
-
-            callback(null, toStringDecimals(rate, 18));
+            const rate = await erc20Contract.methods.syxPerBlock().call();
+            const curBlockNumber = await web3.eth.getBlockNumber();
+            const bonusEndBlock = await erc20Contract.methods.bonusEndBlock().call();
+            if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
+                const bonusMultiplier = await erc20Contract.methods.BONUS_MULTIPLIER().call();
+                callback(null, toStringDecimals(parseFloat(rate)*parseFloat(bonusMultiplier), 18));
+            }else{
+                callback(null, toStringDecimals(rate, 18));
+            }    
         } catch (ex) {
             return callback(ex);
         }
