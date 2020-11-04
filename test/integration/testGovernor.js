@@ -12,7 +12,7 @@ const WVLX = artifacts.require("WVLX");
 const BPool = artifacts.require("BPool");
 const RewardManager = artifacts.require("RewardManager");
 const SymbloxToken = artifacts.require("SymbloxToken");
-const Governor = artifacts.require("Governor");
+const Governor = artifacts.require("MockGovernor");
 const Timelock = artifacts.require("Timelock");
 
 const config = {
@@ -117,8 +117,9 @@ contract("Governor", ([admin, alice, bob]) => {
             "0"
         );
 
+        const votingDelay = await governor.votingDelay();
         const curBlock = await time.latestBlock();
-        const startBlock = curBlock.addn(1);
+        const startBlock = curBlock.addn(votingDelay.toNumber());
         await time.advanceBlockTo(startBlock);
 
         await governor.castVote(proposalId, true);
@@ -130,7 +131,7 @@ contract("Governor", ([admin, alice, bob]) => {
         await governor.castVote(proposalId, true, {from:bob});
 
         const votingPeriod = await governor.votingPeriod();
-        await time.advanceBlockTo(startBlock.addn(parseFloat(votingPeriod.toString())));
+        await time.advanceBlockTo(startBlock.addn(votingPeriod.toNumber()));
         state = await governor.state(proposalId);
 
         await governor.queue(proposalId);
