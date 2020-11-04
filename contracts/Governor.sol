@@ -37,13 +37,13 @@ contract Governor {
 
     /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
     function quorumVotes() public view returns (uint256) {
-        return syx.totalSupply().mul(4e14).div(1e18);
-    } // 0.04% of syx
+        return syx.totalSupply().mul(4e16).div(1e18);
+    } // 4% of syx
 
     /// @notice The number of votes required in order for a voter to become a proposer
     function proposalThreshold() public view returns (uint256) {
-        return syx.totalSupply().mul(1e14).div(1e18);
-    } // 0.01% of syx
+        return syx.totalSupply().mul(1e16).div(1e18);
+    } // 1% of syx
 
     struct Proposal {
         /// @notice Unique id for looking up a proposal
