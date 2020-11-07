@@ -20,8 +20,8 @@ contract Governor {
 
     /// @notice The duration of voting on a proposal, in blocks
     function votingPeriod() public pure returns (uint256) {
-        return 17280;
-    } //~1 day in blocks (assuming 5s blocks)
+        return 34560;
+    } //~2 day in blocks (assuming 5s blocks)
 
     /// @notice The address of the Symblox Protocol Timelock
     TimelockInterface public timelock;
