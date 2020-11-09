@@ -22,7 +22,7 @@ html {
 @media screen and (min-width: 600px) {
     #root {
         /* background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%); */
-        min-height: 730px !important;
+        min-height: 720px !important;
         position: relative;
         /* z-index: -1; */
         overflow-x: hidden;
@@ -35,7 +35,7 @@ html {
     #root::after {
         content: "";
         width: 160%;
-        min-height: 730px !important;
+        min-height: 720px !important;
         position: absolute;
         left: -30%;
         top: 0;
@@ -48,7 +48,7 @@ html {
 @media screen and (max-width: 600px) {
     #root {
         /* background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%); */
-        min-height: 730px !important;
+        min-height: 720px !important;
         position: relative;
         /* z-index: -1; */
         overflow-x: hidden;

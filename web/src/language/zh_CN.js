@@ -70,6 +70,11 @@ const zh_CN = {
     POPUP_WITHDRAW_AMOUNT: "取出抵押资产",
     POPUP_WITHDRAW_REWARD: "取出奖励",
     RISK_WARNING:
-        "该项目合约正在审计中，请在使用之前查看合约具体内容并了解需要承担的风险"
+        "该项目合约正在审计中，请在使用之前查看合约具体内容并了解需要承担的风险",
+    COMMUNITY: "社区",
+    CONTRACT: "合约",
+    SYX: "Syx",
+    REWARD_POOL: "奖励池",
+    GOVERNOR: "治理合约"
 };
 export default zh_CN;

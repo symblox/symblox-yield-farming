@@ -72,6 +72,11 @@ const en_US = {
     POPUP_WITHDRAW_AMOUNT: "Amount to withdraw",
     POPUP_WITHDRAW_REWARD: "Rewards to claim",
     RISK_WARNING:
-        "This contract is under auditing. PLEASE REVIEW THE CONTRACT BEFORE PROCEEDING."
+        "This contract is under auditing. PLEASE REVIEW THE CONTRACT BEFORE PROCEEDING.",
+    COMMUNITY: "Community",
+    CONTRACT: "Contract",
+    SYX: "SYX",
+    REWARD_POOL: "RewardPool",
+    GOVERNOR: "Governor"
 };
 export default en_US;

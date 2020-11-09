@@ -7,7 +7,7 @@ const POLLING_INTERVAL = 12000;
 
 const RPC_URLS = {
     106: "https://explorer.velas.com/rpc",
-    111: "https://tn.yopta.net"
+    111: "https://explorer.testnet.veladev.net/rpc"
 };
 export const injected = new InjectedConnector({
     supportedChainIds: [106, 111]

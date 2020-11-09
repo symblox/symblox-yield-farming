@@ -7,17 +7,23 @@ if (process.env.NODE_ENV === "development") {
 } else if (process.env.NODE_ENV === "production") {
     requiredNetworkId = 106;
 }
-console.log(process.env.NODE_ENV);
+
 const rpcUrls = {
-    111: "https://tn.yopta.net",
+    111: "https://explorer.testnet.veladev.net/rpc",
     106: "https://explorer.velas.com/rpc"
 };
+
+const browserUrls = {
+    111: "https://explorer.testnet.veladev.net",
+    106: "https://explorer.velas.com"
+}
 
 function env() {
     if (process.env.NODE_ENV === "development") {
         return {
             requiredNetworkId,
             rpcUrl: rpcUrls[requiredNetworkId],
+            browser: browserUrls[requiredNetworkId],
             minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
             bpt: "0xeA4bF1A4b8e687E1Aa23620A9ECF157b681B91Ec",
             syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
@@ -41,6 +47,7 @@ function env() {
         return {
             requiredNetworkId,
             rpcUrl: rpcUrls[requiredNetworkId],
+            browser: browserUrls[requiredNetworkId],
             minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
             bpt: "0x63a4cB3251CC3A93aF72C121d661C700637Fc7CB",
             syx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",

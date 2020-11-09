@@ -135,7 +135,7 @@ class MySnackbar extends Component {
                 color = colors.blue;
                 messageType = t("Snackbar.Hash");
 
-                let snackbarMessage = "https://xtn.yopta.net/tx/" + message;
+                let snackbarMessage = "https://explorer.velas.com/tx/" + message;
                 actions = [
                     <Button
                         variant="text"
