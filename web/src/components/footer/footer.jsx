@@ -29,7 +29,7 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <div style={{background: "#051731", height: "200px"}}>
+            <div style={{background: "#051731", height: "280px"}}>
                 <Container>
                     <Hidden mdUp>
                         <div style={{textAlign: "center"}}>
@@ -37,9 +37,9 @@ export default class App extends React.Component {
                                 href={this.props.linkTo}
                                 className={"header__logo"}
                                 style={{
-                                    widht: "188px",
+                                    width: "188px",
                                     height: "auto",
-                                    marginTop: "10px",
+                                    marginTop: "40px",
                                     display: "inline-block"
                                 }}
                             >
@@ -61,7 +61,7 @@ export default class App extends React.Component {
                                 lineHeight: "22px",
                                 color: "#FFFFFF",
                                 mixBlendMode: "normal",
-                                marginTop: "10px",
+                                marginTop: "20px",
                                 textAlign: "center"
                             }}
                         >
@@ -137,7 +137,7 @@ export default class App extends React.Component {
                                 color: "#FFFFFF",
                                 mixBlendMode: "normal",
                                 // opacity: 0.6,
-                                marginTop: "16px"
+                                marginTop: "20px"
                             }}
                         >
                             <Grid item xs={2}></Grid>
