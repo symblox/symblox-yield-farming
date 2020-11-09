@@ -73,8 +73,8 @@ const zh_CN = {
         "该项目合约正在审计中，请在使用之前查看合约具体内容并了解需要承担的风险",
     COMMUNITY: "社区",
     CONTRACT: "合约",
-    SYX: "Syx",
-    REWARD_POOL: "奖励池",
-    GOVERNOR: "治理合约"
+    SYX: "SYX 代币",
+    WVLX: "VLX 托管",
+    DEV_FUND: "开发基金"
 };
 export default zh_CN;
