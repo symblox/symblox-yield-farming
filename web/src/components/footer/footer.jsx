@@ -80,6 +80,7 @@ export default class App extends React.Component {
                                         ethToVlx(config.syx)
                                     }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <FormattedMessage id="SYX" />:{" "}
                                     {this.formatAddress(config.syx)}
@@ -100,6 +101,7 @@ export default class App extends React.Component {
                                         ethToVlx(config.wvlx)
                                     }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <FormattedMessage id="WVLX" />:{" "}
                                     {this.formatAddress(config.wvlx)}
@@ -120,6 +122,7 @@ export default class App extends React.Component {
                                         ethToVlx(config.devFund)
                                     }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <FormattedMessage id="DEV_FUND" />:{" "}
                                     {this.formatAddress(config.devFund)}
@@ -331,6 +334,7 @@ export default class App extends React.Component {
                                         ethToVlx(config.syx)
                                     }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <FormattedMessage id="SYX" />:{" "}
                                     {ethToVlx(config.syx)}
@@ -351,6 +355,7 @@ export default class App extends React.Component {
                                         ethToVlx(config.wvlx)
                                     }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <FormattedMessage id="WVLX" />:{" "}
                                     {ethToVlx(config.wvlx)}
@@ -371,6 +376,7 @@ export default class App extends React.Component {
                                         ethToVlx(config.devFund)
                                     }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <FormattedMessage id="DEV_FUND" />:{" "}
                                     {ethToVlx(config.devFund)}

@@ -135,7 +135,8 @@ class MySnackbar extends Component {
                 color = colors.blue;
                 messageType = t("Snackbar.Hash");
 
-                let snackbarMessage = "https://explorer.velas.com/tx/" + message;
+                let snackbarMessage =
+                    "https://explorer.velas.com/tx/" + message;
                 actions = [
                     <Button
                         variant="text"
@@ -147,7 +148,6 @@ class MySnackbar extends Component {
                         View
                     </Button>,
                     <IconButton
-                        key="close"
                         aria-label="Close"
                         onClick={this.handleClose}
                         key="2"
