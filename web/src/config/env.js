@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "development") {
 
 const rpcUrls = {
     111: "https://explorer.testnet.veladev.net/rpc",
-    106: "https://explorer.velas.com/rpc"
+    106: "https://rpc.symblox.net"
 };
 
 const browserUrls = {
