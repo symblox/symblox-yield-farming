@@ -16,7 +16,7 @@ export default class App extends React.Component {
     }
 
     formatAddress = function (address) {
-        if(!address)return "";
+        if (!address) return "";
         address = ethToVlx(address);
         if (address) {
             return (
@@ -29,7 +29,7 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <div style={{background: "#051731", height: "200px"}}>
+            <div style={{background: "#051731", height: "280px"}}>
                 <Container>
                     <Hidden mdUp>
                         <div style={{textAlign: "center"}}>
@@ -37,9 +37,9 @@ export default class App extends React.Component {
                                 href={this.props.linkTo}
                                 className={"header__logo"}
                                 style={{
-                                    widht: "188px",
+                                    width: "188px",
                                     height: "auto",
-                                    marginTop: "10px",
+                                    marginTop: "40px",
                                     display: "inline-block"
                                 }}
                             >
@@ -61,35 +61,68 @@ export default class App extends React.Component {
                                 lineHeight: "22px",
                                 color: "#FFFFFF",
                                 mixBlendMode: "normal",
-                                marginTop: "10px",
+                                marginTop: "20px",
                                 textAlign: "center"
                             }}
                         >
-                            <Grid item xs={12} style={{
-                                padding: "0 0 0 12px",
-                                fontSize: "16px",
-                                lineHeight: "22px"
-                            }}>
-                                <a href={config.browser+'/address/'+ethToVlx(config.syx)} target="_blank">
-                                    <FormattedMessage id="SYX" />: {this.formatAddress(config.syx)}
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.syx)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="SYX" />:{" "}
+                                    {this.formatAddress(config.syx)}
                                 </a>
                             </Grid>
-                            <Grid item xs={12} style={{
-                                padding: "0 0 0 12px",
-                                fontSize: "16px",
-                                lineHeight: "22px"
-                            }}>
-                                <a href={config.browser+'/address/'+ethToVlx(config.rewardPool)} target="_blank">
-                                    <FormattedMessage id="REWARD_POOL" />: {this.formatAddress(config.rewardPool)}
-                                </a>    
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.wvlx)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="WVLX" />:{" "}
+                                    {this.formatAddress(config.wvlx)}
+                                </a>
                             </Grid>
-                            <Grid item xs={12} style={{
-                                padding: "0 0 0 12px",
-                                fontSize: "16px",
-                                lineHeight: "22px"
-                            }}>
-                                <a href={config.browser+'/address/'+ethToVlx(config.governor)} target="_blank">
-                                    <FormattedMessage id="GOVERNOR" />: {this.formatAddress(config.governor)}
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.devFund)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="DEV_FUND" />:{" "}
+                                    {this.formatAddress(config.devFund)}
                                 </a>
                             </Grid>
                         </Grid>
@@ -104,11 +137,11 @@ export default class App extends React.Component {
                                 color: "#FFFFFF",
                                 mixBlendMode: "normal",
                                 // opacity: 0.6,
-                                marginTop: "16px"
+                                marginTop: "20px"
                             }}
                         >
                             <Grid item xs={2}></Grid>
-                            <Grid item xs={2} style={{textAlign:"center"}}>
+                            <Grid item xs={2} style={{textAlign: "center"}}>
                                 <a
                                     href="https://twitter.com/symbloxdefi"
                                     rel="noopener noreferrer"
@@ -121,7 +154,7 @@ export default class App extends React.Component {
                                     />
                                 </a>
                             </Grid>
-                            <Grid item xs={2} style={{textAlign:"center"}}>
+                            <Grid item xs={2} style={{textAlign: "center"}}>
                                 <a
                                     href="https://t.me/symblox"
                                     rel="noopener noreferrer"
@@ -134,7 +167,7 @@ export default class App extends React.Component {
                                     />
                                 </a>
                             </Grid>
-                            <Grid item xs={2} style={{textAlign:"center"}}>
+                            <Grid item xs={2} style={{textAlign: "center"}}>
                                 <a
                                     href="https://medium.com/@symbloxsyx"
                                     rel="noopener noreferrer"
@@ -147,7 +180,7 @@ export default class App extends React.Component {
                                     />
                                 </a>
                             </Grid>
-                            <Grid item xs={2} style={{textAlign:"center"}}>
+                            <Grid item xs={2} style={{textAlign: "center"}}>
                                 <a
                                     href="https://github.com/symblox/symblox-yield-farming"
                                     rel="noopener noreferrer"
@@ -283,31 +316,64 @@ export default class App extends React.Component {
                             <Grid item xs={12}>
                                 <FormattedMessage id="CONTRACT" />
                             </Grid>
-                            <Grid item xs={12} style={{
-                                padding: "0 0 0 12px",
-                                fontSize: "16px",
-                                lineHeight: "22px"
-                            }}>
-                                <a href={config.browser+'/address/'+ethToVlx(config.syx)} target="_blank">
-                                    <FormattedMessage id="SYX" />: {ethToVlx(config.syx)}
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.syx)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="SYX" />:{" "}
+                                    {ethToVlx(config.syx)}
                                 </a>
                             </Grid>
-                            <Grid item xs={12} style={{
-                                padding: "0 0 0 12px",
-                                fontSize: "16px",
-                                lineHeight: "22px"
-                            }}>
-                                <a href={config.browser+'/address/'+ethToVlx(config.rewardPool)} target="_blank">
-                                    <FormattedMessage id="REWARD_POOL" />: {ethToVlx(config.rewardPool)}
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.wvlx)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="WVLX" />:{" "}
+                                    {ethToVlx(config.wvlx)}
                                 </a>
                             </Grid>
-                            <Grid item xs={12} style={{
-                                padding: "0 0 0 12px",
-                                fontSize: "16px",
-                                lineHeight: "22px"
-                            }}>
-                                <a href={config.browser+'/address/'+ethToVlx(config.governor)} target="_blank">
-                                    <FormattedMessage id="GOVERNOR" />: {ethToVlx(config.governor)}
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.devFund)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="DEV_FUND" />:{" "}
+                                    {ethToVlx(config.devFund)}
                                 </a>
                             </Grid>
                         </Grid>

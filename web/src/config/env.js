@@ -16,7 +16,7 @@ const rpcUrls = {
 const browserUrls = {
     111: "https://explorer.testnet.veladev.net",
     106: "https://explorer.velas.com"
-}
+};
 
 function env() {
     if (process.env.NODE_ENV === "development") {
@@ -34,6 +34,7 @@ function env() {
             bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
             timelock: "0x779af23521336FE29Ecfc2417693c819dEAFBF8F",
             governor: "0xbA0213618B25e4A365Abb0cbf6E849Eab312cA79",
+            devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
             erc20ABI: abis.erc20ABI,
             rewardPoolABI: abis.rewardPoolABI,
             bptABI: abis.bptABI,
@@ -58,6 +59,7 @@ function env() {
             bptConnector: "0xbF3357651540a8259dbd4E35bb761D12c4592Ef5",
             timelock: "0x19eb08763450504b2bc07a773dff2ac49e4f3bde",
             governor: "0x2afb2dc511f3f6abdb0d285fbfc12dcd8b305248",
+            devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
             erc20ABI: abis.erc20ABI,
             rewardPoolABI: abis.rewardPoolABI,
             bptABI: abis.bptABI,

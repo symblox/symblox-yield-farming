@@ -75,8 +75,8 @@ const en_US = {
         "This contract is under auditing. PLEASE REVIEW THE CONTRACT BEFORE PROCEEDING.",
     COMMUNITY: "Community",
     CONTRACT: "Contract",
-    SYX: "SYX",
-    REWARD_POOL: "RewardPool",
-    GOVERNOR: "Governor"
+    SYX: "SYX Token",
+    WVLX: "VLX Escrow",
+    DEV_FUND: "Dev Fund"
 };
 export default en_US;
