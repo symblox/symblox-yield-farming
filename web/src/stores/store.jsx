@@ -75,6 +75,7 @@ class Store {
                     totalSupply: 0,
                     abi: config.erc20ABI,
                     erc20ABI: config.erc20ABI,
+                    erc20Decimals: 18,
                     decimals: 18,
                     erc20Balance: 0,
                     entryContractABI: config.wvlxConnectorABI,
@@ -106,6 +107,69 @@ class Store {
                     decimals: 18,
                     erc20Address: config.wvlx,
                     erc20ABI: config.erc20ABI,
+                    erc20Decimals: 18,
+                    erc20Balance: 0,
+                    entryContractABI: config.bptConnectorABI,
+                    entryContractFactoryAddress: config.connectorFactory,
+                    entryContractFactoryABI: config.bptConnectorABI,
+                    weight: "",
+                    rewardsAddress: config.syx,
+                    rewardsABI: config.syxABI,
+                    rewardsSymbol: "SYX",
+                    rewardsDecimal: 0,
+                    rewardsBalance: 0,
+                    poolAddress: config.rewardPool,
+                    poolABI: config.rewardPoolABI,
+                    rewardsAvailable: 0
+                },
+                // {
+                //     id: "SYX/pVLX",
+                //     featured: false,
+                //     name: "pVLX",
+                //     website: "Reward Pool",
+                //     index: 3,
+                //     address: config.ticketBpt,
+                //     symbol: "BPT",
+                //     ROI: "DF",
+                //     type: "swap",
+                //     tokens: ["SYX", "pVLX"], //reward token must in first
+                //     totalSupply: 0,
+                //     abi: config.bptABI,
+                //     decimals: 18,
+                //     erc20Address: config.wvlx,
+                //     erc20ABI: config.erc20ABI,
+                //     erc20Decimals: 18,
+                //     erc20Balance: 0,
+                //     entryContractABI: config.bptConnectorABI,
+                //     entryContractFactoryAddress: config.connectorFactory,
+                //     entryContractFactoryABI: config.bptConnectorABI,
+                //     weight: "",
+                //     rewardsAddress: config.syx,
+                //     rewardsABI: config.syxABI,
+                //     rewardsSymbol: "SYX",
+                //     rewardsDecimal: 0,
+                //     rewardsBalance: 0,
+                //     poolAddress: config.rewardPool,
+                //     poolABI: config.rewardPoolABI,
+                //     rewardsAvailable: 0
+                // },
+                {
+                    id: "SYX/USDT",
+                    featured: false,
+                    name: "USDT",
+                    website: "Reward Pool",
+                    index: 4,
+                    address: config.usdtBpt,
+                    symbol: "BPT",
+                    ROI: "DF",
+                    type: "swap",
+                    tokens: ["SYX", "USDT"], //reward token must in first
+                    totalSupply: 0,
+                    abi: config.bptABI,
+                    decimals: 18,
+                    erc20Address: config.usdt,
+                    erc20ABI: config.erc20ABI,
+                    erc20Decimals: 6,
                     erc20Balance: 0,
                     entryContractABI: config.bptConnectorABI,
                     entryContractFactoryAddress: config.connectorFactory,
@@ -340,6 +404,7 @@ class Store {
                                 web3,
                                 pool,
                                 pool.erc20Address,
+                                pool.erc20Decimals,
                                 "1",
                                 callbackInner
                             );
@@ -363,6 +428,7 @@ class Store {
                                 web3,
                                 pool,
                                 pool.erc20Address,
+                                pool.erc20Decimals,
                                 account,
                                 callbackInner
                             );
@@ -373,6 +439,7 @@ class Store {
                                 web3,
                                 pool,
                                 pool.rewardsAddress,
+                                pool.decimals,
                                 account,
                                 callbackInner
                             );
@@ -579,7 +646,7 @@ class Store {
                 let balance = await erc20Contract.methods
                     .balanceOf(account.address)
                     .call();
-                callback(null, toStringDecimals(balance, asset.decimals));
+                callback(null, toStringDecimals(balance, asset.erc20Decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -694,47 +761,67 @@ class Store {
             const denormOut = await bptContract.methods
                 .getDenormalizedWeight(tokenOut)
                 .call({from: account.address});
-
             const swapFee = await bptContract.methods
                 .getSwapFee()
                 .call({from: account.address});
 
+            let amountToWei;
             if (type === "sell") {
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    amountToWei = (amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    amountToWei = web3.utils.toWei(amount + "", "ether");
+                }
+
                 let tokenAmountOut = await bptContract.methods
                     .calcOutGivenIn(
                         balanceIn,
                         denormIn,
                         balanceOut,
                         denormOut,
-                        web3.utils.toWei(amount + "", "ether"),
+                        amountToWei,
                         swapFee
                     )
                     .call({from: account.address});
 
-                //Trading price
-                let tradePrice =
-                    web3.utils.fromWei(tokenAmountOut + "", "ether") / amount;
+                let calcInAmount,calcOutAmount,tradePrice;
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    const inAmount = parseFloat(parseFloat(balanceIn/Number(`1e+${asset.erc20Decimals}`)) + amount);
+                    calcInAmount = ( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    calcInAmount = web3.utils.toWei(
+                        parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                            amount +
+                            "",
+                        "ether"
+                    );
+                }
+
+                if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
+                    const outAmount = parseFloat(balanceOut/Number(`1e+${asset.erc20Decimals}`)) - parseFloat(tokenAmountOut/Number(`1e+${asset.erc20Decimals}`));
+                    calcOutAmount = ( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    tradePrice = (tokenAmountOut / Number(`1e+${asset.erc20Decimals}`)) / amount;
+                }else{
+                    calcOutAmount = web3.utils.toWei(
+                        parseFloat(
+                            web3.utils.fromWei(balanceOut, "ether")
+                        ) -
+                            parseFloat(
+                                web3.utils.fromWei(tokenAmountOut, "ether")
+                            ) +
+                            "",
+                        "ether"
+                    );
+                    //Trading price
+                    tradePrice = web3.utils.fromWei(tokenAmountOut + "", "ether") / amount;
+                }
 
                 //Post-trade price
                 let finallPrice = await bptContract.methods
                     .calcSpotPrice(
-                        web3.utils.toWei(
-                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
-                                amount +
-                                "",
-                            "ether"
-                        ),
+                        calcInAmount,
                         denormIn,
-                        web3.utils.toWei(
-                            parseFloat(
-                                web3.utils.fromWei(balanceOut, "ether")
-                            ) -
-                                parseFloat(
-                                    web3.utils.fromWei(tokenAmountOut, "ether")
-                                ) +
-                                "",
-                            "ether"
-                        ),
+                        calcOutAmount,
                         denormOut,
                         swapFee
                     )
@@ -751,41 +838,60 @@ class Store {
                     amount
                 });
             } else if (type === "buyIn") {
+                if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
+                    amountToWei = (amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    amountToWei = web3.utils.toWei(amount + "", "ether");
+                }
+
                 let tokenAmountIn = await bptContract.methods
                     .calcInGivenOut(
                         balanceIn,
                         denormIn,
                         balanceOut,
                         denormOut,
-                        web3.utils.toWei(amount + "", "ether"),
+                        amountToWei,
                         swapFee
                     )
                     .call({from: account.address});
 
-                //Trading price
-                let tradePrice =
-                    amount / web3.utils.fromWei(tokenAmountIn + "", "ether");
+                let calcInAmount,calcOutAmount, tradePrice;
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    const inAmount = parseFloat(balanceIn / Number(`1e+${asset.erc20Decimals}`)) + parseFloat(tokenAmountIn/ Number(`1e+${asset.erc20Decimals}`));
+                    calcInAmount = ( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    tradePrice = amount * Number(`1e+${asset.erc20Decimals}`) / tokenAmountIn;
+                }else{
+                    calcInAmount = web3.utils.toWei(
+                        parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                            parseFloat(
+                                web3.utils.fromWei(tokenAmountIn, "ether")
+                            ) +
+                            "",
+                        "ether"
+                    );
+                    tradePrice = amount / web3.utils.fromWei(tokenAmountIn + "", "ether");
+                }
+
+                if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
+                    const outAmount = parseFloat(balanceOut/Number(`1e+${asset.erc20Decimals}`)) - parseFloat(amount);
+                    calcOutAmount = ( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});        
+                }else{
+                    calcOutAmount = web3.utils.toWei(
+                        parseFloat(
+                            web3.utils.fromWei(balanceOut, "ether")
+                        ) -
+                            amount +
+                            "",
+                        "ether"
+                    );
+                }
 
                 //Post-trade price
                 let finallPrice = await bptContract.methods
                     .calcSpotPrice(
-                        web3.utils.toWei(
-                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
-                                parseFloat(
-                                    web3.utils.fromWei(tokenAmountIn, "ether")
-                                ) +
-                                "",
-                            "ether"
-                        ),
+                        calcInAmount,
                         denormIn,
-                        web3.utils.toWei(
-                            parseFloat(
-                                web3.utils.fromWei(balanceOut, "ether")
-                            ) -
-                                amount +
-                                "",
-                            "ether"
-                        ),
+                        calcOutAmount,
                         denormOut,
                         swapFee
                     )
@@ -829,7 +935,7 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                const balance = await bptContract.methods
+                let balance = await bptContract.methods
                     .getBalance(token)
                     .call();
                 const denorm = await bptContract.methods
@@ -843,13 +949,20 @@ class Store {
                     .call();
                 const swapFee = await bptContract.methods.getSwapFee().call();
 
+                let amountToWei;
+                if(token === asset.erc20Address && asset.erc20Decimals!==18){
+                    amountToWei = (amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    amountToWei = web3.utils.toWei(amount + "", "ether");
+                }
+
                 let amountOut = await bptContract.methods
                     .calcPoolInGivenSingleOut(
                         balance,
                         denorm,
                         totalSupply,
                         totalWeight,
-                        web3.utils.toWei(amount + "", "ether"),
+                        amountToWei,
                         swapFee
                     )
                     .call();
@@ -863,7 +976,13 @@ class Store {
     getStakeTokenPrice = async payload => {
         const web3 = await this.getWeb3();
         const {asset, amount, token} = payload.content;
-        this._getStakeTokenPrice(web3, asset, token, amount, (err, res) => {
+        let decimals;
+        if(token === asset.erc20Address){
+            decimals = asset.erc20Decimals;
+        }else{
+            decimals = asset.decimals;
+        }
+        this._getStakeTokenPrice(web3, asset, token, decimals, amount, (err, res) => {
             if (err) {
                 return emitter.emit(ERROR, err);
             }
@@ -876,6 +995,7 @@ class Store {
         web3,
         asset,
         token,
+        decimals = 18,
         amount = "1",
         callback
     ) => {
@@ -909,7 +1029,7 @@ class Store {
                         swapFee
                     )
                     .call();
-                callback(null, toStringDecimals(amountOut, asset.decimals));
+                callback(null, toStringDecimals(amountOut, decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -970,14 +1090,14 @@ class Store {
     //     }
     // };
 
-    _getBptTotalBalance = async (web3, asset, token, account, callback) => {
+    _getBptTotalBalance = async (web3, asset, token, decimals = 18, account, callback) => {
         if (asset.type === "seed") {
             callback(null, "0");
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
                 let amount = await bptContract.methods.getBalance(token).call();
-                callback(null, toStringDecimals(amount, asset.decimals));
+                callback(null, toStringDecimals(amount, decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -1021,7 +1141,7 @@ class Store {
                 let price = await contract.methods
                     .getSpotPrice(asset.erc20Address, asset.rewardsAddress)
                     .call();
-                callback(null, toStringDecimals(price, asset.decimals));
+                callback(null, toStringDecimals(price, asset.erc20Decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -1105,12 +1225,20 @@ class Store {
             );
 
             let amountToSend = web3.utils.toWei(amount, "ether");
-            if (asset.decimals !== 18) {
-                amountToSend = (
-                    amount * Number(`1e+${asset.decimals}`)
-                ).toFixed(0);
+            if(token === asset.erc20Address){
+                if (asset.erc20Address !== 18) {
+                    amountToSend = (
+                        amount * Number(`1e+${asset.erc20Decimals}`)
+                    ).toFixed(0);
+                }
+            }else{
+                if (asset.decimals !== 18) {
+                    amountToSend = (
+                        amount * Number(`1e+${asset.decimals}`)
+                    ).toFixed(0);
+                }
             }
-
+            
             let args;
             if (
                 asset.type === "seed" ||
@@ -1340,9 +1468,22 @@ class Store {
             asset.address
         ); 
 
-        var amountToSend = web3.utils.toWei(amount, "ether");
-        if (asset.decimals !== 18) {
-            amountToSend = (amount * Number(`1e+${asset.decimals}`)).toFixed(0);
+        let amountToSend = web3.utils.toWei(amount, "ether");
+        // if (asset.decimals !== 18) {
+        //     amountToSend = (amount * Number(`1e+${asset.decimals}`)).toFixed(0);
+        // }
+        if(token === asset.erc20Address){
+            if (asset.erc20Address !== 18) {
+                amountToSend = (
+                    amount * Number(`1e+${asset.erc20Decimals}`)
+                ).toFixed(0);
+            }
+        }else{
+            if (asset.decimals !== 18) {
+                amountToSend = (
+                    amount * Number(`1e+${asset.decimals}`)
+                ).toFixed(0);
+            }
         }
 
         let gasLimit;
