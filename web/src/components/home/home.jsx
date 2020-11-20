@@ -825,7 +825,9 @@ class Home extends Component {
                                                                         classes.icon
                                                                     }
                                                                     src={
-                                                                        "/SYX.png"
+                                                                        "/" +
+                                                                        pool.name +
+                                                                        ".png"
                                                                     }
                                                                     style={{
                                                                         marginRight:
@@ -839,10 +841,9 @@ class Home extends Component {
                                                                         classes.icon
                                                                     }
                                                                     src={
-                                                                        "/" +
-                                                                        pool.name +
-                                                                        ".png"
+                                                                        "/SYX.png"
                                                                     }
+                                                                    
                                                                     alt=""
                                                                 />
                                                                 {pool.id}
