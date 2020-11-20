@@ -26,11 +26,12 @@ function env() {
             browser: browserUrls[requiredNetworkId],
             minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
             bpt: "0xeA4bF1A4b8e687E1Aa23620A9ECF157b681B91Ec",
-            ticketBpt: "0x8622C2315d4DDDff42C695D44f139032578b7A8a",
+            pVlxBpt: "0x8622C2315d4DDDff42C695D44f139032578b7A8a",
             usdtBpt: "0x2466290Cf22A134b72BC4Fb7fc3c07cD0300eEc5",
             syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
             wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f",
             usdt: "0xA23bAeA56de679FD1baf200E92a75ac8d5eeBc8A",
+            pVlx: "0x3724d456d7D02327A06B6a12DB429D83A2617c9B",
             rewardPool: "0x8b2B0CE402b33b5A2744371311E3053EAB2E2f3d",
             connectorFactory: "0xff165a0eeCc3CcB0057e7a8cf7E83Af4ea4d253a",
             wvlxConnector: "0xf56DE4B7D4A5e399edaA10DbF3e041793Bce4141",
