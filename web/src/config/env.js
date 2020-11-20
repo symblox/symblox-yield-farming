@@ -1,12 +1,6 @@
 import abis from "./abis";
 
-let requiredNetworkId = 106;
-
-if (process.env.NODE_ENV === "development") {
-    requiredNetworkId = 111;
-} else if (process.env.NODE_ENV === "production") {
-    requiredNetworkId = 106;
-}
+let requiredNetworkId = process.env.SERVER_ENV === "production" ? 106 : 111;
 
 const rpcUrls = {
     111: "https://explorer.testnet.veladev.net/rpc",
@@ -18,10 +12,35 @@ const browserUrls = {
     106: "https://explorer.velas.com"
 };
 
-console.log('NODE_ENV: ',process.env.NODE_ENV)
+console.log("NODE_ENV: ", process.env.SERVER_ENV);
 
 function env() {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.SERVER_ENV === "production") {
+        return {
+            requiredNetworkId,
+            rpcUrl: rpcUrls[requiredNetworkId],
+            browser: browserUrls[requiredNetworkId],
+            minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
+            bpt: "0x63a4cB3251CC3A93aF72C121d661C700637Fc7CB",
+            syx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
+            wvlx: "0x2b1aBEb48f875465bf0D3A262a2080ab1C7A3E39",
+            rewardPool: "0x76068bdd1D211A081FBaF3D5513B5e59a7fA3F7b",
+            connectorFactory: "0xE5E29A8aEfa67DAd8A78D44FB5d73807093870e2",
+            wvlxConnector: "0xf6182f2924065343947E7F12ec4a989Fd9D2A9Ec",
+            bptConnector: "0xbF3357651540a8259dbd4E35bb761D12c4592Ef5",
+            timelock: "0x19eb08763450504b2bc07a773dff2ac49e4f3bde",
+            governor: "0x2afb2dc511f3f6abdb0d285fbfc12dcd8b305248",
+            devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
+            erc20ABI: abis.erc20ABI,
+            rewardPoolABI: abis.rewardPoolABI,
+            bptABI: abis.bptABI,
+            syxABI: abis.syxABI,
+            bptConnectorABI: abis.bptConnectorABI,
+            wvlxConnectorABI: abis.wvlxConnectorABI,
+            connectorFactoryABI: abis.connectorFactoryABI,
+            secPerBlock: 5
+        };
+    } else {
         return {
             requiredNetworkId,
             rpcUrl: rpcUrls[requiredNetworkId],
@@ -40,31 +59,6 @@ function env() {
             bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
             timelock: "0x779af23521336FE29Ecfc2417693c819dEAFBF8F",
             governor: "0xbA0213618B25e4A365Abb0cbf6E849Eab312cA79",
-            devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
-            erc20ABI: abis.erc20ABI,
-            rewardPoolABI: abis.rewardPoolABI,
-            bptABI: abis.bptABI,
-            syxABI: abis.syxABI,
-            bptConnectorABI: abis.bptConnectorABI,
-            wvlxConnectorABI: abis.wvlxConnectorABI,
-            connectorFactoryABI: abis.connectorFactoryABI,
-            secPerBlock: 5
-        };
-    } else if (process.env.NODE_ENV === "production") {
-        return {
-            requiredNetworkId,
-            rpcUrl: rpcUrls[requiredNetworkId],
-            browser: browserUrls[requiredNetworkId],
-            minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
-            bpt: "0x63a4cB3251CC3A93aF72C121d661C700637Fc7CB",
-            syx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
-            wvlx: "0x2b1aBEb48f875465bf0D3A262a2080ab1C7A3E39",
-            rewardPool: "0x76068bdd1D211A081FBaF3D5513B5e59a7fA3F7b",
-            connectorFactory: "0xE5E29A8aEfa67DAd8A78D44FB5d73807093870e2",
-            wvlxConnector: "0xf6182f2924065343947E7F12ec4a989Fd9D2A9Ec",
-            bptConnector: "0xbF3357651540a8259dbd4E35bb761D12c4592Ef5",
-            timelock: "0x19eb08763450504b2bc07a773dff2ac49e4f3bde",
-            governor: "0x2afb2dc511f3f6abdb0d285fbfc12dcd8b305248",
             devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
             erc20ABI: abis.erc20ABI,
             rewardPoolABI: abis.rewardPoolABI,
