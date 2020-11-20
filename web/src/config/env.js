@@ -18,6 +18,8 @@ const browserUrls = {
     106: "https://explorer.velas.com"
 };
 
+console.log('NODE_ENV: ',process.env.NODE_ENV)
+
 function env() {
     if (process.env.NODE_ENV === "development") {
         return {
