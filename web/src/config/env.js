@@ -54,9 +54,11 @@ function env() {
             usdt: "0xA23bAeA56de679FD1baf200E92a75ac8d5eeBc8A",
             pVlx: "0x3724d456d7D02327A06B6a12DB429D83A2617c9B",
             rewardPool: "0x8b2B0CE402b33b5A2744371311E3053EAB2E2f3d",
-            connectorFactory: "0xff165a0eeCc3CcB0057e7a8cf7E83Af4ea4d253a",
+            //connectorFactory: "0xff165a0eeCc3CcB0057e7a8cf7E83Af4ea4d253a",
+            connectorFactory: "0x7A4c56107Ec4ac3380F96BC308184860808e6004", //no set governor
             wvlxConnector: "0xf56DE4B7D4A5e399edaA10DbF3e041793Bce4141",
-            bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
+            //bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
+            bptConnector: "0xa4bE2f7521B95CEAD57EdbC3af140AC7e942bf74", //BptReferralConnector
             timelock: "0x779af23521336FE29Ecfc2417693c819dEAFBF8F",
             governor: "0xbA0213618B25e4A365Abb0cbf6E849Eab312cA79",
             devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
