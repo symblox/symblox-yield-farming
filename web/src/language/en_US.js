@@ -77,6 +77,7 @@ const en_US = {
     CONTRACT: "Contract",
     SYX: "SYX Token",
     WVLX: "VLX Escrow",
-    DEV_FUND: "Dev Fund"
+    DEV_FUND: "Dev Fund",
+    REFERRER: "Referrer Address"
 };
 export default en_US;

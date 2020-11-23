@@ -75,6 +75,7 @@ const zh_CN = {
     CONTRACT: "合约",
     SYX: "SYX 代币",
     WVLX: "VLX 托管",
-    DEV_FUND: "开发基金"
+    DEV_FUND: "开发基金",
+    REFERRER: "推荐人地址"
 };
 export default zh_CN;

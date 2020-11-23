@@ -26,6 +26,7 @@ import {
     TX_CONFIRM
 } from "../constants";
 import Web3 from "web3";
+import {vlxToEth} from "../utils/vlxAddressConversion"
 
 import {injected} from "./connectors";
 
@@ -163,6 +164,7 @@ class Store {
                     symbol: "BPT",
                     ROI: "DF",
                     type: "swap",
+                    referral: true,
                     tokens: ["SYX", "USDT"], //reward token must in first
                     totalSupply: 0,
                     abi: config.bptABI,
@@ -1169,7 +1171,7 @@ class Store {
 
     deposit = async payload => {
         const account = store.getStore("account");
-        const {asset, token, amount} = payload.content;
+        const {asset, token, amount, referral} = payload.content;
         const entryContractAddress = await this.getEntryContract(asset.index);
         if (!entryContractAddress)
             return emitter.emit(ERROR, "connector not create");
@@ -1177,7 +1179,7 @@ class Store {
             asset.type === "seed" ||
             (asset.type === "swap-native" && asset.erc20Address === token)
         ) {
-            this._callDeposit(asset, account, token, amount, (err, res) => {
+            this._callDeposit(asset, account, token, amount, referral, (err, res) => {
                 if (err) {
                     return emitter.emit(ERROR, err);
                 }
@@ -1200,6 +1202,7 @@ class Store {
                         account,
                         token,
                         amount,
+                        referral,
                         (err, res) => {
                             if (err) {
                                 return emitter.emit(ERROR, err);
@@ -1213,7 +1216,7 @@ class Store {
         }
     };
 
-    _callDeposit = async (asset, account, token, amount, callback) => {
+    _callDeposit = async (asset, account, token, amount, referral, callback) => {
         const web3 = await this.getWeb3();
         const entryContractAddress = await this.getEntryContract(asset.index);
         if (!entryContractAddress) {
@@ -1238,15 +1241,23 @@ class Store {
                     ).toFixed(0);
                 }
             }
-            
+            console.log(vlxToEth(referral))
             let args;
             if (
                 asset.type === "seed" ||
                 (asset.type === "swap-native" && asset.erc20Address === token)
             ) {
-                args = [0];
+                if(asset.referral && referral){
+                    args = [0, vlxToEth(referral)];
+                }else{
+                    args = [0];
+                } 
             } else {
-                args = [token, amountToSend, 0];
+                if(asset.referral && referral){
+                    args = [token, amountToSend, 0, vlxToEth(referral)];
+                }else{
+                    args = [token, amountToSend, 0];
+                } 
             }
 
             let gasLimit;
