@@ -1,4 +1,4 @@
-import config from "../config";
+import config, {pools} from "../config";
 import async from "async";
 import {toStringDecimals} from "../utils/numberFormat.js";
 import {
@@ -62,132 +62,7 @@ class Store {
                     code: "zh"
                 }
             ],
-            rewardPools: [
-                {
-                    id: "VLX",
-                    featured: true,
-                    name: "VLX",
-                    website: "Reward Pool",
-                    index: 0,
-                    address: config.wvlx,
-                    symbol: "VLX",
-                    ROI: "DF",
-                    type: "seed",
-                    tokens: ["VLX"],
-                    totalSupply: 0,
-                    abi: config.erc20ABI,
-                    erc20ABI: config.erc20ABI,
-                    erc20Decimals: 18,
-                    decimals: 18,
-                    erc20Balance: 0,
-                    entryContractABI: config.wvlxConnectorABI,
-                    entryContractFactoryAddress: config.connectorFactory,
-                    entryContractFactoryABI: config.connectorFactoryABI,
-                    weight: "",
-                    rewardsAddress: config.syx,
-                    rewardsABI: config.syxABI,
-                    rewardsSymbol: "SYX",
-                    rewardsDecimal: 0,
-                    rewardsBalance: 0,
-                    poolAddress: config.rewardPool,
-                    poolABI: config.rewardPoolABI,
-                    rewardsAvailable: 0
-                },
-                {
-                    id: "SYX/VLX",
-                    featured: false,
-                    name: "VLX",
-                    website: "Reward Pool",
-                    index: 1,
-                    address: config.bpt,
-                    symbol: "BPT",
-                    ROI: "DF",
-                    type: "swap-native",
-                    tokens: ["SYX", "VLX"], //reward token must in first
-                    totalSupply: 0,
-                    abi: config.bptABI,
-                    decimals: 18,
-                    erc20Address: config.wvlx,
-                    erc20ABI: config.erc20ABI,
-                    erc20Decimals: 18,
-                    erc20Balance: 0,
-                    entryContractABI: config.bptConnectorABI,
-                    entryContractFactoryAddress: config.connectorFactory,
-                    entryContractFactoryABI: config.bptConnectorABI,
-                    weight: "",
-                    rewardsAddress: config.syx,
-                    rewardsABI: config.syxABI,
-                    rewardsSymbol: "SYX",
-                    rewardsDecimal: 0,
-                    rewardsBalance: 0,
-                    poolAddress: config.rewardPool,
-                    poolABI: config.rewardPoolABI,
-                    rewardsAvailable: 0
-                },
-                {
-                    id: "SYX/pVLX",
-                    featured: false,
-                    name: "pVLX",
-                    website: "Reward Pool",
-                    index: 3,
-                    address: config.pVlxBpt,
-                    symbol: "BPT",
-                    ROI: "DF",
-                    type: "swap",
-                    tokens: ["SYX", "pVLX"], //reward token must in first
-                    totalSupply: 0,
-                    abi: config.bptABI,
-                    decimals: 18,
-                    erc20Address: config.pVlx,
-                    erc20ABI: config.erc20ABI,
-                    erc20Decimals: 18,
-                    erc20Balance: 0,
-                    entryContractABI: config.bptConnectorABI,
-                    entryContractFactoryAddress: config.connectorFactory,
-                    entryContractFactoryABI: config.bptConnectorABI,
-                    weight: "",
-                    rewardsAddress: config.syx,
-                    rewardsABI: config.syxABI,
-                    rewardsSymbol: "SYX",
-                    rewardsDecimal: 0,
-                    rewardsBalance: 0,
-                    poolAddress: config.rewardPool,
-                    poolABI: config.rewardPoolABI,
-                    rewardsAvailable: 0
-                },
-                {
-                    id: "SYX/USDT",
-                    featured: false,
-                    name: "USDT",
-                    website: "Reward Pool",
-                    index: 4,
-                    address: config.usdtBpt,
-                    symbol: "BPT",
-                    ROI: "DF",
-                    type: "swap",
-                    referral: true,
-                    tokens: ["SYX", "USDT"], //reward token must in first
-                    totalSupply: 0,
-                    abi: config.bptABI,
-                    decimals: 18,
-                    erc20Address: config.usdt,
-                    erc20ABI: config.erc20ABI,
-                    erc20Decimals: 6,
-                    erc20Balance: 0,
-                    entryContractABI: config.bptConnectorABI,
-                    entryContractFactoryAddress: config.connectorFactory,
-                    entryContractFactoryABI: config.bptConnectorABI,
-                    weight: "",
-                    rewardsAddress: config.syx,
-                    rewardsABI: config.syxABI,
-                    rewardsSymbol: "SYX",
-                    rewardsDecimal: 0,
-                    rewardsBalance: 0,
-                    poolAddress: config.rewardPool,
-                    poolABI: config.rewardPoolABI,
-                    rewardsAvailable: 0
-                }
-            ]
+            rewardPools: pools
         };
 
         dispatcher.register(
@@ -1370,9 +1245,6 @@ class Store {
         ); 
 
         let amountToSend = web3.utils.toWei(amount, "ether");
-        // if (asset.decimals !== 18) {
-        //     amountToSend = (amount * Number(`1e+${asset.decimals}`)).toFixed(0);
-        // }
         if(token === asset.erc20Address){
             if (asset.erc20Address !== 18) {
                 amountToSend = (

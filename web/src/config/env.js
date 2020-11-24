@@ -35,7 +35,7 @@ function env() {
             rewardPoolABI: abis.rewardPoolABI,
             bptABI: abis.bptABI,
             syxABI: abis.syxABI,
-            bptConnectorABI: abis.bptConnectorABI,
+            bptRefConnectorABI: abis.bptRefConnectorABI,
             wvlxConnectorABI: abis.wvlxConnectorABI,
             connectorFactoryABI: abis.connectorFactoryABI,
             secPerBlock: 5
@@ -66,7 +66,7 @@ function env() {
             rewardPoolABI: abis.rewardPoolABI,
             bptABI: abis.bptABI,
             syxABI: abis.syxABI,
-            bptConnectorABI: abis.bptConnectorABI,
+            bptRefConnectorABI: abis.bptRefConnectorABI,
             wvlxConnectorABI: abis.wvlxConnectorABI,
             connectorFactoryABI: abis.connectorFactoryABI,
             secPerBlock: 5
