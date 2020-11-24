@@ -411,51 +411,7 @@ class Store {
                         },
                         //7
                         callbackInner => {
-                            this._getStakeTokenTotalSupply(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //8
-                        callbackInner => {
-                            this._getWeight(web3, pool, account, callbackInner);
-                        },
-                        //9
-                        callbackInner => {
-                            this._getBptTotalBalance(
-                                web3,
-                                pool,
-                                pool.erc20Address,
-                                pool.erc20Decimals,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //10
-                        callbackInner => {
-                            this._getBptTotalBalance(
-                                web3,
-                                pool,
-                                pool.rewardsAddress,
-                                pool.decimals,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //11
-                        callbackInner => {
-                            this._getBptMaxInRatio(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //12
-                        callbackInner => {
-                            this._getBptMaxOutRatio(
+                            this._getBptInfo(
                                 web3,
                                 pool,
                                 account,
@@ -475,7 +431,7 @@ class Store {
                         pool.rewardRate = data[4] * data[5];
                         pool.allocPoint = data[5];
                         pool.BPTPrice = data[6];
-                        pool.totalSupply = data[7];
+                        pool.totalSupply = data[7].totalSupply;
                         pool.totalBalanceForSyx = 0;
                         if (pool.type === "seed") {
                             pool.totalBalanceForSyx =
@@ -483,8 +439,8 @@ class Store {
                                 parseFloat(pool.price);
                         } else {
                             pool.totalBalanceForSyx =
-                                parseFloat(data[9]) / parseFloat(pool.price) +
-                                parseFloat(data[10]);
+                                parseFloat(data[7].erc20Balance) / parseFloat(pool.price) +
+                                parseFloat(data[7].rewardBalance);
                         }
 
                         pool.rewardApr = (pool.totalBalanceForSyx > 0
@@ -494,19 +450,19 @@ class Store {
                             : 0
                         ).toFixed(1);
 
-                        pool.weight = data[8];
+                        pool.weight = data[7].weight;
 
-                        pool.bptVlxBalance = data[9];
-                        pool.bptSyxBalance = data[10];
+                        pool.bptVlxBalance = data[7].erc20Balance;
+                        pool.bptSyxBalance = data[7].rewardBalance;
 
                         pool.maxErc20In =
-                            parseFloat(data[11]) * parseFloat(data[9]);
+                            parseFloat(data[7].maxIn) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxIn =
-                            parseFloat(data[11]) * parseFloat(data[10]);
+                            parseFloat(data[7].maxIn) * parseFloat(data[7].rewardBalance);
                         pool.maxErc20Out =
-                            parseFloat(data[12]) * parseFloat(data[9]);
+                            parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxOut =
-                            parseFloat(data[12]) * parseFloat(data[10]);
+                            parseFloat(data[7].maxOut) * parseFloat(data[7].rewardBalance);
                         callback(null, pool);
                     }
                 );
@@ -654,22 +610,6 @@ class Store {
             return toStringDecimals(balance, decimals);
         } catch (err) {
             return emitter.emit(ERROR, err);
-        }
-    };
-
-    _getRewardTokenBalance = async (web3, asset, account, callback) => {
-        if (!account || !account.address) return callback(null, "0");
-        let erc20Contract = new web3.eth.Contract(
-            asset.erc20ABI,
-            asset.rewardsAddress
-        );
-        try {
-            let balance = await erc20Contract.methods
-                .balanceOf(account.address)
-                .call();
-            callback(null, toStringDecimals(balance, asset.decimals));
-        } catch (ex) {
-            return callback(ex);
         }
     };
 
@@ -956,7 +896,7 @@ class Store {
                     bptContract.methods.totalSupply().call,
                     bptContract.methods.getTotalDenormalizedWeight().call,
                     bptContract.methods.getSwapFee().call
-                ],account.address)
+                ])
 
                 let amountToWei;
                 if(token === asset.erc20Address && asset.erc20Decimals!==18){
@@ -1045,98 +985,40 @@ class Store {
         }
     };
 
-    _getStakeTokenTotalSupply = async (web3, asset, account, callback) => {
-        let contract = new web3.eth.Contract(asset.abi, asset.address);
-        try {
-            let totalSupply;
-            totalSupply = await contract.methods
-                .balanceOf(asset.poolAddress)
-                .call();
-            callback(null, toStringDecimals(totalSupply, asset.decimals));
-        } catch (ex) {
-            return callback(ex);
-        }
-    };
-
-    _getWeight = async (web3, asset, account, callback) => {
+    _getBptInfo = async (web3, asset, account, callback) => {
         if (asset.type === "seed") {
-            callback(null, "0");
+            let contract = new web3.eth.Contract(asset.abi, asset.address);
+            const totalSupply = await contract.methods.balanceOf(asset.poolAddress).call();
+            callback(null, {totalSupply: toStringDecimals(totalSupply, asset.decimals)});
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
                 let [
+                    maxIn,
+                    maxOut,
                     weight1,
-                    weight2
+                    weight2,
+                    rewardBalance,
+                    erc20Balance,
+                    totalSupply
                 ] = await makeBatchRequest(web3,[
+                    bptContract.methods.MAX_IN_RATIO().call,
+                    bptContract.methods.MAX_OUT_RATIO().call,
                     bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
                     bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
+                    bptContract.methods.getBalance(asset.rewardsAddress).call,
+                    bptContract.methods.getBalance(asset.erc20Address).call,
+                    bptContract.methods.balanceOf(asset.poolAddress).call
                 ],account.address)
-
-                callback(
-                    null,
-                    parseInt(toStringDecimals(weight1, asset.decimals)) +
-                        ":" +
-                        parseInt(toStringDecimals(weight2, asset.decimals))
-                );
-            } catch (ex) {
-                return callback(ex);
-            }
-        }
-    };
-
-    // _getPeriodFinish = async (web3, asset, account, callback) => {
-    //     let contract = new web3.eth.Contract(asset.poolABI, asset.poolAddress);
-    //     try {
-    //         const curBlockNumber = await web3.eth.getBlockNumber();
-    //         const res = await contract.methods.bonusEndBlock().call();
-    //         const diff = res - curBlockNumber;
-    //         if (diff > 0) {
-    //             callback(null, moment().unix() + diff * config.secPerBlock);
-    //         } else {
-    //             const pastBlock = await web3.eth.getBlock(res);
-    //             callback(null, pastBlock.timestamp);
-    //         }
-    //     } catch (ex) {
-    //         return callback(ex);
-    //     }
-    // };
-
-    _getBptTotalBalance = async (web3, asset, token, decimals = 18, account, callback) => {
-        if (asset.type === "seed") {
-            callback(null, "0");
-        } else {
-            let bptContract = new web3.eth.Contract(asset.abi, asset.address);
-            try {
-                let amount = await bptContract.methods.getBalance(token).call();
-                callback(null, toStringDecimals(amount, decimals));
-            } catch (ex) {
-                return callback(ex);
-            }
-        }
-    };
-
-    _getBptMaxInRatio = async (web3, asset, account, callback) => {
-        if (asset.type === "seed") {
-            callback(null, "0");
-        } else {
-            let bptContract = new web3.eth.Contract(asset.abi, asset.address);
-            try {
-                let ratio = await bptContract.methods.MAX_IN_RATIO().call();
-                callback(null, toStringDecimals(ratio, asset.decimals));
-            } catch (ex) {
-                return callback(ex);
-            }
-        }
-    };
-
-    _getBptMaxOutRatio = async (web3, asset, account, callback) => {
-        if (asset.type === "seed") {
-            callback(null, "0");
-        } else {
-            let bptContract = new web3.eth.Contract(asset.abi, asset.address);
-            try {
-                let ratio = await bptContract.methods.MAX_OUT_RATIO().call();
-                callback(null, toStringDecimals(ratio, asset.decimals));
+                
+                callback(null, {
+                    maxIn: toStringDecimals(maxIn, asset.decimals),
+                    maxOut: toStringDecimals(maxOut, asset.decimals),
+                    weight: parseInt(toStringDecimals(weight1, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2, asset.decimals)),
+                    rewardBalance: toStringDecimals(rewardBalance, asset.decimals),
+                    erc20Balance: toStringDecimals(erc20Balance, asset.erc20Decimals),
+                    totalSupply: toStringDecimals(totalSupply, asset.decimals)
+                });
             } catch (ex) {
                 return callback(ex);
             }
