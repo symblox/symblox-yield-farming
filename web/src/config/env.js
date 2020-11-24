@@ -29,7 +29,7 @@ function env() {
             wvlxConnector: "0xf6182f2924065343947E7F12ec4a989Fd9D2A9Ec",
             bptConnector: "0xbF3357651540a8259dbd4E35bb761D12c4592Ef5",
             timelock: "0x19eb08763450504b2bc07a773dff2ac49e4f3bde",
-            governor: "0x2afb2dc511f3f6abdb0d285fbfc12dcd8b305248",
+            governor: "0xdEdBCBdEc215a32bB75acfc278F57dCEb2fb6da1",
             devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
             erc20ABI: abis.erc20ABI,
             rewardPoolABI: abis.rewardPoolABI,
