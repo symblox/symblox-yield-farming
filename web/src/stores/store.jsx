@@ -27,7 +27,7 @@ import {
 } from "../constants";
 import Web3 from "web3";
 import {vlxToEth} from "../utils/vlxAddressConversion"
-
+import {makeBatchRequest} from "../utils/request"
 import {injected} from "./connectors";
 
 const rp = require("request-promise");
@@ -39,6 +39,7 @@ const dispatcher = new Dispatcher();
 const emitter = new Emitter();
 
 const blocksPerYear = 2102400;
+
 class Store {
     constructor() {
         this.store = {
@@ -277,15 +278,15 @@ class Store {
         const keyName = "entryContractAddress" + id;
 
         let connectorAddress = store.getStore(keyName);
+
         if (
-            (!connectorAddress ||
+            (connectorAddress===undefined ||
                 connectorAddress ===
                     "0x0000000000000000000000000000000000000000") &&
             account &&
             account.address
         ) {
             const web3 = await this.getWeb3();
-
             const contract = new web3.eth.Contract(
                 config.connectorFactoryABI,
                 config.connectorFactory
@@ -301,12 +302,16 @@ class Store {
                 ) {
                     connectorAddress = null;
                 }
-                store.setStore({keyName: connectorAddress});
+                
+                //Can not update in time with setStore, so directly set the attributes of the store
+                //store.setStore({keyName: connectorAddress});
+                this.store[keyName] = connectorAddress;
+                console.log("pool: ", id, " connectorAddress: ", connectorAddress);
             } catch (err) {
                 console.error(err);
             }
         }
-        // console.log("pool: ", id, " connectorAddress: ", connectorAddress);
+        
         return connectorAddress;
     };
 
@@ -314,14 +319,25 @@ class Store {
         const pools = store.getStore("rewardPools");
         const account = store.getStore("account");
         const web3 = await this.getWeb3();
+        let syxBalance;
 
         try {
             const currentBlock = await web3.eth.getBlockNumber();
             store.setStore({currentBlock: currentBlock});
+
+            //The reward tokens of several pools are all syx, so make a separate request to avoid repeated requests
+            syxBalance = await this.getErc20Balance(web3,config.syx,18,account);
         } catch (err) {
             console.log(err);
             return emitter.emit(ERROR, err);
         }
+
+        //Split call to reduce the total number of rpc requests
+        const promises = pools.map(async (pool)=>{
+            pool.entryContractAddress = await this.getEntryContract(pool.index);
+            pool.rewardsBalance = syxBalance;
+        });
+        await Promise.all(promises);
 
         async.map(
             pools,
@@ -330,7 +346,7 @@ class Store {
                     [
                         //0
                         callbackInner => {
-                            this._getEntryContract(
+                            this._getStakeAmount(
                                 web3,
                                 pool,
                                 account,
@@ -339,7 +355,7 @@ class Store {
                         },
                         //1
                         callbackInner => {
-                            this._getStakeAmount(
+                            this._getRewardsAvailable(
                                 web3,
                                 pool,
                                 account,
@@ -348,7 +364,7 @@ class Store {
                         },
                         //2
                         callbackInner => {
-                            this._getRewardsAvailable(
+                            this._getERC20TokenPrice(
                                 web3,
                                 pool,
                                 account,
@@ -357,7 +373,7 @@ class Store {
                         },
                         //3
                         callbackInner => {
-                            this._getERC20TokenPrice(
+                            this._getTokenBalance(
                                 web3,
                                 pool,
                                 account,
@@ -366,7 +382,7 @@ class Store {
                         },
                         //4
                         callbackInner => {
-                            this._getERC20Balance(
+                            this._getRewardRate(
                                 web3,
                                 pool,
                                 account,
@@ -375,24 +391,6 @@ class Store {
                         },
                         //5
                         callbackInner => {
-                            this._getRewardTokenBalance(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //6
-                        callbackInner => {
-                            this._getRewardRate(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //7
-                        callbackInner => {
                             this._getAllocPoint(
                                 web3,
                                 pool,
@@ -400,7 +398,7 @@ class Store {
                                 callbackInner
                             );
                         },
-                        //8
+                        //6
                         callbackInner => {
                             this._getStakeTokenPrice(
                                 web3,
@@ -411,7 +409,7 @@ class Store {
                                 callbackInner
                             );
                         },
-                        //9
+                        //7
                         callbackInner => {
                             this._getStakeTokenTotalSupply(
                                 web3,
@@ -420,11 +418,11 @@ class Store {
                                 callbackInner
                             );
                         },
-                        //10
+                        //8
                         callbackInner => {
                             this._getWeight(web3, pool, account, callbackInner);
                         },
-                        //11
+                        //9
                         callbackInner => {
                             this._getBptTotalBalance(
                                 web3,
@@ -435,7 +433,7 @@ class Store {
                                 callbackInner
                             );
                         },
-                        //12
+                        //10
                         callbackInner => {
                             this._getBptTotalBalance(
                                 web3,
@@ -446,7 +444,7 @@ class Store {
                                 callbackInner
                             );
                         },
-                        //13
+                        //11
                         callbackInner => {
                             this._getBptMaxInRatio(
                                 web3,
@@ -455,7 +453,7 @@ class Store {
                                 callbackInner
                             );
                         },
-                        //14
+                        //12
                         callbackInner => {
                             this._getBptMaxOutRatio(
                                 web3,
@@ -470,16 +468,14 @@ class Store {
                             console.log(err);
                             return callback(err);
                         }
-                        pool.entryContractAddress = data[0];
-                        pool.stakeAmount = data[1];
-                        pool.rewardsAvailable = data[2];
-                        pool.price = data[3];
-                        pool.erc20Balance = data[4];
-                        pool.rewardsBalance = data[5];
-                        pool.rewardRate = data[6] * data[7];
-                        pool.allocPoint = data[7];
-                        pool.BPTPrice = data[8];
-                        pool.totalSupply = data[9];
+                        pool.stakeAmount = data[0];
+                        pool.rewardsAvailable = data[1];
+                        pool.price = data[2];
+                        pool.erc20Balance = data[3];
+                        pool.rewardRate = data[4] * data[5];
+                        pool.allocPoint = data[5];
+                        pool.BPTPrice = data[6];
+                        pool.totalSupply = data[7];
                         pool.totalBalanceForSyx = 0;
                         if (pool.type === "seed") {
                             pool.totalBalanceForSyx =
@@ -487,8 +483,8 @@ class Store {
                                 parseFloat(pool.price);
                         } else {
                             pool.totalBalanceForSyx =
-                                parseFloat(data[11]) / parseFloat(pool.price) +
-                                parseFloat(data[12]);
+                                parseFloat(data[9]) / parseFloat(pool.price) +
+                                parseFloat(data[10]);
                         }
 
                         pool.rewardApr = (pool.totalBalanceForSyx > 0
@@ -498,19 +494,19 @@ class Store {
                             : 0
                         ).toFixed(1);
 
-                        pool.weight = data[10];
+                        pool.weight = data[8];
 
-                        pool.bptVlxBalance = data[11];
-                        pool.bptSyxBalance = data[12];
+                        pool.bptVlxBalance = data[9];
+                        pool.bptSyxBalance = data[10];
 
                         pool.maxErc20In =
-                            parseFloat(data[13]) * parseFloat(data[11]);
+                            parseFloat(data[11]) * parseFloat(data[9]);
                         pool.maxSyxIn =
-                            parseFloat(data[13]) * parseFloat(data[12]);
+                            parseFloat(data[11]) * parseFloat(data[10]);
                         pool.maxErc20Out =
-                            parseFloat(data[14]) * parseFloat(data[11]);
+                            parseFloat(data[12]) * parseFloat(data[9]);
                         pool.maxSyxOut =
-                            parseFloat(data[14]) * parseFloat(data[12]);
+                            parseFloat(data[12]) * parseFloat(data[10]);
                         callback(null, pool);
                     }
                 );
@@ -596,16 +592,6 @@ class Store {
         }
     };
 
-    _getEntryContract = async (web3, asset, account, callback) => {
-        const entryContractAddress = await this.getEntryContract(asset.index);
-
-        if (!entryContractAddress) {
-            callback(null, null);
-        } else {
-            callback(null, entryContractAddress);
-        }
-    };
-
     _getStakeAmount = async (web3, asset, account, callback) => {
         const entryContractAddress = await this.getEntryContract(asset.index);
 
@@ -630,7 +616,7 @@ class Store {
         }
     };
 
-    _getERC20Balance = async (web3, asset, account, callback) => {
+    _getTokenBalance = async (web3, asset, account, callback) => {
         if (!account || !account.address) return callback(null, "0");
         if (asset.type === "seed" || asset.type === "swap-native") {
             try {
@@ -652,6 +638,22 @@ class Store {
             } catch (ex) {
                 return callback(ex);
             }
+        }
+    };
+
+    getErc20Balance = async (web3, address, decimals, account) => {
+        if (!account || !account.address) return "0";
+        let erc20Contract = new web3.eth.Contract(
+            config.erc20ABI,
+            address
+        );
+        try {
+            let balance = await erc20Contract.methods
+                .balanceOf(account.address)
+                .call();
+            return toStringDecimals(balance, decimals);
+        } catch (err) {
+            return emitter.emit(ERROR, err);
         }
     };
 
@@ -677,9 +679,15 @@ class Store {
             asset.poolAddress
         );
         try {
-            const rate = await erc20Contract.methods.syxPerBlock().call();
             const curBlockNumber = await web3.eth.getBlockNumber();
-            const bonusEndBlock = await erc20Contract.methods.bonusEndBlock().call();
+            let [
+                rate,
+                bonusEndBlock
+            ] = await makeBatchRequest(web3,[
+                erc20Contract.methods.syxPerBlock().call,
+                erc20Contract.methods.bonusEndBlock().call,
+            ],account.address)
+
             if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
                 const bonusMultiplier = await erc20Contract.methods.BONUS_MULTIPLIER().call();
                 callback(null, toStringDecimals(parseFloat(rate)*parseFloat(bonusMultiplier), 18));
@@ -695,14 +703,15 @@ class Store {
         let erc20Contract = new web3.eth.Contract(
             asset.poolABI,
             asset.poolAddress
-        );
+        );  
         try {
-            let totalAllocPoint = await erc20Contract.methods
-                .totalAllocPoint()
-                .call();
-            let poolInfo = await erc20Contract.methods
-                .poolInfo(asset.index)
-                .call();
+            let [
+                totalAllocPoint,
+                poolInfo
+            ] = await makeBatchRequest(web3,[
+                erc20Contract.methods.totalAllocPoint().call,
+                erc20Contract.methods.poolInfo(asset.index).call
+            ],account.address)
 
             callback(null, poolInfo.allocPoint / totalAllocPoint);
         } catch (ex) {
@@ -751,21 +760,19 @@ class Store {
         const web3 = await this.getWeb3();
         let bptContract = new web3.eth.Contract(asset.abi, asset.address);
         try {
-            const balanceIn = await bptContract.methods
-                .getBalance(tokenIn)
-                .call({from: account.address});
-            const denormIn = await bptContract.methods
-                .getDenormalizedWeight(tokenIn)
-                .call({from: account.address});
-            const balanceOut = await bptContract.methods
-                .getBalance(tokenOut)
-                .call({from: account.address});
-            const denormOut = await bptContract.methods
-                .getDenormalizedWeight(tokenOut)
-                .call({from: account.address});
-            const swapFee = await bptContract.methods
-                .getSwapFee()
-                .call({from: account.address});
+            let [
+                balanceIn,
+                denormIn,
+                balanceOut,
+                denormOut,
+                swapFee
+            ] = await makeBatchRequest(web3,[
+                bptContract.methods.getBalance(tokenIn).call,
+                bptContract.methods.getDenormalizedWeight(tokenIn).call,
+                bptContract.methods.getBalance(tokenOut).call,
+                bptContract.methods.getDenormalizedWeight(tokenOut).call,
+                bptContract.methods.getSwapFee().call
+            ],account.address)
 
             let amountToWei;
             if (type === "sell") {
@@ -937,19 +944,19 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                let balance = await bptContract.methods
-                    .getBalance(token)
-                    .call();
-                const denorm = await bptContract.methods
-                    .getDenormalizedWeight(token)
-                    .call();
-                const totalSupply = await bptContract.methods
-                    .totalSupply()
-                    .call();
-                const totalWeight = await bptContract.methods
-                    .getTotalDenormalizedWeight()
-                    .call();
-                const swapFee = await bptContract.methods.getSwapFee().call();
+                let [
+                    balance,
+                    denorm,
+                    totalSupply,
+                    totalWeight,
+                    swapFee
+                ] = await makeBatchRequest(web3,[
+                    bptContract.methods.getBalance(token).call,
+                    bptContract.methods.getDenormalizedWeight(token).call,
+                    bptContract.methods.totalSupply().call,
+                    bptContract.methods.getTotalDenormalizedWeight().call,
+                    bptContract.methods.getSwapFee().call
+                ],account.address)
 
                 let amountToWei;
                 if(token === asset.erc20Address && asset.erc20Decimals!==18){
@@ -1007,19 +1014,19 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                const balance = await bptContract.methods
-                    .getBalance(token)
-                    .call();
-                const denorm = await bptContract.methods
-                    .getDenormalizedWeight(token)
-                    .call();
-                const totalSupply = await bptContract.methods
-                    .totalSupply()
-                    .call();
-                const totalWeight = await bptContract.methods
-                    .getTotalDenormalizedWeight()
-                    .call();
-                const swapFee = await bptContract.methods.getSwapFee().call();
+                let [
+                    balance,
+                    denorm,
+                    totalSupply,
+                    totalWeight,
+                    swapFee
+                ] = await makeBatchRequest(web3,[
+                    bptContract.methods.getBalance(token).call,
+                    bptContract.methods.getDenormalizedWeight(token).call,
+                    bptContract.methods.totalSupply().call,
+                    bptContract.methods.getTotalDenormalizedWeight().call,
+                    bptContract.methods.getSwapFee().call
+                ])
 
                 let amountOut = await bptContract.methods
                     .calcSingleOutGivenPoolIn(
@@ -1057,12 +1064,14 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                const weight1 = await bptContract.methods
-                    .getDenormalizedWeight(asset.rewardsAddress)
-                    .call();
-                const weight2 = await bptContract.methods
-                    .getDenormalizedWeight(asset.erc20Address)
-                    .call();
+                let [
+                    weight1,
+                    weight2
+                ] = await makeBatchRequest(web3,[
+                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
+                    bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
+                ],account.address)
+
                 callback(
                     null,
                     parseInt(toStringDecimals(weight1, asset.decimals)) +
@@ -1241,7 +1250,6 @@ class Store {
                     ).toFixed(0);
                 }
             }
-            console.log(vlxToEth(referral))
             let args;
             if (
                 asset.type === "seed" ||
