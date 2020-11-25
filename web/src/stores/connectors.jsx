@@ -6,7 +6,7 @@ import {WalletLinkConnector} from "@web3-react/walletlink-connector";
 const POLLING_INTERVAL = 12000;
 
 const RPC_URLS = {
-    106: "https://explorer.velas.com/rpc",
+    106: "https://rpc.symblox.net:8080/",
     111: "https://explorer.testnet.veladev.net/rpc"
 };
 export const injected = new InjectedConnector({

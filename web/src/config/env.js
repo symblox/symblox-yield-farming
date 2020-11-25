@@ -1,16 +1,10 @@
 import abis from "./abis";
 
-let requiredNetworkId = 106;
-
-if (process.env.NODE_ENV === "development") {
-    requiredNetworkId = 111;
-} else if (process.env.NODE_ENV === "production") {
-    requiredNetworkId = 106;
-}
+let requiredNetworkId = process.env.REACT_APP_ENV === "production" ? 106 : 111;
 
 const rpcUrls = {
     111: "https://explorer.testnet.veladev.net/rpc",
-    106: "https://explorer.velas.com/rpc"
+    106: "https://rpc.symblox.net:8080/"
 };
 
 const browserUrls = {
@@ -18,33 +12,10 @@ const browserUrls = {
     106: "https://explorer.velas.com"
 };
 
+console.log("REACT_APP_ENV: ", process.env.REACT_APP_ENV);
+
 function env() {
-    if (process.env.NODE_ENV === "development") {
-        return {
-            requiredNetworkId,
-            rpcUrl: rpcUrls[requiredNetworkId],
-            browser: browserUrls[requiredNetworkId],
-            minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
-            bpt: "0xeA4bF1A4b8e687E1Aa23620A9ECF157b681B91Ec",
-            syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
-            wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f",
-            rewardPool: "0x8b2B0CE402b33b5A2744371311E3053EAB2E2f3d",
-            connectorFactory: "0xE1532372F4592E4B6D4fB666F5F2027847a81A8A",
-            wvlxConnector: "0xf56DE4B7D4A5e399edaA10DbF3e041793Bce4141",
-            bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
-            timelock: "0x779af23521336FE29Ecfc2417693c819dEAFBF8F",
-            governor: "0xce0919fe6cba74F7B8A5E3e09c256772f76ee1fe",
-            devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
-            erc20ABI: abis.erc20ABI,
-            rewardPoolABI: abis.rewardPoolABI,
-            bptABI: abis.bptABI,
-            syxABI: abis.syxABI,
-            bptConnectorABI: abis.bptConnectorABI,
-            wvlxConnectorABI: abis.wvlxConnectorABI,
-            connectorFactoryABI: abis.connectorFactoryABI,
-            secPerBlock: 5
-        };
-    } else if (process.env.NODE_ENV === "production") {
+    if (process.env.REACT_APP_ENV === "production") {
         return {
             requiredNetworkId,
             rpcUrl: rpcUrls[requiredNetworkId],
@@ -64,7 +35,38 @@ function env() {
             rewardPoolABI: abis.rewardPoolABI,
             bptABI: abis.bptABI,
             syxABI: abis.syxABI,
-            bptConnectorABI: abis.bptConnectorABI,
+            bptRefConnectorABI: abis.bptRefConnectorABI,
+            wvlxConnectorABI: abis.wvlxConnectorABI,
+            connectorFactoryABI: abis.connectorFactoryABI,
+            secPerBlock: 5
+        };
+    } else {
+        return {
+            requiredNetworkId,
+            rpcUrl: rpcUrls[requiredNetworkId],
+            browser: browserUrls[requiredNetworkId],
+            minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
+            bpt: "0xeA4bF1A4b8e687E1Aa23620A9ECF157b681B91Ec",
+            pVlxBpt: "0x8622C2315d4DDDff42C695D44f139032578b7A8a",
+            usdtBpt: "0x2466290Cf22A134b72BC4Fb7fc3c07cD0300eEc5",
+            syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
+            wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f",
+            usdt: "0xA23bAeA56de679FD1baf200E92a75ac8d5eeBc8A",
+            pVlx: "0x3724d456d7D02327A06B6a12DB429D83A2617c9B",
+            rewardPool: "0x8b2B0CE402b33b5A2744371311E3053EAB2E2f3d",
+            //connectorFactory: "0xff165a0eeCc3CcB0057e7a8cf7E83Af4ea4d253a",
+            connectorFactory: "0x7A4c56107Ec4ac3380F96BC308184860808e6004", //no set governor
+            wvlxConnector: "0xf56DE4B7D4A5e399edaA10DbF3e041793Bce4141",
+            //bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
+            bptConnector: "0xa4bE2f7521B95CEAD57EdbC3af140AC7e942bf74", //BptReferralConnector
+            timelock: "0x779af23521336FE29Ecfc2417693c819dEAFBF8F",
+            governor: "0xbA0213618B25e4A365Abb0cbf6E849Eab312cA79",
+            devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
+            erc20ABI: abis.erc20ABI,
+            rewardPoolABI: abis.rewardPoolABI,
+            bptABI: abis.bptABI,
+            syxABI: abis.syxABI,
+            bptRefConnectorABI: abis.bptRefConnectorABI,
             wvlxConnectorABI: abis.wvlxConnectorABI,
             connectorFactoryABI: abis.connectorFactoryABI,
             secPerBlock: 5
