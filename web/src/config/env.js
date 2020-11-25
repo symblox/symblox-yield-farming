@@ -4,7 +4,7 @@ let requiredNetworkId = process.env.SERVER_ENV === "production" ? 106 : 111;
 
 const rpcUrls = {
     111: "https://explorer.testnet.veladev.net/rpc",
-    106: "https://explorer.velas.com/rpc"
+    106: "https://rpc.symblox.net:8080/"
 };
 
 const browserUrls = {
