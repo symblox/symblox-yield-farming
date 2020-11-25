@@ -878,8 +878,8 @@ class Store {
                 ] = await makeBatchRequest(web3,[
                     bptContract.methods.MAX_IN_RATIO().call,
                     bptContract.methods.MAX_OUT_RATIO().call,
-                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
                     bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
+                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
                     bptContract.methods.getBalance(asset.rewardsAddress).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.balanceOf(asset.poolAddress).call
