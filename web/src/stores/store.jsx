@@ -994,7 +994,7 @@ class Store {
 
             let amountToSend = web3.utils.toWei(amount, "ether");
             if(token === asset.erc20Address){
-                if (asset.erc20Address !== 18) {
+                if (asset.erc20Decimals !== 18) {
                     amountToSend = (
                         amount * Number(`1e+${asset.erc20Decimals}`)
                     ).toFixed(0);
@@ -1245,7 +1245,7 @@ class Store {
 
         let amountToSend = web3.utils.toWei(amount, "ether");
         if(token === asset.erc20Address){
-            if (asset.erc20Address !== 18) {
+            if (asset.erc20Decimals !== 18) {
                 amountToSend = (
                     amount * Number(`1e+${asset.erc20Decimals}`)
                 ).toFixed(0);
