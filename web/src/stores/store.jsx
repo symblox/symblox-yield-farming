@@ -1,4 +1,4 @@
-import config from "../config";
+import config, {pools} from "../config";
 import async from "async";
 import {toStringDecimals} from "../utils/numberFormat.js";
 import {
@@ -26,7 +26,8 @@ import {
     TX_CONFIRM
 } from "../constants";
 import Web3 from "web3";
-
+import {vlxToEth} from "../utils/vlxAddressConversion"
+import {makeBatchRequest} from "../utils/request"
 import {injected} from "./connectors";
 
 const rp = require("request-promise");
@@ -38,6 +39,7 @@ const dispatcher = new Dispatcher();
 const emitter = new Emitter();
 
 const blocksPerYear = 2102400;
+
 class Store {
     constructor() {
         this.store = {
@@ -60,67 +62,7 @@ class Store {
                     code: "zh"
                 }
             ],
-            rewardPools: [
-                {
-                    id: "VLX",
-                    featured: true,
-                    name: "VLX",
-                    website: "Reward Pool",
-                    index: 0,
-                    address: config.wvlx,
-                    symbol: "VLX",
-                    ROI: "DF",
-                    type: "seed",
-                    tokens: ["VLX"],
-                    totalSupply: 0,
-                    abi: config.erc20ABI,
-                    erc20ABI: config.erc20ABI,
-                    decimals: 18,
-                    erc20Balance: 0,
-                    entryContractABI: config.wvlxConnectorABI,
-                    entryContractFactoryAddress: config.connectorFactory,
-                    entryContractFactoryABI: config.connectorFactoryABI,
-                    weight: "",
-                    rewardsAddress: config.syx,
-                    rewardsABI: config.syxABI,
-                    rewardsSymbol: "SYX",
-                    rewardsDecimal: 0,
-                    rewardsBalance: 0,
-                    poolAddress: config.rewardPool,
-                    poolABI: config.rewardPoolABI,
-                    rewardsAvailable: 0
-                },
-                {
-                    id: "SYX/VLX",
-                    featured: false,
-                    name: "VLX",
-                    website: "Reward Pool",
-                    index: 1,
-                    address: config.bpt,
-                    symbol: "BPT",
-                    ROI: "DF",
-                    type: "swap-native",
-                    tokens: ["SYX", "VLX"], //reward token must in first
-                    totalSupply: 0,
-                    abi: config.bptABI,
-                    decimals: 18,
-                    erc20Address: config.wvlx,
-                    erc20ABI: config.erc20ABI,
-                    erc20Balance: 0,
-                    entryContractABI: config.bptConnectorABI,
-                    entryContractFactoryAddress: config.connectorFactory,
-                    entryContractFactoryABI: config.bptConnectorABI,
-                    weight: "",
-                    rewardsAddress: config.syx,
-                    rewardsABI: config.syxABI,
-                    rewardsSymbol: "SYX",
-                    rewardsDecimal: 0,
-                    rewardsBalance: 0,
-                    poolAddress: config.rewardPool,
-                    poolABI: config.rewardPoolABI,
-                    rewardsAvailable: 0
-                }
-            ]
+            rewardPools: pools
         };
 
         dispatcher.register(
@@ -211,15 +153,15 @@ class Store {
         const keyName = "entryContractAddress" + id;
 
         let connectorAddress = store.getStore(keyName);
+
         if (
-            (!connectorAddress ||
+            (connectorAddress===undefined ||
                 connectorAddress ===
                     "0x0000000000000000000000000000000000000000") &&
             account &&
             account.address
         ) {
             const web3 = await this.getWeb3();
-
             const contract = new web3.eth.Contract(
                 config.connectorFactoryABI,
                 config.connectorFactory
@@ -235,12 +177,16 @@ class Store {
                 ) {
                     connectorAddress = null;
                 }
-                store.setStore({keyName: connectorAddress});
+                
+                //Can not update in time with setStore, so directly set the attributes of the store
+                //store.setStore({keyName: connectorAddress});
+                this.store[keyName] = connectorAddress;
+                console.log("pool: ", id, " connectorAddress: ", connectorAddress);
             } catch (err) {
                 console.error(err);
             }
         }
-        // console.log("pool: ", id, " connectorAddress: ", connectorAddress);
+        
         return connectorAddress;
     };
 
@@ -248,14 +194,25 @@ class Store {
         const pools = store.getStore("rewardPools");
         const account = store.getStore("account");
         const web3 = await this.getWeb3();
+        let syxBalance;
 
         try {
             const currentBlock = await web3.eth.getBlockNumber();
             store.setStore({currentBlock: currentBlock});
+
+            //The reward tokens of several pools are all syx, so make a separate request to avoid repeated requests
+            syxBalance = await this.getErc20Balance(web3,config.syx,18,account);
         } catch (err) {
             console.log(err);
             return emitter.emit(ERROR, err);
         }
+
+        //Split call to reduce the total number of rpc requests
+        const promises = pools.map(async (pool)=>{
+            pool.entryContractAddress = await this.getEntryContract(pool.index);
+            pool.rewardsBalance = syxBalance;
+        });
+        await Promise.all(promises);
 
         async.map(
             pools,
@@ -264,7 +221,7 @@ class Store {
                     [
                         //0
                         callbackInner => {
-                            this._getEntryContract(
+                            this._getStakeAmount(
                                 web3,
                                 pool,
                                 account,
@@ -273,7 +230,7 @@ class Store {
                         },
                         //1
                         callbackInner => {
-                            this._getStakeAmount(
+                            this._getRewardsAvailable(
                                 web3,
                                 pool,
                                 account,
@@ -282,7 +239,7 @@ class Store {
                         },
                         //2
                         callbackInner => {
-                            this._getRewardsAvailable(
+                            this._getERC20TokenPrice(
                                 web3,
                                 pool,
                                 account,
@@ -291,7 +248,7 @@ class Store {
                         },
                         //3
                         callbackInner => {
-                            this._getERC20TokenPrice(
+                            this._getTokenBalance(
                                 web3,
                                 pool,
                                 account,
@@ -300,7 +257,7 @@ class Store {
                         },
                         //4
                         callbackInner => {
-                            this._getERC20Balance(
+                            this._getRewardRate(
                                 web3,
                                 pool,
                                 account,
@@ -309,7 +266,7 @@ class Store {
                         },
                         //5
                         callbackInner => {
-                            this._getRewardTokenBalance(
+                            this._getAllocPoint(
                                 web3,
                                 pool,
                                 account,
@@ -318,77 +275,18 @@ class Store {
                         },
                         //6
                         callbackInner => {
-                            this._getRewardRate(
+                            this._getStakeTokenPrice(
                                 web3,
                                 pool,
-                                account,
+                                pool.erc20Address,
+                                pool.erc20Decimals,
+                                "1",
                                 callbackInner
                             );
                         },
                         //7
                         callbackInner => {
-                            this._getAllocPoint(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //8
-                        callbackInner => {
-                            this._getStakeTokenPrice(
-                                web3,
-                                pool,
-                                pool.erc20Address,
-                                "1",
-                                callbackInner
-                            );
-                        },
-                        //9
-                        callbackInner => {
-                            this._getStakeTokenTotalSupply(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //10
-                        callbackInner => {
-                            this._getWeight(web3, pool, account, callbackInner);
-                        },
-                        //11
-                        callbackInner => {
-                            this._getBptTotalBalance(
-                                web3,
-                                pool,
-                                pool.erc20Address,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //12
-                        callbackInner => {
-                            this._getBptTotalBalance(
-                                web3,
-                                pool,
-                                pool.rewardsAddress,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //13
-                        callbackInner => {
-                            this._getBptMaxInRatio(
-                                web3,
-                                pool,
-                                account,
-                                callbackInner
-                            );
-                        },
-                        //14
-                        callbackInner => {
-                            this._getBptMaxOutRatio(
+                            this._getBptInfo(
                                 web3,
                                 pool,
                                 account,
@@ -401,16 +299,14 @@ class Store {
                             console.log(err);
                             return callback(err);
                         }
-                        pool.entryContractAddress = data[0];
-                        pool.stakeAmount = data[1];
-                        pool.rewardsAvailable = data[2];
-                        pool.price = data[3];
-                        pool.erc20Balance = data[4];
-                        pool.rewardsBalance = data[5];
-                        pool.rewardRate = data[6] * data[7];
-                        pool.allocPoint = data[7];
-                        pool.BPTPrice = data[8];
-                        pool.totalSupply = data[9];
+                        pool.stakeAmount = data[0];
+                        pool.rewardsAvailable = data[1];
+                        pool.price = data[2];
+                        pool.erc20Balance = data[3];
+                        pool.rewardRate = data[4] * data[5];
+                        pool.allocPoint = data[5];
+                        pool.BPTPrice = data[6];
+                        pool.totalSupply = data[7].totalSupply;
                         pool.totalBalanceForSyx = 0;
                         if (pool.type === "seed") {
                             pool.totalBalanceForSyx =
@@ -418,8 +314,8 @@ class Store {
                                 parseFloat(pool.price);
                         } else {
                             pool.totalBalanceForSyx =
-                                parseFloat(data[11]) / parseFloat(pool.price) +
-                                parseFloat(data[12]);
+                                parseFloat(data[7].erc20Balance) / parseFloat(pool.price) +
+                                parseFloat(data[7].rewardBalance);
                         }
 
                         pool.rewardApr = (pool.totalBalanceForSyx > 0
@@ -429,19 +325,19 @@ class Store {
                             : 0
                         ).toFixed(1);
 
-                        pool.weight = data[10];
+                        pool.weight = data[7].weight;
 
-                        pool.bptVlxBalance = data[11];
-                        pool.bptSyxBalance = data[12];
+                        pool.bptVlxBalance = data[7].erc20Balance;
+                        pool.bptSyxBalance = data[7].rewardBalance;
 
                         pool.maxErc20In =
-                            parseFloat(data[13]) * parseFloat(data[11]);
+                            parseFloat(data[7].maxIn) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxIn =
-                            parseFloat(data[13]) * parseFloat(data[12]);
+                            parseFloat(data[7].maxIn) * parseFloat(data[7].rewardBalance);
                         pool.maxErc20Out =
-                            parseFloat(data[14]) * parseFloat(data[11]);
+                            parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxOut =
-                            parseFloat(data[14]) * parseFloat(data[12]);
+                            parseFloat(data[7].maxOut) * parseFloat(data[7].rewardBalance);
                         callback(null, pool);
                     }
                 );
@@ -527,16 +423,6 @@ class Store {
         }
     };
 
-    _getEntryContract = async (web3, asset, account, callback) => {
-        const entryContractAddress = await this.getEntryContract(asset.index);
-
-        if (!entryContractAddress) {
-            callback(null, null);
-        } else {
-            callback(null, entryContractAddress);
-        }
-    };
-
     _getStakeAmount = async (web3, asset, account, callback) => {
         const entryContractAddress = await this.getEntryContract(asset.index);
 
@@ -561,7 +447,7 @@ class Store {
         }
     };
 
-    _getERC20Balance = async (web3, asset, account, callback) => {
+    _getTokenBalance = async (web3, asset, account, callback) => {
         if (!account || !account.address) return callback(null, "0");
         if (asset.type === "seed" || asset.type === "swap-native") {
             try {
@@ -579,26 +465,26 @@ class Store {
                 let balance = await erc20Contract.methods
                     .balanceOf(account.address)
                     .call();
-                callback(null, toStringDecimals(balance, asset.decimals));
+                callback(null, toStringDecimals(balance, asset.erc20Decimals));
             } catch (ex) {
                 return callback(ex);
             }
         }
     };
 
-    _getRewardTokenBalance = async (web3, asset, account, callback) => {
-        if (!account || !account.address) return callback(null, "0");
+    getErc20Balance = async (web3, address, decimals, account) => {
+        if (!account || !account.address) return "0";
         let erc20Contract = new web3.eth.Contract(
-            asset.erc20ABI,
-            asset.rewardsAddress
+            config.erc20ABI,
+            address
         );
         try {
             let balance = await erc20Contract.methods
                 .balanceOf(account.address)
                 .call();
-            callback(null, toStringDecimals(balance, asset.decimals));
-        } catch (ex) {
-            return callback(ex);
+            return toStringDecimals(balance, decimals);
+        } catch (err) {
+            return emitter.emit(ERROR, err);
         }
     };
 
@@ -608,9 +494,15 @@ class Store {
             asset.poolAddress
         );
         try {
-            const rate = await erc20Contract.methods.syxPerBlock().call();
             const curBlockNumber = await web3.eth.getBlockNumber();
-            const bonusEndBlock = await erc20Contract.methods.bonusEndBlock().call();
+            let [
+                rate,
+                bonusEndBlock
+            ] = await makeBatchRequest(web3,[
+                erc20Contract.methods.syxPerBlock().call,
+                erc20Contract.methods.bonusEndBlock().call,
+            ],account.address)
+
             if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
                 const bonusMultiplier = await erc20Contract.methods.BONUS_MULTIPLIER().call();
                 callback(null, toStringDecimals(parseFloat(rate)*parseFloat(bonusMultiplier), 18));
@@ -626,14 +518,15 @@ class Store {
         let erc20Contract = new web3.eth.Contract(
             asset.poolABI,
             asset.poolAddress
-        );
+        );  
         try {
-            let totalAllocPoint = await erc20Contract.methods
-                .totalAllocPoint()
-                .call();
-            let poolInfo = await erc20Contract.methods
-                .poolInfo(asset.index)
-                .call();
+            let [
+                totalAllocPoint,
+                poolInfo
+            ] = await makeBatchRequest(web3,[
+                erc20Contract.methods.totalAllocPoint().call,
+                erc20Contract.methods.poolInfo(asset.index).call
+            ],account.address)
 
             callback(null, poolInfo.allocPoint / totalAllocPoint);
         } catch (ex) {
@@ -682,59 +575,77 @@ class Store {
         const web3 = await this.getWeb3();
         let bptContract = new web3.eth.Contract(asset.abi, asset.address);
         try {
-            const balanceIn = await bptContract.methods
-                .getBalance(tokenIn)
-                .call({from: account.address});
-            const denormIn = await bptContract.methods
-                .getDenormalizedWeight(tokenIn)
-                .call({from: account.address});
-            const balanceOut = await bptContract.methods
-                .getBalance(tokenOut)
-                .call({from: account.address});
-            const denormOut = await bptContract.methods
-                .getDenormalizedWeight(tokenOut)
-                .call({from: account.address});
+            let [
+                balanceIn,
+                denormIn,
+                balanceOut,
+                denormOut,
+                swapFee
+            ] = await makeBatchRequest(web3,[
+                bptContract.methods.getBalance(tokenIn).call,
+                bptContract.methods.getDenormalizedWeight(tokenIn).call,
+                bptContract.methods.getBalance(tokenOut).call,
+                bptContract.methods.getDenormalizedWeight(tokenOut).call,
+                bptContract.methods.getSwapFee().call
+            ],account.address)
 
-            const swapFee = await bptContract.methods
-                .getSwapFee()
-                .call({from: account.address});
-
+            let amountToWei;
             if (type === "sell") {
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    amountToWei = web3.utils.toWei(amount + "", "ether");
+                }
+
                 let tokenAmountOut = await bptContract.methods
                     .calcOutGivenIn(
                         balanceIn,
                         denormIn,
                         balanceOut,
                         denormOut,
-                        web3.utils.toWei(amount + "", "ether"),
+                        amountToWei,
                         swapFee
                     )
                     .call({from: account.address});
 
-                //Trading price
-                let tradePrice =
-                    web3.utils.fromWei(tokenAmountOut + "", "ether") / amount;
+                let calcInAmount,calcOutAmount,tradePrice;
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    const inAmount = parseFloat(parseFloat(balanceIn/Number(`1e+${asset.erc20Decimals}`)) + amount);
+                    calcInAmount = parseInt( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    calcInAmount = web3.utils.toWei(
+                        parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                            amount +
+                            "",
+                        "ether"
+                    );
+                }
+
+                if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
+                    const outAmount = parseFloat(balanceOut/Number(`1e+${asset.erc20Decimals}`)) - parseFloat(tokenAmountOut/Number(`1e+${asset.erc20Decimals}`));
+                    calcOutAmount = parseInt( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    tradePrice = (tokenAmountOut / Number(`1e+${asset.erc20Decimals}`)) / amount;
+                }else{
+                    calcOutAmount = web3.utils.toWei(
+                        parseFloat(
+                            web3.utils.fromWei(balanceOut, "ether")
+                        ) -
+                            parseFloat(
+                                web3.utils.fromWei(tokenAmountOut, "ether")
+                            ) +
+                            "",
+                        "ether"
+                    );
+                    //Trading price
+                    tradePrice = web3.utils.fromWei(tokenAmountOut + "", "ether") / amount;
+                }
 
                 //Post-trade price
                 let finallPrice = await bptContract.methods
                     .calcSpotPrice(
-                        web3.utils.toWei(
-                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
-                                amount +
-                                "",
-                            "ether"
-                        ),
+                        calcInAmount,
                         denormIn,
-                        web3.utils.toWei(
-                            parseFloat(
-                                web3.utils.fromWei(balanceOut, "ether")
-                            ) -
-                                parseFloat(
-                                    web3.utils.fromWei(tokenAmountOut, "ether")
-                                ) +
-                                "",
-                            "ether"
-                        ),
+                        calcOutAmount,
                         denormOut,
                         swapFee
                     )
@@ -751,41 +662,60 @@ class Store {
                     amount
                 });
             } else if (type === "buyIn") {
+                if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
+                    amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    amountToWei = web3.utils.toWei(amount + "", "ether");
+                }
+
                 let tokenAmountIn = await bptContract.methods
                     .calcInGivenOut(
                         balanceIn,
                         denormIn,
                         balanceOut,
                         denormOut,
-                        web3.utils.toWei(amount + "", "ether"),
+                        amountToWei,
                         swapFee
                     )
                     .call({from: account.address});
 
-                //Trading price
-                let tradePrice =
-                    amount / web3.utils.fromWei(tokenAmountIn + "", "ether");
+                let calcInAmount,calcOutAmount, tradePrice;
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    const inAmount = parseFloat(balanceIn / Number(`1e+${asset.erc20Decimals}`)) + parseFloat(tokenAmountIn/ Number(`1e+${asset.erc20Decimals}`));
+                    calcInAmount = parseInt( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    tradePrice = amount * Number(`1e+${asset.erc20Decimals}`) / tokenAmountIn;
+                }else{
+                    calcInAmount = web3.utils.toWei(
+                        parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
+                            parseFloat(
+                                web3.utils.fromWei(tokenAmountIn, "ether")
+                            ) +
+                            "",
+                        "ether"
+                    );
+                    tradePrice = amount / web3.utils.fromWei(tokenAmountIn + "", "ether");
+                }
+
+                if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
+                    const outAmount = parseFloat(balanceOut/Number(`1e+${asset.erc20Decimals}`)) - parseFloat(amount);
+                    calcOutAmount = parseInt( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});        
+                }else{
+                    calcOutAmount = web3.utils.toWei(
+                        parseFloat(
+                            web3.utils.fromWei(balanceOut, "ether")
+                        ) -
+                            amount +
+                            "",
+                        "ether"
+                    );
+                }
 
                 //Post-trade price
                 let finallPrice = await bptContract.methods
                     .calcSpotPrice(
-                        web3.utils.toWei(
-                            parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
-                                parseFloat(
-                                    web3.utils.fromWei(tokenAmountIn, "ether")
-                                ) +
-                                "",
-                            "ether"
-                        ),
+                        calcInAmount,
                         denormIn,
-                        web3.utils.toWei(
-                            parseFloat(
-                                web3.utils.fromWei(balanceOut, "ether")
-                            ) -
-                                amount +
-                                "",
-                            "ether"
-                        ),
+                        calcOutAmount,
                         denormOut,
                         swapFee
                     )
@@ -829,27 +759,33 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                const balance = await bptContract.methods
-                    .getBalance(token)
-                    .call();
-                const denorm = await bptContract.methods
-                    .getDenormalizedWeight(token)
-                    .call();
-                const totalSupply = await bptContract.methods
-                    .totalSupply()
-                    .call();
-                const totalWeight = await bptContract.methods
-                    .getTotalDenormalizedWeight()
-                    .call();
-                const swapFee = await bptContract.methods.getSwapFee().call();
+                let [
+                    balance,
+                    denorm,
+                    totalSupply,
+                    totalWeight,
+                    swapFee
+                ] = await makeBatchRequest(web3,[
+                    bptContract.methods.getBalance(token).call,
+                    bptContract.methods.getDenormalizedWeight(token).call,
+                    bptContract.methods.totalSupply().call,
+                    bptContract.methods.getTotalDenormalizedWeight().call,
+                    bptContract.methods.getSwapFee().call
+                ])
 
+                let amountToWei;
+                if(token === asset.erc20Address && asset.erc20Decimals!==18){
+                    amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                }else{
+                    amountToWei = web3.utils.toWei(amount + "", "ether");
+                }
                 let amountOut = await bptContract.methods
                     .calcPoolInGivenSingleOut(
                         balance,
                         denorm,
                         totalSupply,
                         totalWeight,
-                        web3.utils.toWei(amount + "", "ether"),
+                        amountToWei,
                         swapFee
                     )
                     .call();
@@ -863,7 +799,13 @@ class Store {
     getStakeTokenPrice = async payload => {
         const web3 = await this.getWeb3();
         const {asset, amount, token} = payload.content;
-        this._getStakeTokenPrice(web3, asset, token, amount, (err, res) => {
+        let decimals;
+        if(token === asset.erc20Address){
+            decimals = asset.erc20Decimals;
+        }else{
+            decimals = asset.decimals;
+        }
+        this._getStakeTokenPrice(web3, asset, token, decimals, amount, (err, res) => {
             if (err) {
                 return emitter.emit(ERROR, err);
             }
@@ -876,6 +818,7 @@ class Store {
         web3,
         asset,
         token,
+        decimals = 18,
         amount = "1",
         callback
     ) => {
@@ -885,19 +828,19 @@ class Store {
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                const balance = await bptContract.methods
-                    .getBalance(token)
-                    .call();
-                const denorm = await bptContract.methods
-                    .getDenormalizedWeight(token)
-                    .call();
-                const totalSupply = await bptContract.methods
-                    .totalSupply()
-                    .call();
-                const totalWeight = await bptContract.methods
-                    .getTotalDenormalizedWeight()
-                    .call();
-                const swapFee = await bptContract.methods.getSwapFee().call();
+                let [
+                    balance,
+                    denorm,
+                    totalSupply,
+                    totalWeight,
+                    swapFee
+                ] = await makeBatchRequest(web3,[
+                    bptContract.methods.getBalance(token).call,
+                    bptContract.methods.getDenormalizedWeight(token).call,
+                    bptContract.methods.totalSupply().call,
+                    bptContract.methods.getTotalDenormalizedWeight().call,
+                    bptContract.methods.getSwapFee().call
+                ])
 
                 let amountOut = await bptContract.methods
                     .calcSingleOutGivenPoolIn(
@@ -909,103 +852,47 @@ class Store {
                         swapFee
                     )
                     .call();
-                callback(null, toStringDecimals(amountOut, asset.decimals));
+                callback(null, toStringDecimals(amountOut, decimals));
             } catch (ex) {
                 return callback(ex);
             }
         }
     };
 
-    _getStakeTokenTotalSupply = async (web3, asset, account, callback) => {
-        let contract = new web3.eth.Contract(asset.abi, asset.address);
-        try {
-            let totalSupply;
-            totalSupply = await contract.methods
-                .balanceOf(asset.poolAddress)
-                .call();
-            callback(null, toStringDecimals(totalSupply, asset.decimals));
-        } catch (ex) {
-            return callback(ex);
-        }
-    };
-
-    _getWeight = async (web3, asset, account, callback) => {
+    _getBptInfo = async (web3, asset, account, callback) => {
         if (asset.type === "seed") {
-            callback(null, "0");
+            let contract = new web3.eth.Contract(asset.abi, asset.address);
+            const totalSupply = await contract.methods.balanceOf(asset.poolAddress).call();
+            callback(null, {totalSupply: toStringDecimals(totalSupply, asset.decimals)});
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
-                const weight1 = await bptContract.methods
-                    .getDenormalizedWeight(asset.rewardsAddress)
-                    .call();
-                const weight2 = await bptContract.methods
-                    .getDenormalizedWeight(asset.erc20Address)
-                    .call();
-                callback(
-                    null,
-                    parseInt(toStringDecimals(weight1, asset.decimals)) +
-                        ":" +
-                        parseInt(toStringDecimals(weight2, asset.decimals))
-                );
-            } catch (ex) {
-                return callback(ex);
-            }
-        }
-    };
-
-    // _getPeriodFinish = async (web3, asset, account, callback) => {
-    //     let contract = new web3.eth.Contract(asset.poolABI, asset.poolAddress);
-    //     try {
-    //         const curBlockNumber = await web3.eth.getBlockNumber();
-    //         const res = await contract.methods.bonusEndBlock().call();
-    //         const diff = res - curBlockNumber;
-    //         if (diff > 0) {
-    //             callback(null, moment().unix() + diff * config.secPerBlock);
-    //         } else {
-    //             const pastBlock = await web3.eth.getBlock(res);
-    //             callback(null, pastBlock.timestamp);
-    //         }
-    //     } catch (ex) {
-    //         return callback(ex);
-    //     }
-    // };
-
-    _getBptTotalBalance = async (web3, asset, token, account, callback) => {
-        if (asset.type === "seed") {
-            callback(null, "0");
-        } else {
-            let bptContract = new web3.eth.Contract(asset.abi, asset.address);
-            try {
-                let amount = await bptContract.methods.getBalance(token).call();
-                callback(null, toStringDecimals(amount, asset.decimals));
-            } catch (ex) {
-                return callback(ex);
-            }
-        }
-    };
-
-    _getBptMaxInRatio = async (web3, asset, account, callback) => {
-        if (asset.type === "seed") {
-            callback(null, "0");
-        } else {
-            let bptContract = new web3.eth.Contract(asset.abi, asset.address);
-            try {
-                let ratio = await bptContract.methods.MAX_IN_RATIO().call();
-                callback(null, toStringDecimals(ratio, asset.decimals));
-            } catch (ex) {
-                return callback(ex);
-            }
-        }
-    };
-
-    _getBptMaxOutRatio = async (web3, asset, account, callback) => {
-        if (asset.type === "seed") {
-            callback(null, "0");
-        } else {
-            let bptContract = new web3.eth.Contract(asset.abi, asset.address);
-            try {
-                let ratio = await bptContract.methods.MAX_OUT_RATIO().call();
-                callback(null, toStringDecimals(ratio, asset.decimals));
+                let [
+                    maxIn,
+                    maxOut,
+                    weight1,
+                    weight2,
+                    rewardBalance,
+                    erc20Balance,
+                    totalSupply
+                ] = await makeBatchRequest(web3,[
+                    bptContract.methods.MAX_IN_RATIO().call,
+                    bptContract.methods.MAX_OUT_RATIO().call,
+                    bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
+                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
+                    bptContract.methods.getBalance(asset.rewardsAddress).call,
+                    bptContract.methods.getBalance(asset.erc20Address).call,
+                    bptContract.methods.balanceOf(asset.poolAddress).call
+                ],account.address)
+                
+                callback(null, {
+                    maxIn: toStringDecimals(maxIn, asset.decimals),
+                    maxOut: toStringDecimals(maxOut, asset.decimals),
+                    weight: parseInt(toStringDecimals(weight1, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2, asset.decimals)),
+                    rewardBalance: toStringDecimals(rewardBalance, asset.decimals),
+                    erc20Balance: toStringDecimals(erc20Balance, asset.erc20Decimals),
+                    totalSupply: toStringDecimals(totalSupply, asset.decimals)
+                });
             } catch (ex) {
                 return callback(ex);
             }
@@ -1021,7 +908,7 @@ class Store {
                 let price = await contract.methods
                     .getSpotPrice(asset.erc20Address, asset.rewardsAddress)
                     .call();
-                callback(null, toStringDecimals(price, asset.decimals));
+                callback(null, toStringDecimals(price, asset.erc20Decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -1049,7 +936,7 @@ class Store {
 
     deposit = async payload => {
         const account = store.getStore("account");
-        const {asset, token, amount} = payload.content;
+        const {asset, token, amount, referral} = payload.content;
         const entryContractAddress = await this.getEntryContract(asset.index);
         if (!entryContractAddress)
             return emitter.emit(ERROR, "connector not create");
@@ -1057,7 +944,7 @@ class Store {
             asset.type === "seed" ||
             (asset.type === "swap-native" && asset.erc20Address === token)
         ) {
-            this._callDeposit(asset, account, token, amount, (err, res) => {
+            this._callDeposit(asset, account, token, amount, referral, (err, res) => {
                 if (err) {
                     return emitter.emit(ERROR, err);
                 }
@@ -1080,6 +967,7 @@ class Store {
                         account,
                         token,
                         amount,
+                        referral,
                         (err, res) => {
                             if (err) {
                                 return emitter.emit(ERROR, err);
@@ -1093,7 +981,7 @@ class Store {
         }
     };
 
-    _callDeposit = async (asset, account, token, amount, callback) => {
+    _callDeposit = async (asset, account, token, amount, referral, callback) => {
         const web3 = await this.getWeb3();
         const entryContractAddress = await this.getEntryContract(asset.index);
         if (!entryContractAddress) {
@@ -1105,20 +993,35 @@ class Store {
             );
 
             let amountToSend = web3.utils.toWei(amount, "ether");
-            if (asset.decimals !== 18) {
-                amountToSend = (
-                    amount * Number(`1e+${asset.decimals}`)
-                ).toFixed(0);
+            if(token === asset.erc20Address){
+                if (asset.erc20Address !== 18) {
+                    amountToSend = (
+                        amount * Number(`1e+${asset.erc20Decimals}`)
+                    ).toFixed(0);
+                }
+            }else{
+                if (asset.decimals !== 18) {
+                    amountToSend = (
+                        amount * Number(`1e+${asset.decimals}`)
+                    ).toFixed(0);
+                }
             }
-
             let args;
             if (
                 asset.type === "seed" ||
                 (asset.type === "swap-native" && asset.erc20Address === token)
             ) {
-                args = [0];
+                if(asset.referral && referral){
+                    args = [0, vlxToEth(referral)];
+                }else{
+                    args = [0];
+                } 
             } else {
-                args = [token, amountToSend, 0];
+                if(asset.referral && referral){
+                    args = [token, amountToSend, 0, vlxToEth(referral)];
+                }else{
+                    args = [token, amountToSend, 0];
+                } 
             }
 
             let gasLimit;
@@ -1340,9 +1243,19 @@ class Store {
             asset.address
         ); 
 
-        var amountToSend = web3.utils.toWei(amount, "ether");
-        if (asset.decimals !== 18) {
-            amountToSend = (amount * Number(`1e+${asset.decimals}`)).toFixed(0);
+        let amountToSend = web3.utils.toWei(amount, "ether");
+        if(token === asset.erc20Address){
+            if (asset.erc20Address !== 18) {
+                amountToSend = (
+                    amount * Number(`1e+${asset.erc20Decimals}`)
+                ).toFixed(0);
+            }
+        }else{
+            if (asset.decimals !== 18) {
+                amountToSend = (
+                    amount * Number(`1e+${asset.decimals}`)
+                ).toFixed(0);
+            }
         }
 
         let gasLimit;

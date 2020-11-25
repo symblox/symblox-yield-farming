@@ -19,6 +19,8 @@ import NumberFormat from 'react-number-format';
 import {debounce} from "../../utils/debounce.js";
 import {formatNumberPrecision} from "../../utils/numberFormat.js";
 
+import config from "../../config";
+
 import Store from "../../stores";
 import {
     TRADE,
@@ -331,10 +333,10 @@ class TransactionModal extends Component {
         const token = this.state.token;
 
         let erc20Balance;
-        if(pool.erc20Balance>0.1){
-            erc20Balance = parseFloat(pool.erc20Balance)-0.1;
+        if(pool.type==="swap-native" && pool.erc20Balance>config.minReservedAmount){
+            erc20Balance = parseFloat(pool.erc20Balance)-config.minReservedAmount;
         }else{
-            return 0;
+            erc20Balance = pool.erc20Balance;
         }
 
         return token === "SYX"
