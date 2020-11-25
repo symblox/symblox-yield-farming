@@ -26,7 +26,7 @@ const seedPool = {
 }
 
 const vlxPool = {
-    id: "SYX/VLX",
+    id: "VLX/SYX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
@@ -52,7 +52,7 @@ const vlxPool = {
 }
 
 const ticketPool = {
-    id: "SYX/pVLX",
+    id: "pVLX/SYX",
     featured: false,
     name: "pVLX",
     website: "Reward Pool",
@@ -78,7 +78,7 @@ const ticketPool = {
 }
 
 const usdtPool = {
-    id: "SYX/USDT",
+    id: "USDT/SYX",
     featured: false,
     name: "USDT",
     website: "Reward Pool",
