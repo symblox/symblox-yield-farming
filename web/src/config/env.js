@@ -1,6 +1,6 @@
 import abis from "./abis";
 
-let requiredNetworkId = process.env.SERVER_ENV === "production" ? 106 : 111;
+let requiredNetworkId = process.env.REACT_APP_ENV === "production" ? 106 : 111;
 
 const rpcUrls = {
     111: "https://explorer.testnet.veladev.net/rpc",
@@ -12,10 +12,10 @@ const browserUrls = {
     106: "https://explorer.velas.com"
 };
 
-console.log("NODE_ENV: ", process.env.SERVER_ENV);
+console.log("REACT_APP_ENV: ", process.env.REACT_APP_ENV);
 
 function env() {
-    if (process.env.SERVER_ENV === "production") {
+    if (process.env.REACT_APP_ENV === "production") {
         return {
             requiredNetworkId,
             rpcUrl: rpcUrls[requiredNetworkId],
