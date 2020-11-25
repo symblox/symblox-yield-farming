@@ -175,6 +175,11 @@ contract RewardManager is Ownable {
         );
     }
 
+    function setRewardDeadlineBlock(uint256 _newBlock) external onlyOwner {
+        require(_newBlock > endBlock, "ERR_INVALID_CAP"); // new block must be higher than the old one
+        endBlock = _newBlock;
+    }
+
     /**
      * Deposit LP tokens to RewardManager for Symblox allocation.
      * @param _pid Reward pool Id
