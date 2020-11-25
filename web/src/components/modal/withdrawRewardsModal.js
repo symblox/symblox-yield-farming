@@ -388,7 +388,7 @@ class WithdrawRewardsModal extends Component {
                 type: WITHDRAW,
                 content: {
                     asset: this.state.pool,
-                    amount: this.state.bptAmount,
+                    amount:(parseFloat(this.state.bptAmount)*0.99999).toString(),//Coverage contract calculation accuracy error,When the token decimals on both sides are inconsistent
                     token:
                         this.state.token === "SYX"
                             ? this.state.pool.rewardsAddress
