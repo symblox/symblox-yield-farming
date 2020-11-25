@@ -181,6 +181,15 @@ const DialogActions = withStyles(theme => ({
 class DepositModal extends Component {
     constructor(props) {
         super(props);
+        const url = window.location.search;
+        let theRequest = new Object();
+        if ( url.indexOf( "?" ) !== -1 ){
+            let str = url.substr( 1 ); 
+            let strs = str.split( "&" );  
+            for ( var i = 0; i < strs.length; i++ ) {  
+                theRequest[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );  
+            }    
+        }
 
         if (Array.isArray(props.data)) {
             let curPool;
@@ -194,6 +203,7 @@ class DepositModal extends Component {
                 token: curPool.tokens[curPool.tokens.length - 1],
                 loading: false,
                 amount: "0",
+                referral: theRequest.referral,
                 availableAmount: "0",
                 availableAmountLoading: true
             };
@@ -203,6 +213,7 @@ class DepositModal extends Component {
                 token: props.data.tokens[props.data.tokens.length - 1],
                 loading: false,
                 amount: "0",
+                referral: theRequest.referral,
                 availableAmount: "0",
                 availableAmountLoading: true
             };
@@ -226,10 +237,18 @@ class DepositModal extends Component {
 
     poolHandleChange = event => {
         const that = this;
+        let selectPool;
+        for(let i = 0;i<this.props.data.length;i++){
+            if(this.props.data[i].index.toString() === event.target.value.toString()){
+                selectPool = this.props.data[i];
+                break;
+            }
+        }
+        if(selectPool)
         this.setState(
             {
-                pool: this.props.data[event.target.value],
-                token: this.props.data[event.target.value].tokens[0]
+                pool: selectPool,
+                token: selectPool.tokens[0]
             },
             () => {
                 that.calculateAmount();
@@ -240,6 +259,12 @@ class DepositModal extends Component {
     amountChange = event => {
         this.setState({
             amount: event.target.value
+        });
+    };
+
+    referralChange = event => {
+        this.setState({
+            referral: event.target.value
         });
     };
 
@@ -340,6 +365,7 @@ class DepositModal extends Component {
             content: {
                 asset: this.state.pool,
                 amount: parseFloat(this.state.amount).toString(),
+                referral: this.state.referral,
                 token:
                     this.state.pool.type === "seed"
                         ? ""
@@ -352,7 +378,7 @@ class DepositModal extends Component {
 
     render() {
         const {classes, data, closeModal, modalOpen} = this.props;
-        const {pool, loading, token, amount} = this.state;
+        const {pool, loading, token, amount, referral} = this.state;
         const fullScreen = window.innerWidth < 450;
 
         return (
@@ -406,6 +432,27 @@ class DepositModal extends Component {
                     ) : (
                         <></>
                     )}
+                    {this.state.pool.referral?(
+                    <>
+                        <Typography gutterBottom style={{overflow: "scroll"}}>
+                            <span style={{color: "#ACAEBC"}}>
+                                <FormattedMessage id="REFERRER" />
+                                {": "}
+                            </span>
+                        </Typography>
+                        <div className={classes.formContent}>
+                            <FormControl variant="outlined" style={{flex: "1"}}>
+                                <OutlinedInput
+                                    className={classes.customInput}
+                                    id="outlined-adornment-password"
+                                    type={"text"}
+                                    value={referral}
+                                    onChange={this.referralChange}   
+                                />
+                            </FormControl>
+                        </div>
+                    </>
+                    ):<></>}
                     <Typography gutterBottom style={{overflow: "scroll"}}>
                         <span style={{color: "#ACAEBC"}}>
                             <FormattedMessage id="TOTAL_STAKE" />
