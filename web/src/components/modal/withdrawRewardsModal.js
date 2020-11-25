@@ -304,10 +304,18 @@ class WithdrawRewardsModal extends Component {
 
     poolHandleChange = event => {
         const that = this;
+        let selectPool;
+        for(let i = 0;i<this.props.data.length;i++){
+            if(this.props.data[i].index.toString() === event.target.value.toString()){
+                selectPool = this.props.data[i];
+                break;
+            }
+        }
+        if(selectPool)
         this.setState(
             {
-                pool: this.props.data[event.target.value],
-                token: this.props.data[event.target.value].tokens[0]
+                pool: selectPool,
+                token: selectPool.tokens[0]
             },
             () => {
                 that.calculateAmount();
