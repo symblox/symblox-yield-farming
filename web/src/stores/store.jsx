@@ -204,7 +204,7 @@ class Store {
             syxBalance = await this.getErc20Balance(web3,config.syx,18,account);
         } catch (err) {
             console.log(err);
-            return emitter.emit(ERROR, err);
+            return;
         }
 
         //Split call to reduce the total number of rpc requests
@@ -372,7 +372,7 @@ class Store {
                 }
                 if (err) {
                     console.log(err);
-                    return emitter.emit(ERROR, err);
+                    return;
                 }
                 store.setStore({rewardPools: poolData});
                 emitter.emit(GET_BALANCES_PERPETUAL_RETURNED);
