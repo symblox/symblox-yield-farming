@@ -878,8 +878,8 @@ class Store {
                 ] = await makeBatchRequest(web3,[
                     bptContract.methods.MAX_IN_RATIO().call,
                     bptContract.methods.MAX_OUT_RATIO().call,
-                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
                     bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
+                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
                     bptContract.methods.getBalance(asset.rewardsAddress).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.balanceOf(asset.poolAddress).call
@@ -994,7 +994,7 @@ class Store {
 
             let amountToSend = web3.utils.toWei(amount, "ether");
             if(token === asset.erc20Address){
-                if (asset.erc20Address !== 18) {
+                if (asset.erc20Decimals !== 18) {
                     amountToSend = (
                         amount * Number(`1e+${asset.erc20Decimals}`)
                     ).toFixed(0);
@@ -1245,7 +1245,7 @@ class Store {
 
         let amountToSend = web3.utils.toWei(amount, "ether");
         if(token === asset.erc20Address){
-            if (asset.erc20Address !== 18) {
+            if (asset.erc20Decimals !== 18) {
                 amountToSend = (
                     amount * Number(`1e+${asset.erc20Decimals}`)
                 ).toFixed(0);
