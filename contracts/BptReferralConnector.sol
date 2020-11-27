@@ -9,6 +9,7 @@ contract BptReferralConnector is BptConnector {
     using SafeERC20 for IERC20;
 
     event LogDepositWithReferral(address indexed dst, address indexed referral, address indexed tokenIn, uint256 tokenAmountIn, uint256 poolAmountOut);
+    event LogWithdrawal(address indexed dst, address indexed tokenOut, uint256 tokenAmountOut, uint256 poolAmountIn);
 
     /**
      * @dev Deposit first to the liquidity pool and then the reward pool to earn rewards
@@ -70,5 +71,63 @@ contract BptReferralConnector is BptConnector {
         super.stakeLpToken(poolAmountOut);
 
         emit LogDepositWithReferral(msg.sender, referral, address(0), msg.value, poolAmountOut);
+    }
+
+    /**
+     * @dev Unstake from the reward pool, then withdraw from the liquidity pool
+     * @param tokenOut withdraw token address
+     * @param amount withdraw amount, in wei
+     */
+    function withdraw(
+        address tokenOut,
+        uint256 amount,
+        uint256 minAmountOut
+    ) external validBpt(tokenOut) onlyOwner returns (uint256 tokenAmountOut) {
+        //
+        // Withdraw the liquidity pool tokens from RewardManager
+        //
+        super.unstakeLpToken(amount);
+
+        //
+        // Remove liquidity from the bpool
+        //
+        tokenAmountOut = IBPool(lpToken).exitswapPoolAmountIn(
+            tokenOut,
+            amount,
+            minAmountOut
+        );
+        IERC20(tokenOut).safeTransfer(msg.sender, tokenAmountOut);
+
+        emit LogWithdrawal(msg.sender, tokenOut, tokenAmountOut, amount);
+    }
+
+    /**
+     * @dev Unstake from the reward pool, then withdraw from the liquidity pool
+     * @param amount withdraw amount, in wei
+     */
+    function withdraw(uint256 amount, uint256 minAmountOut)
+        external
+        onlyOwner
+        returns (uint256 tokenAmountOut)
+    {
+        //
+        // Withdraw the liquidity pool tokens from RewardManager
+        //
+        super.unstakeLpToken(amount);
+
+        //
+        // Remove liquidity from the bpool
+        //
+        tokenAmountOut = IBPool(lpToken).exitswapPoolAmountInWTokenOut(
+            amount,
+            minAmountOut
+        );
+        require(
+            address(this).balance >= tokenAmountOut,
+            "ERR_BAL_INSUFFICIENT"
+        );
+        msg.sender.transfer(tokenAmountOut);
+
+        emit LogWithdrawal(msg.sender, address(0), tokenAmountOut, amount);
     }
 }
