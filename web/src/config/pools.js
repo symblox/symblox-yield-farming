@@ -1,11 +1,10 @@
 import env from "./env";
 const config = env;
-const seedPool = {
+let seedPool = {
     id: "VLX",
     featured: true,
     name: "VLX",
     website: "Reward Pool",
-    index: 0,
     address: config.wvlx,
     symbol: "VLX",
     ROI: "DF",
@@ -25,12 +24,11 @@ const seedPool = {
     poolABI: config.rewardPoolABI
 };
 
-const vlxPool = {
+let vlxPool = {
     id: "VLX/SYX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
-    index: 1,
     address: config.bpt,
     symbol: "BPT",
     ROI: "DF",
@@ -51,12 +49,11 @@ const vlxPool = {
     poolABI: config.rewardPoolABI
 };
 
-const ticketPool = {
+let ticketPool = {
     id: "pVLX/SYX",
     featured: false,
     name: "pVLX",
     website: "Reward Pool",
-    index: 3,
     address: config.pVlxBpt,
     symbol: "BPT",
     ROI: "DF",
@@ -77,12 +74,11 @@ const ticketPool = {
     poolABI: config.rewardPoolABI
 };
 
-const usdtPool = {
+let usdtPool = {
     id: "USDT/SYX",
     featured: false,
     name: "USDT",
     website: "Reward Pool",
-    index: 4,
     address: config.usdtBpt,
     symbol: "BPT",
     ROI: "DF",
@@ -105,9 +101,17 @@ const usdtPool = {
 };
 
 function getPools() {
+    // assign pool IDs to the pools
     if (process.env.REACT_APP_ENV === "production") {
-        return [seedPool, vlxPool];
+        [seedPool.index, vlxPool.index, usdtPool.index] = [0, 1, 2];
+        return [seedPool, vlxPool, usdtPool];
     } else {
+        [seedPool.index, vlxPool.index, ticketPool.index, usdtPool.index] = [
+            0,
+            1,
+            3,
+            4
+        ];
         return [seedPool, vlxPool, ticketPool, usdtPool];
     }
 }
