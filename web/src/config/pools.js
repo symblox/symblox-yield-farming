@@ -1,6 +1,6 @@
 import env from "./env";
 const config = env;
-const seedPool = {
+let seedPool = {
     id: "VLX",
     featured: true,
     name: "VLX",
@@ -25,7 +25,7 @@ const seedPool = {
     poolABI: config.rewardPoolABI
 };
 
-const vlxPool = {
+let vlxPool = {
     id: "VLX/SYX",
     featured: false,
     name: "VLX",
@@ -51,12 +51,11 @@ const vlxPool = {
     poolABI: config.rewardPoolABI
 };
 
-const ticketPool = {
+let ticketPool = {
     id: "pVLX/SYX",
     featured: false,
     name: "pVLX",
     website: "Reward Pool",
-    index: 3,
     address: config.pVlxBpt,
     symbol: "BPT",
     ROI: "DF",
@@ -77,12 +76,11 @@ const ticketPool = {
     poolABI: config.rewardPoolABI
 };
 
-const usdtPool = {
+let usdtPool = {
     id: "USDT/SYX",
     featured: false,
     name: "USDT",
     website: "Reward Pool",
-    index: 4,
     address: config.usdtBpt,
     symbol: "BPT",
     ROI: "DF",
@@ -106,8 +104,11 @@ const usdtPool = {
 
 function getPools() {
     if (process.env.REACT_APP_ENV === "production") {
-        return [seedPool, vlxPool];
+        usdtPool.index = 2;
+        return [seedPool, vlxPool, usdtPool];
     } else {
+        usdtPool.index = 4;
+        ticketPool.index = 3;
         return [seedPool, vlxPool, ticketPool, usdtPool];
     }
 }
