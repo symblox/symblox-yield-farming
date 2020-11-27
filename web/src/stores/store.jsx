@@ -155,7 +155,7 @@ class Store {
         let connectorAddress = store.getStore(keyName);
 
         if (
-            (connectorAddress===undefined ||
+            (!connectorAddress ||
                 connectorAddress ===
                     "0x0000000000000000000000000000000000000000") &&
             account &&

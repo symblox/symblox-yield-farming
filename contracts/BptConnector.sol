@@ -49,7 +49,7 @@ contract BptConnector is BaseConnector {
         //
         super.stakeLpToken(poolAmountOut);
 
-        emit LogDeposit(msg.sender, poolAmountOut);
+        emit LogDeposit(msg.sender, tokenIn, tokenAmountIn, poolAmountOut);
     }
 
     /**
@@ -71,7 +71,7 @@ contract BptConnector is BaseConnector {
         //
         super.stakeLpToken(poolAmountOut);
 
-        emit LogDeposit(msg.sender, poolAmountOut);
+        emit LogDeposit(msg.sender, address(0), msg.value, poolAmountOut);
     }
 
     /**
@@ -99,7 +99,7 @@ contract BptConnector is BaseConnector {
         );
         IERC20(tokenOut).safeTransfer(msg.sender, tokenAmountOut);
 
-        emit LogWithdrawal(msg.sender, tokenAmountOut);
+        emit LogWithdrawal(msg.sender, tokenOut, tokenAmountOut, amount);
     }
 
     /**
@@ -129,6 +129,6 @@ contract BptConnector is BaseConnector {
         );
         msg.sender.transfer(tokenAmountOut);
 
-        emit LogWithdrawal(msg.sender, tokenAmountOut);
+        emit LogWithdrawal(msg.sender, address(0), tokenAmountOut, amount);
     }
 }

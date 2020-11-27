@@ -18,8 +18,8 @@ contract BaseConnector is syxOwnable {
         address lpToken,
         uint8 poolId
     );
-    event LogDeposit(address indexed dst, uint256 amount);
-    event LogWithdrawal(address indexed src, uint256 amount);
+    event LogDeposit(address indexed dst, address indexed tokenIn, uint256 tokenAmountIn, uint256 poolAmountOut);
+    event LogWithdrawal(address indexed dst, address indexed tokenOut, uint256 tokenAmountOut, uint256 poolAmountIn);
     event LogStake(address indexed dst, uint256 amount);
     event LogUnstake(address indexed src, uint256 amount);
     event LogReward(address indexed src, uint256 amount);
