@@ -2,8 +2,8 @@ require("dotenv").config();
 const mnemonic = process.env.MNEMONIC;
 const privateKey = process.env.PRIVATE_KEY;
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const VLX_MAIN_RPC = "https://explorer.velas.com/rpc";
-const VLX_TEST_RPC = "https://tn.yopta.net";
+const VLX_MAIN_RPC = "https://rpc.symblox.net:8080/";
+const VLX_TEST_RPC = "https://explorer.testnet.veladev.net/rpc";
 
 const configVlxNetwok = (networkId, gasPrice = 22000, gas = 3000000) => ({
     provider: () =>

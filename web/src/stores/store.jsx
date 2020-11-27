@@ -204,7 +204,7 @@ class Store {
             syxBalance = await this.getErc20Balance(web3,config.syx,18,account);
         } catch (err) {
             console.log(err);
-            return emitter.emit(ERROR, err);
+            return;
         }
 
         //Split call to reduce the total number of rpc requests
@@ -372,7 +372,7 @@ class Store {
                 }
                 if (err) {
                     console.log(err);
-                    return emitter.emit(ERROR, err);
+                    return;
                 }
                 store.setStore({rewardPools: poolData});
                 emitter.emit(GET_BALANCES_PERPETUAL_RETURNED);
@@ -592,7 +592,7 @@ class Store {
             let amountToWei;
             if (type === "sell") {
                 if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
-                    amountToWei = (amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                 }else{
                     amountToWei = web3.utils.toWei(amount + "", "ether");
                 }
@@ -611,7 +611,7 @@ class Store {
                 let calcInAmount,calcOutAmount,tradePrice;
                 if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
                     const inAmount = parseFloat(parseFloat(balanceIn/Number(`1e+${asset.erc20Decimals}`)) + amount);
-                    calcInAmount = ( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    calcInAmount = parseInt( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                 }else{
                     calcInAmount = web3.utils.toWei(
                         parseFloat(web3.utils.fromWei(balanceIn, "ether")) +
@@ -623,7 +623,7 @@ class Store {
 
                 if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
                     const outAmount = parseFloat(balanceOut/Number(`1e+${asset.erc20Decimals}`)) - parseFloat(tokenAmountOut/Number(`1e+${asset.erc20Decimals}`));
-                    calcOutAmount = ( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    calcOutAmount = parseInt( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                     tradePrice = (tokenAmountOut / Number(`1e+${asset.erc20Decimals}`)) / amount;
                 }else{
                     calcOutAmount = web3.utils.toWei(
@@ -663,7 +663,7 @@ class Store {
                 });
             } else if (type === "buyIn") {
                 if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
-                    amountToWei = (amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                 }else{
                     amountToWei = web3.utils.toWei(amount + "", "ether");
                 }
@@ -682,7 +682,7 @@ class Store {
                 let calcInAmount,calcOutAmount, tradePrice;
                 if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
                     const inAmount = parseFloat(balanceIn / Number(`1e+${asset.erc20Decimals}`)) + parseFloat(tokenAmountIn/ Number(`1e+${asset.erc20Decimals}`));
-                    calcInAmount = ( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    calcInAmount = parseInt( inAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                     tradePrice = amount * Number(`1e+${asset.erc20Decimals}`) / tokenAmountIn;
                 }else{
                     calcInAmount = web3.utils.toWei(
@@ -698,7 +698,7 @@ class Store {
 
                 if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
                     const outAmount = parseFloat(balanceOut/Number(`1e+${asset.erc20Decimals}`)) - parseFloat(amount);
-                    calcOutAmount = ( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});        
+                    calcOutAmount = parseInt( outAmount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});        
                 }else{
                     calcOutAmount = web3.utils.toWei(
                         parseFloat(
@@ -775,11 +775,10 @@ class Store {
 
                 let amountToWei;
                 if(token === asset.erc20Address && asset.erc20Decimals!==18){
-                    amountToWei = (amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                 }else{
                     amountToWei = web3.utils.toWei(amount + "", "ether");
                 }
-
                 let amountOut = await bptContract.methods
                     .calcPoolInGivenSingleOut(
                         balance,
@@ -879,8 +878,8 @@ class Store {
                 ] = await makeBatchRequest(web3,[
                     bptContract.methods.MAX_IN_RATIO().call,
                     bptContract.methods.MAX_OUT_RATIO().call,
-                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
                     bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
+                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
                     bptContract.methods.getBalance(asset.rewardsAddress).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.balanceOf(asset.poolAddress).call
@@ -995,7 +994,7 @@ class Store {
 
             let amountToSend = web3.utils.toWei(amount, "ether");
             if(token === asset.erc20Address){
-                if (asset.erc20Address !== 18) {
+                if (asset.erc20Decimals !== 18) {
                     amountToSend = (
                         amount * Number(`1e+${asset.erc20Decimals}`)
                     ).toFixed(0);
@@ -1246,7 +1245,7 @@ class Store {
 
         let amountToSend = web3.utils.toWei(amount, "ether");
         if(token === asset.erc20Address){
-            if (asset.erc20Address !== 18) {
+            if (asset.erc20Decimals !== 18) {
                 amountToSend = (
                     amount * Number(`1e+${asset.erc20Decimals}`)
                 ).toFixed(0);

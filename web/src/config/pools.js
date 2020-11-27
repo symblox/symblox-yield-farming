@@ -23,10 +23,10 @@ const seedPool = {
     rewardsSymbol: "SYX",
     poolAddress: config.rewardPool,
     poolABI: config.rewardPoolABI
-}
+};
 
 const vlxPool = {
-    id: "SYX/VLX",
+    id: "VLX/SYX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
@@ -49,10 +49,10 @@ const vlxPool = {
     rewardsSymbol: "SYX",
     poolAddress: config.rewardPool,
     poolABI: config.rewardPoolABI
-}
+};
 
 const ticketPool = {
-    id: "SYX/pVLX",
+    id: "pVLX/SYX",
     featured: false,
     name: "pVLX",
     website: "Reward Pool",
@@ -75,10 +75,10 @@ const ticketPool = {
     rewardsSymbol: "SYX",
     poolAddress: config.rewardPool,
     poolABI: config.rewardPoolABI
-}
+};
 
 const usdtPool = {
-    id: "SYX/USDT",
+    id: "USDT/SYX",
     featured: false,
     name: "USDT",
     website: "Reward Pool",
@@ -102,13 +102,13 @@ const usdtPool = {
     rewardsSymbol: "SYX",
     poolAddress: config.rewardPool,
     poolABI: config.rewardPoolABI
-}
+};
 
 function getPools() {
-    if (process.env.SERVER_ENV === "production") {
-        return [seedPool,vlxPool];
+    if (process.env.REACT_APP_ENV === "production") {
+        return [seedPool, vlxPool];
     } else {
-        return [seedPool,vlxPool,ticketPool,usdtPool];
+        return [seedPool, vlxPool, ticketPool, usdtPool];
     }
 }
 export default getPools;
