@@ -297,7 +297,7 @@ class Store {
                     (err, data) => {
                         if (err) {
                             console.log(err);
-                            return callback(err);
+                            return callback(err, pool);
                         }
                         pool.stakeAmount = data[0];
                         pool.rewardsAvailable = data[1];
@@ -372,7 +372,6 @@ class Store {
                 }
                 if (err) {
                     console.log(err);
-                    return;
                 }
                 store.setStore({rewardPools: poolData});
                 emitter.emit(GET_BALANCES_PERPETUAL_RETURNED);
