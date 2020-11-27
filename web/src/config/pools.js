@@ -5,7 +5,6 @@ let seedPool = {
     featured: true,
     name: "VLX",
     website: "Reward Pool",
-    index: 0,
     address: config.wvlx,
     symbol: "VLX",
     ROI: "DF",
@@ -30,7 +29,6 @@ let vlxPool = {
     featured: false,
     name: "VLX",
     website: "Reward Pool",
-    index: 1,
     address: config.bpt,
     symbol: "BPT",
     ROI: "DF",
@@ -103,12 +101,17 @@ let usdtPool = {
 };
 
 function getPools() {
+    // assign pool IDs to the pools
     if (process.env.REACT_APP_ENV === "production") {
-        usdtPool.index = 2;
+        [seedPool.index, vlxPool.index, usdtPool.index] = [0, 1, 2];
         return [seedPool, vlxPool, usdtPool];
     } else {
-        usdtPool.index = 4;
-        ticketPool.index = 3;
+        [seedPool.index, vlxPool.index, ticketPool.index, usdtPool.index] = [
+            0,
+            1,
+            3,
+            4
+        ];
         return [seedPool, vlxPool, ticketPool, usdtPool];
     }
 }
