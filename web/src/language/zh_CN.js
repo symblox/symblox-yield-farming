@@ -66,7 +66,7 @@ const zh_CN = {
     SEE_DETAIL: "查看详情",
     REWARD_DISTRIBUTION_RATIO: "奖励分配比例",
     NETWORK_ERROR:
-        "当前网络不支持，请切换到 VELAS 主网使用（可在钱包设置网络节点RPC地址为：https://rpc.symblox.net)",
+        "当前网络不支持，请切换到 VELAS 主网使用（可在钱包设置网络节点RPC地址为：https://explorer.velas.com/rpc)",
     POPUP_WITHDRAW_AMOUNT: "取出抵押资产",
     POPUP_WITHDRAW_REWARD: "取出奖励",
     RISK_WARNING:
