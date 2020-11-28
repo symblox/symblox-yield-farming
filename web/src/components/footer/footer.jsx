@@ -81,7 +81,7 @@ export default class App extends React.Component {
                                     }
                                     target="_blank"
                                 >
-                                    <FormattedMessage id="SYX" />:{" "}
+                                    <FormattedMessage id="SYX_TOKEN" />:{" "}
                                     {this.formatAddress(config.syx)}
                                 </a>
                             </Grid>
@@ -101,8 +101,28 @@ export default class App extends React.Component {
                                     }
                                     target="_blank"
                                 >
-                                    <FormattedMessage id="WVLX" />:{" "}
+                                    <FormattedMessage id="WVLX_TOKEN" />:{" "}
                                     {this.formatAddress(config.wvlx)}
+                                </a>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.usdt)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="USDT_TOKEN" />:{" "}
+                                    {this.formatAddress(config.usdt)}
                                 </a>
                             </Grid>
                             <Grid
@@ -332,7 +352,7 @@ export default class App extends React.Component {
                                     }
                                     target="_blank"
                                 >
-                                    <FormattedMessage id="SYX" />:{" "}
+                                    <FormattedMessage id="SYX_TOKEN" />:{" "}
                                     {ethToVlx(config.syx)}
                                 </a>
                             </Grid>
@@ -352,8 +372,28 @@ export default class App extends React.Component {
                                     }
                                     target="_blank"
                                 >
-                                    <FormattedMessage id="WVLX" />:{" "}
+                                    <FormattedMessage id="WVLX_TOKEN" />:{" "}
                                     {ethToVlx(config.wvlx)}
+                                </a>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    padding: "0 0 0 12px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <a
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.usdt)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="USDT_TOKEN" />:{" "}
+                                    {ethToVlx(config.usdt)}
                                 </a>
                             </Grid>
                             <Grid
