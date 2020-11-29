@@ -183,7 +183,7 @@ class Store {
                 this.store[keyName] = connectorAddress;
                 console.log("pool: ", id, " connectorAddress: ", connectorAddress);
             } catch (err) {
-                console.error(err);
+                console.log(err);
             }
         }
         
@@ -860,9 +860,14 @@ class Store {
 
     _getBptInfo = async (web3, asset, account, callback) => {
         if (asset.type === "seed") {
-            let contract = new web3.eth.Contract(asset.abi, asset.address);
-            const totalSupply = await contract.methods.balanceOf(asset.poolAddress).call();
-            callback(null, {totalSupply: toStringDecimals(totalSupply, asset.decimals)});
+            try {
+                let contract = new web3.eth.Contract(asset.abi, asset.address);
+                const totalSupply = await contract.methods.balanceOf(asset.poolAddress).call();
+                callback(null, {totalSupply: toStringDecimals(totalSupply, asset.decimals)});
+            } catch (error) {
+                return callback(error);
+            }
+            
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {
