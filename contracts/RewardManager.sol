@@ -168,7 +168,7 @@ contract RewardManager is Ownable {
 
         pool.lastRewardBlock = block.number;
 
-        syx.mint(devaddr, syxReward.div(10));
+        syx.mint(devaddr, syxReward.div(9));
         syx.mint(address(this), syxReward);
         pool.accSyxPerShare = pool.accSyxPerShare.add(
             syxReward.mul(1e12).div(lpSupply)
