@@ -201,7 +201,7 @@ export default function Pool(props) {
                             <div className={classes.tooltip}>
                                 <FormattedMessage id="REWARD_DISTRIBUTION_RATIO" />
                                 :{" "}
-                                <NumberFormat value={parseFloat(data.allocPoint) * 100} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'%'} decimalScale={2} fixedDecimalScale={true} />
+                                <NumberFormat value={(parseFloat(data.allocPoint) * 100).toLocaleString(undefined,{maximumFractionDigits: 10})} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'%'} decimalScale={2} fixedDecimalScale={true} />
                             </div>
                         </React.Fragment>
                     }
