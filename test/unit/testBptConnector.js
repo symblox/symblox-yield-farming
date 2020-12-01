@@ -144,7 +144,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
         );
 
         expectEvent(depositTx, "LogDeposit", {
-            amount: depositAmount
+            tokenAmountIn: depositAmount
         });
     });
     it("should deposit native token to BptConnector", async () => {
@@ -183,7 +183,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
         });
 
         expectEvent(depositTx, "LogDeposit", {
-            amount: depositAmount
+            tokenAmountIn: depositAmount
         });
     });
     it("should withdraw erc20 token from BptConnector", async () => {
@@ -220,7 +220,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
             0
         );
         expectEvent(withdrawTx, "LogWithdrawal", {
-            amount: amount
+            tokenAmountOut: amount
         });
     });
     it("should withdraw native token from BptConnector", async () => {
@@ -260,7 +260,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
         //     console.log(`${log.event} -> ${log.args.amount.toString()}`);
         // }
         expectEvent(withdrawTx, "LogWithdrawal", {
-            amount: amount
+            tokenAmountOut: amount
         });
     });
 });
