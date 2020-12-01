@@ -35,7 +35,7 @@ contract WvlxConnector is BaseConnector {
         //
         stakeLpToken(wvlxAmount);
 
-        emit LogDeposit(msg.sender, msg.value);
+        emit LogDeposit(msg.sender, address(0), msg.value, wvlxAmount);
     }
 
     function withdraw(uint256 amount, uint256)
@@ -59,6 +59,6 @@ contract WvlxConnector is BaseConnector {
         tokenAmountOut = address(this).balance;
         msg.sender.transfer(tokenAmountOut);
 
-        emit LogWithdrawal(msg.sender, tokenAmountOut);
+        emit LogWithdrawal(msg.sender, address(0), tokenAmountOut, amount);
     }
 }

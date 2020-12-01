@@ -155,7 +155,7 @@ class Store {
         let connectorAddress = store.getStore(keyName);
 
         if (
-            (connectorAddress===undefined ||
+            (!connectorAddress ||
                 connectorAddress ===
                     "0x0000000000000000000000000000000000000000") &&
             account &&
@@ -183,7 +183,7 @@ class Store {
                 this.store[keyName] = connectorAddress;
                 console.log("pool: ", id, " connectorAddress: ", connectorAddress);
             } catch (err) {
-                console.error(err);
+                console.log(err);
             }
         }
         
@@ -297,7 +297,7 @@ class Store {
                     (err, data) => {
                         if (err) {
                             console.log(err);
-                            return callback(err);
+                            return callback(err, pool);
                         }
                         pool.stakeAmount = data[0];
                         pool.rewardsAvailable = data[1];
@@ -372,7 +372,6 @@ class Store {
                 }
                 if (err) {
                     console.log(err);
-                    return;
                 }
                 store.setStore({rewardPools: poolData});
                 emitter.emit(GET_BALANCES_PERPETUAL_RETURNED);
@@ -861,9 +860,14 @@ class Store {
 
     _getBptInfo = async (web3, asset, account, callback) => {
         if (asset.type === "seed") {
-            let contract = new web3.eth.Contract(asset.abi, asset.address);
-            const totalSupply = await contract.methods.balanceOf(asset.poolAddress).call();
-            callback(null, {totalSupply: toStringDecimals(totalSupply, asset.decimals)});
+            try {
+                let contract = new web3.eth.Contract(asset.abi, asset.address);
+                const totalSupply = await contract.methods.balanceOf(asset.poolAddress).call();
+                callback(null, {totalSupply: toStringDecimals(totalSupply, asset.decimals)});
+            } catch (error) {
+                return callback(error);
+            }
+            
         } else {
             let bptContract = new web3.eth.Contract(asset.abi, asset.address);
             try {

@@ -75,8 +75,9 @@ const en_US = {
         "This contract is under auditing. PLEASE REVIEW THE CONTRACT BEFORE PROCEEDING.",
     COMMUNITY: "Community",
     CONTRACT: "Contract",
-    SYX: "SYX Token",
-    WVLX: "VLX Escrow",
+    SYX_TOKEN: "SYX Token",
+    USDT_TOKEN: "USDT on VELAS",
+    WVLX_TOKEN: "VLX Escrow",
     DEV_FUND: "Dev Fund",
     REFERRER: "Referrer Address"
 };

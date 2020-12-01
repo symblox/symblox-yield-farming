@@ -571,7 +571,7 @@ class Home extends Component {
                                                 gutterBottom
                                             >
                                                 <NumberFormat
-                                                    value={rewardApr}
+                                                    value={rewardApr || 0}
                                                     defaultValue={"-"}
                                                     displayType={"text"}
                                                     thousandSeparator={true}
@@ -648,7 +648,7 @@ class Home extends Component {
                                                 gutterBottom
                                             >
                                                 <NumberFormat
-                                                    value={rewardsAvailable}
+                                                    value={rewardsAvailable || 0}
                                                     defaultValue={"-"}
                                                     displayType={"text"}
                                                     thousandSeparator={true}
@@ -693,7 +693,7 @@ class Home extends Component {
                             <CardActions className={classes.actionsSm}>
                                 <FormattedMessage id="TOTAL_STAKING_APR" />
                                 <NumberFormat
-                                    value={rewardApr}
+                                    value={rewardApr || 0}
                                     defaultValue={"-"}
                                     displayType={"text"}
                                     thousandSeparator={true}
@@ -725,7 +725,7 @@ class Home extends Component {
                                                 gutterBottom
                                             >
                                                 <NumberFormat
-                                                    value={rewardsAvailable}
+                                                    value={rewardsAvailable || 0}
                                                     defaultValue={"-"}
                                                     displayType={"text"}
                                                     thousandSeparator={true}
@@ -851,7 +851,7 @@ class Home extends Component {
                                                             <td>
                                                                 <NumberFormat
                                                                     value={
-                                                                        pool.price
+                                                                        pool.price || 0
                                                                     }
                                                                     defaultValue={
                                                                         "-"
@@ -1040,7 +1040,7 @@ class Home extends Component {
                                                                 <td>
                                                                     <NumberFormat
                                                                         value={
-                                                                            pool.price
+                                                                            pool.price || 0
                                                                         }
                                                                         defaultValue={
                                                                             "-"
@@ -1120,7 +1120,7 @@ class Home extends Component {
                                                                         :
                                                                         <NumberFormat
                                                                             value={
-                                                                                pool.bptVlxBalance
+                                                                                pool.bptVlxBalance || 0
                                                                             }
                                                                             defaultValue={
                                                                                 "-"
@@ -1224,7 +1224,7 @@ class Home extends Component {
                                                                         :
                                                                         <NumberFormat
                                                                             value={
-                                                                                pool.bptSyxBalance
+                                                                                pool.bptSyxBalance || 0
                                                                             }
                                                                             defaultValue={
                                                                                 "-"
@@ -1393,6 +1393,7 @@ class Home extends Component {
     getBalancesReturned = () => {
         const oldPools = this.state.pools;
         const pools = store.getStore("rewardPools");
+        console.log(pools)
         //The loading is hidden when the data is requested for the first time, and will not be hidden later, so as not to affect the loading displayed by the transaction
         if (!oldPools && pools) {
             this.setState({

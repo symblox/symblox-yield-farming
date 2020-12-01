@@ -66,15 +66,16 @@ const zh_CN = {
     SEE_DETAIL: "查看详情",
     REWARD_DISTRIBUTION_RATIO: "奖励分配比例",
     NETWORK_ERROR:
-        "当前网络不支持，请切换到 VELAS 主网使用（可在钱包设置网络节点RPC地址为：https://rpc.symblox.net)",
+        "当前网络不支持，请切换到 VELAS 主网使用（可在钱包设置网络节点RPC地址为：https://explorer.velas.com/rpc)",
     POPUP_WITHDRAW_AMOUNT: "取出抵押资产",
     POPUP_WITHDRAW_REWARD: "取出奖励",
     RISK_WARNING:
         "该项目合约正在审计中，请在使用之前查看合约具体内容并了解需要承担的风险",
     COMMUNITY: "社区",
     CONTRACT: "合约",
-    SYX: "SYX 代币",
-    WVLX: "VLX 托管",
+    SYX_TOKEN: "SYX 代币",
+    USDT_TOKEN: "USDT (VELAS)",
+    WVLX_TOKEN: "VLX 托管",
     DEV_FUND: "开发基金",
     REFERRER: "推荐人地址"
 };
