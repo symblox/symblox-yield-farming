@@ -52,6 +52,7 @@ function env() {
             bpt: "0xeA4bF1A4b8e687E1Aa23620A9ECF157b681B91Ec",
             pVlxBpt: "0x8622C2315d4DDDff42C695D44f139032578b7A8a",
             usdtBpt: "0x2466290Cf22A134b72BC4Fb7fc3c07cD0300eEc5",
+            vlxUsdtBpt: "0xc90EbE31b1AaF8f18Ad7c027327129Fd3c98e3Bb",
             syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
             wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f",
             usdt: "0xA23bAeA56de679FD1baf200E92a75ac8d5eeBc8A",
