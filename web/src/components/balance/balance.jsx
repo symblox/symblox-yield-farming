@@ -27,13 +27,11 @@ const useStyles = makeStyles({
 export default function Balance(props) {
     const classes = useStyles(props);
     const {name, balance} = props;
-
     const tokenIcon = "/" + name + ".png";
-
     return (
         <div className={classes.root}>
             <img src={tokenIcon} alt="" />
-            <NumberFormat value={balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={name} decimalScale={4} fixedDecimalScale={true} />
+            <NumberFormat value={parseFloat(balance) || 0} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={name} decimalScale={4} fixedDecimalScale={true} />
         </div>
     );
 }
