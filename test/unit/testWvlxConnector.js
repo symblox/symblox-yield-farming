@@ -77,7 +77,7 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
         });
 
         expectEvent(depositTx, "LogDeposit", {
-            amount: depositAmount
+            tokenAmountIn: depositAmount
         });
     });
 
@@ -121,7 +121,7 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
         const withdrawTx = await this.wvlxConn.withdraw(amount, 0);
 
         expectEvent(withdrawTx, "LogWithdrawal", {
-            amount: amount
+            tokenAmountOut: amount
         });
     });
 });
