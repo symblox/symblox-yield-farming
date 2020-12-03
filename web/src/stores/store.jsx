@@ -380,7 +380,7 @@ class Store {
                                 ) {
                                     const vlxSyxPrice = poolData[j].price;
                                     const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
-                                    const totalSyx = totalVlx*vlxSyxPrice;
+                                    const totalSyx = totalVlx/vlxSyxPrice;
 
                                     poolData[i].rewardApr = (poolData[i]
                                         .totalBalanceForSyx > 0
@@ -1242,7 +1242,7 @@ class Store {
             } else {
                 args = [token, amountToSend, 0];
             }
-console.log(amount,args)
+
             let gasLimit;
             try {
                 gasLimit = await yCurveFiContract.methods.withdraw(...args).estimateGas({
