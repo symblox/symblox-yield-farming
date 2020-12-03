@@ -249,7 +249,7 @@ class TransactionModal extends Component {
         } else {
             this.setState({
                 price:
-                    this.state.token === "SYX"
+                    this.state.token === this.props.data.tokens[0]
                         ? this.props.data.price
                         : 1 / this.props.data.price
             });
@@ -340,12 +340,12 @@ class TransactionModal extends Component {
         }
 
         return token === pool.tokens[0]
-            ? parseFloat(pool.maxSyxIn) > parseFloat(pool.erc20Balance2)
+            ? parseFloat(pool.maxErc20In) > parseFloat(pool.erc20Balance2)
                 ? formatNumberPrecision(pool.erc20Balance)
-                : formatNumberPrecision(pool.maxSyxIn)
-            : parseFloat(pool.maxErc20In) > erc20Balance
+                : formatNumberPrecision(pool.maxErc20In)
+            : parseFloat(pool.maxSyxIn) > erc20Balance
             ? formatNumberPrecision(erc20Balance+'')
-            : formatNumberPrecision(pool.maxErc20In);
+            : formatNumberPrecision(pool.maxSyxIn);
     };
 
     max = () => {
