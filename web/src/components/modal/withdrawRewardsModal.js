@@ -340,12 +340,12 @@ class WithdrawRewardsModal extends Component {
 
         return pool.type === "seed"
             ? formatNumberPrecision(pool.stakeAmount)
-            : this.state.token == "SYX" ? (parseFloat(this.state.availableAmount) >
-              parseFloat(pool.maxSyxOut)
-            ? formatNumberPrecision(pool.maxSyxOut)
-            : formatNumberPrecision(this.state.availableAmount)):(parseFloat(this.state.availableAmount) >
+            : this.state.token == pool.tokens[0] ? (parseFloat(this.state.availableAmount) >
               parseFloat(pool.maxErc20Out)
             ? formatNumberPrecision(pool.maxErc20Out)
+            : formatNumberPrecision(this.state.availableAmount)):(parseFloat(this.state.availableAmount) >
+              parseFloat(pool.maxSyxOut)
+            ? formatNumberPrecision(pool.maxSyxOut)
             : formatNumberPrecision(this.state.availableAmount));
     };
 
@@ -390,7 +390,7 @@ class WithdrawRewardsModal extends Component {
                     asset: this.state.pool,
                     amount:(parseFloat(this.state.bptAmount)*0.99999).toString(),//Coverage contract calculation accuracy error,When the token decimals on both sides are inconsistent
                     token:
-                        this.state.token === this.state.pool.tokens[0]
+                        this.state.token === this.state.pool.tokens[1]
                             ? this.state.pool.erc20Address
                             : this.state.pool.erc20Address2
                 }
@@ -422,7 +422,7 @@ class WithdrawRewardsModal extends Component {
                 asset: this.state.pool,
                 amount: this.state.pool.stakeAmount,
                 token:
-                    this.state.token === this.state.pool.tokens[0]
+                    this.state.token === this.state.pool.tokens[1]
                         ? this.state.pool.erc20Address
                         : this.state.pool.erc20Address2
             }
@@ -444,7 +444,7 @@ class WithdrawRewardsModal extends Component {
                             asset: that.state.pool,
                             amount: parseFloat(that.state.amount),
                             token:
-                                that.state.token === that.state.pool.tokens[0]
+                                that.state.token === that.state.pool.tokens[1]
                                     ? that.state.pool.erc20Address
                                     : that.state.pool.erc20Address2
                         }
@@ -557,7 +557,7 @@ class WithdrawRewardsModal extends Component {
                                                 height: "24px"
                                             }}
                                         ></CircularProgress>
-                                    ) : this.state.token === "SYX"?(parseFloat(this.state.availableAmount) >
+                                    ) : this.state.token === this.state.pool.tokens[1]?(parseFloat(this.state.availableAmount) >
                                       parseFloat(this.state.pool.maxSyxOut) ? 
                                           <NumberFormat value={this.state.pool.maxSyxOut} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                      
@@ -650,7 +650,7 @@ class WithdrawRewardsModal extends Component {
                                         <span className={classes.text}>
                                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                                         </span>
-                                        <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                                        <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.tokens[0]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                                     </Typography>
                                 </>
                             ) : (
@@ -670,10 +670,10 @@ class WithdrawRewardsModal extends Component {
                                 <span style={{float: "right"}}>
                                     <img
                                         className={classes.icon}
-                                        src={"/SYX.png"}
+                                        src={"/"+this.state.pool.tokens[0]+".png"}
                                         alt=""
                                     />{" "}
-                                    <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} />
+                                    <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
                                 </span>
                             </Typography>
                             <div className={classes.customSelect}>

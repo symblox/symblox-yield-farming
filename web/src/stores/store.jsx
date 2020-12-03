@@ -344,19 +344,19 @@ class Store {
                             parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxOut =
                             parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance2);
+                            console.log(pool)
                         callback(null, pool);
                     }
                 );
             },
             (err, poolData) => {
                 //If there is a transaction pool corresponding to the seed pool, replace the price of the seed pool with the price of the transaction pool and update the rewardApr
-                console.log(poolData)
                 if (Array.isArray(poolData)) {
                     for (let i = 0; i < poolData.length; i++) {
                         if (poolData[i] && poolData[i].type === "seed") {
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j].id === "VLX/SYX"
+                                    poolData[j] && poolData[j].id === "VLX/SYX"
                                 ) {
                                     poolData[i].price = poolData[j].price;
                                     poolData[i].totalBalanceForSyx =
@@ -377,7 +377,7 @@ class Store {
                         if (poolData[i] && poolData[i].id === "VLX/USDT"){
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j].id === "VLX/SYX"
+                                    poolData[j] && poolData[j].id === "VLX/SYX"
                                 ) {
                                     const vlxSyxPrice = poolData[j].price;
                                     const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
@@ -836,9 +836,13 @@ class Store {
                     bptContract.methods.getSwapFee().call
                 ])
 
-                let amountToWei;
+                let amountToWei, decimals = 18;
                 if(token === asset.erc20Address && asset.erc20Decimals!==18){
                     amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    decimals = asset.erc20Decimals;
+                }else if(token === asset.erc20Address2 && asset.erc20Decimals2!==18){
+                    amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals2}`)).toLocaleString('fullwide', {useGrouping:false});
+                    decimals = asset.erc20Decimals2;
                 }else{
                     amountToWei = web3.utils.toWei(amount + "", "ether");
                 }
@@ -852,7 +856,7 @@ class Store {
                         swapFee
                     )
                     .call();
-                callback(null, toStringDecimals(amountOut, asset.decimals));
+                callback(null, toStringDecimals(amountOut, decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -865,6 +869,8 @@ class Store {
         let decimals;
         if(token === asset.erc20Address){
             decimals = asset.erc20Decimals;
+        }else if(token === asset.erc20Address2){
+            decimals = asset.erc20Decimals2;
         }else{
             decimals = asset.decimals;
         }
@@ -950,7 +956,7 @@ class Store {
                     bptContract.methods.getDenormalizedWeight(asset.erc20Address2).call,
                     bptContract.methods.getBalance(asset.erc20Address2).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
-                    bptContract.methods.balanceOf(asset.poolAddress).call
+                    bptContract.methods.totalSupply().call
                 ],account.address)
                 
                 callback(null, {
@@ -1125,7 +1131,7 @@ class Store {
             } catch (err) {
                 gasLimit = "1000000";
             }
-
+            
             yCurveFiContract.methods
                 .deposit(...args)
                 .send({

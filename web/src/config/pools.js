@@ -63,7 +63,6 @@ let ticketPool = {
     symbol: "BPT",
     ROI: "DF",
     type: "swap",
-    referral: true,
     tokens: ["SYX", "pVLX"], //reward token must in first
     abi: config.bptABI,
     entryContractABI: config.bptRefConnectorABI,
@@ -121,6 +120,7 @@ let vlxUsdtPool = {
     symbol: "BPT",
     ROI: "DF",
     type: "swap-native",
+    referral: true,
     tokens: ["USDT", "VLX"], //reward token must in first
     abi: config.bptABI,
     decimals: 18,
