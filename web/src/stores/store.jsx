@@ -857,13 +857,11 @@ class Store {
                     bptContract.methods.getSwapFee().call
                 ])
 
-                let amountToWei, decimals = 18;
+                let amountToWei;
                 if(token === asset.erc20Address && asset.erc20Decimals!==18){
                     amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
-                    decimals = asset.erc20Decimals;
                 }else if(token === asset.erc20Address2 && asset.erc20Decimals2!==18){
                     amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals2}`)).toLocaleString('fullwide', {useGrouping:false});
-                    decimals = asset.erc20Decimals2;
                 }else{
                     amountToWei = web3.utils.toWei(amount + "", "ether");
                 }
@@ -877,7 +875,7 @@ class Store {
                         swapFee
                     )
                     .call();
-                callback(null, toStringDecimals(amountOut, decimals));
+                callback(null, toStringDecimals(amountOut, asset.decimals));
             } catch (ex) {
                 return callback(ex);
             }
@@ -1244,7 +1242,7 @@ class Store {
             } else {
                 args = [token, amountToSend, 0];
             }
-
+console.log(amount,args)
             let gasLimit;
             try {
                 gasLimit = await yCurveFiContract.methods.withdraw(...args).estimateGas({
