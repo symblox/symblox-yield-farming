@@ -152,7 +152,8 @@ export default function Pool(props) {
     const classes = useStyles(props);
     const {data, loading, onDeposit, onJoin} = props;
 
-    const tokenIcon = "/" + data.name + ".png";
+    const tokenIcon2 = "/" + data.tokens[0] + ".png";
+    const tokenIcon = "/" + (data.tokens[1]?data.tokens[1]:data.name) + ".png";
 
     return (
         <Card className={data.featured ? classes.featuredRoot : classes.root}>
@@ -177,7 +178,7 @@ export default function Pool(props) {
                             />
                             <img
                                 className={classes.icon}
-                                src={"/SYX.png"}  
+                                src={tokenIcon2}  
                                 alt=""
                             />
                         </>
@@ -193,8 +194,8 @@ export default function Pool(props) {
                                         <NumberFormat value={data.totalSupply} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'VLX'} decimalScale={4} fixedDecimalScale={true} />
                                     :
                                     <>
-                                        <NumberFormat value={data.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.name} decimalScale={4} fixedDecimalScale={true} />
-                                        <NumberFormat value={data.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} renderText={value => <div style={{margin:"10px 0 0 95px"}}>{value}</div>}/>
+                                        <NumberFormat value={data.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
+                                        <NumberFormat value={data.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} renderText={value => <div style={{margin:"10px 0 0 95px"}}>{value}</div>}/>
                                     </>
                                     }
                             </div>

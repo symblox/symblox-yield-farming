@@ -299,8 +299,8 @@ class DepositModal extends Component {
                 asset: this.state.pool,
                 amount: this.state.pool.stakeAmount,
                 token:
-                    this.state.token === "SYX"
-                        ? this.state.pool.rewardsAddress
+                    this.state.token === this.state.pool.tokens[0]
+                        ? this.state.pool.erc20Address2
                         : this.state.pool.erc20Address
             }
         });
@@ -310,31 +310,32 @@ class DepositModal extends Component {
         const pool = this.state.pool;
         const token = this.state.token;
 
-        let balance = parseFloat(pool.erc20Balance);
+        let erc20Balance = parseFloat(pool.erc20Balance);
+        let erc20Balance2 = parseFloat(pool.erc20Balance2);
         if (pool.type === "seed" || pool.type === "swap-native") {
-            balance =
-                balance > config.minReservedAmount
-                    ? balance - config.minReservedAmount
+            erc20Balance =
+                erc20Balance > config.minReservedAmount
+                    ? erc20Balance - config.minReservedAmount
                     : 0;
         }
 
         switch (pool.type) {
             case "seed":
-                return formatNumberPrecision(balance);
+                return formatNumberPrecision(erc20Balance);
             case "swap":
             case "swap-native":
-                if (token === "SYX") {
+                if (token === pool.tokens[0]) {
                     if (
                         parseFloat(pool.maxSyxIn) >
-                        parseFloat(pool.rewardsBalance)
+                        erc20Balance2
                     ) {
-                        return formatNumberPrecision(pool.rewardsBalance);
+                        return formatNumberPrecision(erc20Balance2);
                     } else {
                         return formatNumberPrecision(pool.maxSyxIn);
                     }
                 } else {
-                    if (parseFloat(pool.maxErc20In) > balance) {
-                        return formatNumberPrecision(balance);
+                    if (parseFloat(pool.maxErc20In) > erc20Balance) {
+                        return formatNumberPrecision(erc20Balance);
                     } else {
                         return formatNumberPrecision(pool.maxErc20In);
                     }
@@ -369,8 +370,8 @@ class DepositModal extends Component {
                 token:
                     this.state.pool.type === "seed"
                         ? ""
-                        : this.state.token === "SYX"
-                        ? this.state.pool.rewardsAddress
+                        : this.state.token === this.state.pool.tokens[0]
+                        ? this.state.pool.erc20Address2
                         : this.state.pool.erc20Address
             }
         });
@@ -479,7 +480,7 @@ class DepositModal extends Component {
                             <FormattedMessage id="POPUP_DEPOSITABLE_AMOUNT" />
                             {": "}
                         </span>
-                        <NumberFormat value={this.getMaxAmount()} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.type === "seed"?pool.symbol:(token === "SYX"?"SYX":pool.name)} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                        <NumberFormat value={this.getMaxAmount()} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.type === "seed"?pool.symbol:token} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                     </Typography>
                     <div className={classes.formContent}>
                         <FormControl variant="outlined" style={{flex: "4"}}>
@@ -556,7 +557,7 @@ class DepositModal extends Component {
                         <span className={classes.text}>
                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                         </span>
-                        <NumberFormat value={pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                        <NumberFormat value={pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.tokens[1]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                     </Typography>
                 </DialogContent>
                 <DialogActions>
