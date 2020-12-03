@@ -670,10 +670,10 @@ class WithdrawRewardsModal extends Component {
                                 <span style={{float: "right"}}>
                                     <img
                                         className={classes.icon}
-                                        src={"/"+this.state.pool.tokens[0]+".png"}
+                                        src={"/"+this.state.pool.rewardsSymbol+".png"}
                                         alt=""
                                     />{" "}
-                                    <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                    <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} />
                                 </span>
                             </Typography>
                             <div className={classes.customSelect}>
