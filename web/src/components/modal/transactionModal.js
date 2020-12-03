@@ -234,13 +234,13 @@ class TransactionModal extends Component {
                             type,
                             tokenName: that.state.token,
                             tokenIn:
-                                that.state.token === "SYX"
-                                    ? that.props.data.rewardsAddress
-                                    : that.props.data.erc20Address,
+                                that.state.token === that.state.pool.tokens[0]
+                                    ? that.props.data.erc20Address
+                                    : that.props.data.erc20Address2,
                             tokenOut:
-                                that.state.buyToken === "SYX"
-                                    ? that.props.data.rewardsAddress
-                                    : that.props.data.erc20Address
+                                that.state.buyToken === that.state.pool.tokens[0]
+                                    ? that.props.data.erc20Address
+                                    : that.props.data.erc20Address2
                         }
                     });
                 },
@@ -384,13 +384,13 @@ class TransactionModal extends Component {
                 amount: parseFloat(this.state.amount).toString(),
                 price: (parseFloat(this.state.finallPrice)*1.1).toString(),
                 token:
-                    this.state.token === "SYX"
-                        ? this.props.data.rewardsAddress
-                        : this.props.data.erc20Address,
+                    this.state.token === this.state.pool.tokens[0]
+                        ? this.props.data.erc20Address
+                        : this.props.data.erc20Address2,
                 token2:
-                    this.state.buyToken === "SYX"
-                        ? this.props.data.rewardsAddress
-                        : this.props.data.erc20Address
+                    this.state.buyToken === this.state.pool.tokens[0]
+                        ? this.props.data.erc20Address
+                        : this.props.data.erc20Address2
             }
         });
     };

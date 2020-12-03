@@ -826,7 +826,7 @@ class Home extends Component {
                                                                     }
                                                                     src={
                                                                         "/" +
-                                                                        pool.name +
+                                                                        (pool.tokens[1]?pool.tokens[1]:pool.name) +
                                                                         ".png"
                                                                     }
                                                                     style={{
@@ -841,7 +841,7 @@ class Home extends Component {
                                                                         classes.icon
                                                                     }
                                                                     src={
-                                                                        "/SYX.png"
+                                                                        "/"+pool.tokens[0]+".png"
                                                                     }
                                                                     
                                                                     alt=""

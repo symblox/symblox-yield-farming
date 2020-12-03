@@ -390,9 +390,9 @@ class WithdrawRewardsModal extends Component {
                     asset: this.state.pool,
                     amount:(parseFloat(this.state.bptAmount)*0.99999).toString(),//Coverage contract calculation accuracy error,When the token decimals on both sides are inconsistent
                     token:
-                        this.state.token === "SYX"
-                            ? this.state.pool.rewardsAddress
-                            : this.state.pool.erc20Address
+                        this.state.token === this.state.pool.tokens[0]
+                            ? this.state.pool.erc20Address
+                            : this.state.pool.erc20Address2
                 }
             });
         }
@@ -422,9 +422,9 @@ class WithdrawRewardsModal extends Component {
                 asset: this.state.pool,
                 amount: this.state.pool.stakeAmount,
                 token:
-                    this.state.token === "SYX"
-                        ? this.state.pool.rewardsAddress
-                        : this.state.pool.erc20Address
+                    this.state.token === this.state.pool.tokens[0]
+                        ? this.state.pool.erc20Address
+                        : this.state.pool.erc20Address2
             }
         });
     };
@@ -444,9 +444,9 @@ class WithdrawRewardsModal extends Component {
                             asset: that.state.pool,
                             amount: parseFloat(that.state.amount),
                             token:
-                                that.state.token === "SYX"
-                                    ? that.state.pool.rewardsAddress
-                                    : that.state.pool.erc20Address
+                                that.state.token === that.state.pool.tokens[0]
+                                    ? that.state.pool.erc20Address
+                                    : that.state.pool.erc20Address2
                         }
                     });
                 }else{

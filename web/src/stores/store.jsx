@@ -302,7 +302,13 @@ class Store {
                         pool.stakeAmount = data[0];
                         pool.rewardsAvailable = data[1];
                         pool.price = data[2];
-                        pool.erc20Balance = data[3];
+                        pool.erc20Balance = data[3].erc20Balance;
+                        if(pool.erc20Address2 === pool.rewardsAddress){
+                            pool.erc20Balance2 = pool.rewardsBalance;
+                        }else {
+                            pool.erc20Balance2 = data[3].erc20Balance2;
+                        }
+                        
                         pool.rewardRate = data[4] * data[5];
                         pool.allocPoint = data[5];
                         pool.BPTPrice = data[6];
@@ -315,7 +321,7 @@ class Store {
                         } else {
                             pool.totalBalanceForSyx =
                                 parseFloat(data[7].erc20Balance) / parseFloat(pool.price) +
-                                parseFloat(data[7].rewardBalance);
+                                parseFloat(data[7].erc20Balance2);
                         }
 
                         pool.rewardApr = (pool.totalBalanceForSyx > 0
@@ -324,21 +330,22 @@ class Store {
                               100
                             : 0
                         ).toFixed(1);
-
+                        
                         pool.weight = data[7].weight;
 
                         pool.bptVlxBalance = data[7].erc20Balance;
-                        pool.bptSyxBalance = data[7].rewardBalance;
+                        pool.bptSyxBalance = data[7].erc20Balance2;
 
                         pool.maxErc20In =
                             parseFloat(data[7].maxIn) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxIn =
-                            parseFloat(data[7].maxIn) * parseFloat(data[7].rewardBalance);
+                            parseFloat(data[7].maxIn) * parseFloat(data[7].erc20Balance2);
                         pool.maxErc20Out =
                             parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxOut =
-                            parseFloat(data[7].maxOut) * parseFloat(data[7].rewardBalance);
-                        callback(null, pool);
+                            parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance2);
+                        console.log(pool)
+                            callback(null, pool);
                     }
                 );
             },
@@ -349,9 +356,7 @@ class Store {
                         if (poolData[i] && poolData[i].type === "seed") {
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] &&
-                                    poolData[j].type !== "seed" &&
-                                    poolData[i].name === poolData[j].name
+                                    poolData[j].id === "VLX/SYX"
                                 ) {
                                     poolData[i].price = poolData[j].price;
                                     poolData[i].totalBalanceForSyx =
@@ -448,26 +453,55 @@ class Store {
 
     _getTokenBalance = async (web3, asset, account, callback) => {
         if (!account || !account.address) return callback(null, "0");
-        if (asset.type === "seed" || asset.type === "swap-native") {
+        if (asset.type === "seed"){
             try {
                 let balance = await web3.eth.getBalance(account.address);
-                callback(null, toStringDecimals(balance, asset.decimals));
+                callback(null, {erc20Balance:toStringDecimals(balance, asset.decimals)});
             } catch (ex) {
                 return callback(ex);
             }
-        } else {
+        }else if(asset.type === "swap-native") {
+            try {
+                let balance = await web3.eth.getBalance(account.address);
+                if(asset.erc20Address2 === asset.rewardsAddress){
+                    callback(null, {erc20Balance:toStringDecimals(balance, asset.decimals)});
+                }else{
+                    let erc20Contract = new web3.eth.Contract(
+                        asset.erc20ABI2,
+                        asset.erc20Address2
+                    );
+
+                    let balance2 = await erc20Contract.methods
+                        .balanceOf(account.address)
+                        .call();
+                    callback(null, {
+                        erc20Balance:toStringDecimals(balance, asset.decimals),erc20Balance2:toStringDecimals(balance2, asset.erc20Decimals2)});
+                }
+               
+            } catch (ex) {
+                return callback(ex);
+            }
+        }else {
             let erc20Contract = new web3.eth.Contract(
                 asset.erc20ABI,
                 asset.erc20Address
             );
-            try {
-                let balance = await erc20Contract.methods
-                    .balanceOf(account.address)
-                    .call();
-                callback(null, toStringDecimals(balance, asset.erc20Decimals));
-            } catch (ex) {
-                return callback(ex);
-            }
+
+            let erc20Contract2 = new web3.eth.Contract(
+                asset.erc20ABI2,
+                asset.erc20Address2
+            );
+
+            let balance = await erc20Contract.methods
+                .balanceOf(account.address)
+                .call();
+            
+            let balance2 = await erc20Contract2.methods
+                .balanceOf(account.address)
+                .call();
+
+            callback(null, {
+                erc20Balance:toStringDecimals(balance, asset.erc20Decimals),erc20Balance2:toStringDecimals(balance2, asset.erc20Decimals2)});
         }
     };
 
@@ -876,15 +910,15 @@ class Store {
                     maxOut,
                     weight1,
                     weight2,
-                    rewardBalance,
+                    erc20Balance2,
                     erc20Balance,
                     totalSupply
                 ] = await makeBatchRequest(web3,[
                     bptContract.methods.MAX_IN_RATIO().call,
                     bptContract.methods.MAX_OUT_RATIO().call,
                     bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
-                    bptContract.methods.getDenormalizedWeight(asset.rewardsAddress).call,
-                    bptContract.methods.getBalance(asset.rewardsAddress).call,
+                    bptContract.methods.getDenormalizedWeight(asset.erc20Address2).call,
+                    bptContract.methods.getBalance(asset.erc20Address2).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.balanceOf(asset.poolAddress).call
                 ],account.address)
@@ -893,7 +927,7 @@ class Store {
                     maxIn: toStringDecimals(maxIn, asset.decimals),
                     maxOut: toStringDecimals(maxOut, asset.decimals),
                     weight: parseInt(toStringDecimals(weight1, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2, asset.decimals)),
-                    rewardBalance: toStringDecimals(rewardBalance, asset.decimals),
+                    erc20Balance2: toStringDecimals(erc20Balance2, asset.decimals),
                     erc20Balance: toStringDecimals(erc20Balance, asset.erc20Decimals),
                     totalSupply: toStringDecimals(totalSupply, asset.decimals)
                 });
@@ -909,8 +943,9 @@ class Store {
         } else {
             let contract = new web3.eth.Contract(asset.abi, asset.address);
             try {
+                //calc erc20Address2 price
                 let price = await contract.methods
-                    .getSpotPrice(asset.erc20Address, asset.rewardsAddress)
+                    .getSpotPrice(asset.erc20Address, asset.erc20Address2)
                     .call();
                 callback(null, toStringDecimals(price, asset.erc20Decimals));
             } catch (ex) {
@@ -1001,6 +1036,12 @@ class Store {
                 if (asset.erc20Decimals !== 18) {
                     amountToSend = (
                         amount * Number(`1e+${asset.erc20Decimals}`)
+                    ).toFixed(0);
+                }
+            }else if(token === asset.erc20Address2){
+                if (asset.erc20Decimals2 !== 18) {
+                    amountToSend = (
+                        amount * Number(`1e+${asset.erc20Decimals2}`)
                     ).toFixed(0);
                 }
             }else{
@@ -1252,6 +1293,12 @@ class Store {
             if (asset.erc20Decimals !== 18) {
                 amountToSend = (
                     amount * Number(`1e+${asset.erc20Decimals}`)
+                ).toFixed(0);
+            }
+        }else if(token === asset.erc20Address2){
+            if (asset.erc20Decimals2 !== 18) {
+                amountToSend = (
+                    amount * Number(`1e+${asset.erc20Decimals2}`)
                 ).toFixed(0);
             }
         }else{
@@ -1646,7 +1693,7 @@ class Store {
     };
 }
 
-var store = new Store();
+let store = new Store();
 
 export default {
     store: store,

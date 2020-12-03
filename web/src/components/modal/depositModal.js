@@ -299,9 +299,9 @@ class DepositModal extends Component {
                 asset: this.state.pool,
                 amount: this.state.pool.stakeAmount,
                 token:
-                    this.state.token === "SYX"
-                        ? this.state.pool.rewardsAddress
-                        : this.state.pool.erc20Address
+                    this.state.token === this.state.pool.tokens[0]
+                        ? this.state.pool.erc20Address
+                        : this.state.pool.erc20Address2
             }
         });
     };
@@ -369,9 +369,9 @@ class DepositModal extends Component {
                 token:
                     this.state.pool.type === "seed"
                         ? ""
-                        : this.state.token === "SYX"
-                        ? this.state.pool.rewardsAddress
-                        : this.state.pool.erc20Address
+                        : this.state.token === this.state.pool[0]
+                        ? this.state.pool.erc20Address
+                        : this.state.pool.erc20Address2
             }
         });
     };

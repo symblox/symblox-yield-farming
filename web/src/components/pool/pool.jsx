@@ -152,7 +152,8 @@ export default function Pool(props) {
     const classes = useStyles(props);
     const {data, loading, onDeposit, onJoin} = props;
 
-    const tokenIcon = "/" + data.name + ".png";
+    const tokenIcon2 = "/" + data.tokens[0] + ".png";
+    const tokenIcon = "/" + (data.tokens[1]?data.tokens[1]:data.name) + ".png";
 
     return (
         <Card className={data.featured ? classes.featuredRoot : classes.root}>
@@ -177,7 +178,7 @@ export default function Pool(props) {
                             />
                             <img
                                 className={classes.icon}
-                                src={"/SYX.png"}  
+                                src={tokenIcon2}  
                                 alt=""
                             />
                         </>

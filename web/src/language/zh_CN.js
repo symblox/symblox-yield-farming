@@ -5,7 +5,7 @@ const zh_CN = {
     LABEL_CONTACT: "联系我们",
     LP_LIST_TITLE: "代币交易对",
     LP_TRADING_PAIR: "交易对",
-    LP_SYX_PRICE: "SYX 价格",
+    LP_SYX_PRICE: "价格",
     LP_MY_SHARE: "我的份额",
     LP_DEPOSIT: "存入",
     LP_DEPOSIT_WITHDRAW_REWARD: "确定",
