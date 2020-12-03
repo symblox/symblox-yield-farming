@@ -826,7 +826,7 @@ class Home extends Component {
                                                                     }
                                                                     src={
                                                                         "/" +
-                                                                        pool.name +
+                                                                        (pool.tokens[1]?pool.tokens[1]:pool.name) +
                                                                         ".png"
                                                                     }
                                                                     style={{
@@ -841,7 +841,7 @@ class Home extends Component {
                                                                         classes.icon
                                                                     }
                                                                     src={
-                                                                        "/SYX.png"
+                                                                        "/"+pool.tokens[0]+".png"
                                                                     }
                                                                     
                                                                     alt=""
@@ -1393,7 +1393,6 @@ class Home extends Component {
     getBalancesReturned = () => {
         const oldPools = this.state.pools;
         const pools = store.getStore("rewardPools");
-        console.log(pools)
         //The loading is hidden when the data is requested for the first time, and will not be hidden later, so as not to affect the loading displayed by the transaction
         if (!oldPools && pools) {
             this.setState({

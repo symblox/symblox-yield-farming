@@ -23,6 +23,7 @@ function env() {
             minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
             bpt: "0x63a4cB3251CC3A93aF72C121d661C700637Fc7CB",
             usdtBpt: "0x95853604e6dec040b45D4Ee13fDC8732492B3cBB",
+            vlxUsdtBpt: "0x2598cAa01C04b8eB7Ec4dC82AC0458593B823262",
             usdt: "0x4b773e1ae1baa4894e51cc1d1faf485c91b1012f",
             syx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
             wvlx: "0x2b1aBEb48f875465bf0D3A262a2080ab1C7A3E39",
