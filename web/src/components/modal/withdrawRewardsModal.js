@@ -650,7 +650,7 @@ class WithdrawRewardsModal extends Component {
                                         <span className={classes.text}>
                                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                                         </span>
-                                        <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.tokens[0]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                                        <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                                     </Typography>
                                 </>
                             ) : (
