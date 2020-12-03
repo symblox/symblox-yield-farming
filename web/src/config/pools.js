@@ -143,14 +143,19 @@ let vlxUsdtPool = {
 function getPools() {
     // assign pool IDs to the pools
     if (process.env.REACT_APP_ENV === "production") {
-        [seedPool.index, vlxPool.index, usdtPool.index] = [0, 1, 2];
-        return [seedPool, vlxPool, usdtPool];
+        [seedPool.index, vlxPool.index, usdtPool.index, vlxUsdtPool.index] = [
+            0,
+            1,
+            2,
+            3
+        ];
+        return [seedPool, vlxPool, usdtPool, vlxUsdtPool];
     } else {
         [
-            seedPool.index, 
-            vlxPool.index, 
-            // ticketPool.index, 
-            usdtPool.index, 
+            seedPool.index,
+            vlxPool.index,
+            // ticketPool.index,
+            usdtPool.index,
             vlxUsdtPool.index
         ] = [
             0,
@@ -160,10 +165,10 @@ function getPools() {
             5
         ];
         return [
-            seedPool, 
-            vlxPool, 
-            // ticketPool, 
-            usdtPool, 
+            seedPool,
+            vlxPool,
+            // ticketPool,
+            usdtPool,
             vlxUsdtPool
         ];
     }
