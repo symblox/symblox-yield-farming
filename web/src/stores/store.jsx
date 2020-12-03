@@ -588,10 +588,11 @@ class Store {
                 bptContract.methods.getSwapFee().call
             ],account.address)
 
-            let amountToWei;
+            let amountToWei,finallPriceDecimals = 18;
             if (type === "sell") {
                 if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
                     amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    finallPriceDecimals = asset.erc20Decimals;
                 }else{
                     amountToWei = web3.utils.toWei(amount + "", "ether");
                 }
@@ -649,8 +650,8 @@ class Store {
                         swapFee
                     )
                     .call({from: account.address});
-                finallPrice = toStringDecimals(finallPrice, asset.decimals);
-
+                finallPrice = toStringDecimals(finallPrice, finallPriceDecimals);
+                        console.log({finallPrice})
                 callback(null, {
                     price: {
                         tradePrice,
@@ -661,6 +662,9 @@ class Store {
                     amount
                 });
             } else if (type === "buyIn") {
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    finallPriceDecimals = asset.erc20Decimals;
+                }
                 if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
                     amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                 }else{
@@ -720,7 +724,7 @@ class Store {
                     )
                     .call({from: account.address});
 
-                finallPrice = toStringDecimals(finallPrice, asset.decimals);
+                finallPrice = toStringDecimals(finallPrice, finallPriceDecimals);
 
                 callback(null, {
                     price: {
