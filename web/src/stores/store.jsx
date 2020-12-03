@@ -344,13 +344,13 @@ class Store {
                             parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance);
                         pool.maxSyxOut =
                             parseFloat(data[7].maxOut) * parseFloat(data[7].erc20Balance2);
-                        console.log(pool)
-                            callback(null, pool);
+                        callback(null, pool);
                     }
                 );
             },
             (err, poolData) => {
                 //If there is a transaction pool corresponding to the seed pool, replace the price of the seed pool with the price of the transaction pool and update the rewardApr
+                console.log(poolData)
                 if (Array.isArray(poolData)) {
                     for (let i = 0; i < poolData.length; i++) {
                         if (poolData[i] && poolData[i].type === "seed") {
@@ -368,6 +368,27 @@ class Store {
                                               blocksPerYear) /
                                               poolData[i].totalBalanceForSyx) *
                                           100
+                                        : 0
+                                    ).toFixed(1);
+                                }
+                            }
+                        }
+
+                        if (poolData[i] && poolData[i].id === "VLX/USDT"){
+                            for (let j = 0; j < poolData.length; j++) {
+                                if (
+                                    poolData[j].id === "VLX/SYX"
+                                ) {
+                                    const vlxSyxPrice = poolData[j].price;
+                                    const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
+                                    const totalSyx = totalVlx*vlxSyxPrice;
+
+                                    poolData[i].rewardApr = (poolData[i]
+                                        .totalBalanceForSyx > 0
+                                        ? ((parseFloat(poolData[i].rewardRate) *
+                                              blocksPerYear) /
+                                              totalSyx *
+                                          100)
                                         : 0
                                     ).toFixed(1);
                                 }
@@ -530,13 +551,17 @@ class Store {
             const curBlockNumber = await web3.eth.getBlockNumber();
             let [
                 rate,
-                bonusEndBlock
+                bonusEndBlock,
+                endBlock
             ] = await makeBatchRequest(web3,[
                 erc20Contract.methods.syxPerBlock().call,
                 erc20Contract.methods.bonusEndBlock().call,
+                erc20Contract.methods.endBlock().call
             ],account.address)
 
-            if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
+            if(parseFloat(curBlockNumber)>=parseFloat(endBlock)){
+                callback(null, toStringDecimals(0, 18));
+            }else if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
                 const bonusMultiplier = await erc20Contract.methods.BONUS_MULTIPLIER().call();
                 callback(null, toStringDecimals(parseFloat(rate)*parseFloat(bonusMultiplier), 18));
             }else{
@@ -622,10 +647,11 @@ class Store {
                 bptContract.methods.getSwapFee().call
             ],account.address)
 
-            let amountToWei;
+            let amountToWei, finallPriceDecimals = 18;
             if (type === "sell") {
                 if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
                     amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
+                    finallPriceDecimals = asset.erc20Decimals;
                 }else{
                     amountToWei = web3.utils.toWei(amount + "", "ether");
                 }
@@ -683,7 +709,7 @@ class Store {
                         swapFee
                     )
                     .call({from: account.address});
-                finallPrice = toStringDecimals(finallPrice, asset.decimals);
+                finallPrice = toStringDecimals(finallPrice, finallPriceDecimals);
 
                 callback(null, {
                     price: {
@@ -695,6 +721,10 @@ class Store {
                     amount
                 });
             } else if (type === "buyIn") {
+                if(tokenIn === asset.erc20Address && asset.erc20Decimals !==18){
+                    finallPriceDecimals = asset.erc20Decimals;
+                }
+
                 if(tokenOut === asset.erc20Address && asset.erc20Decimals !==18){
                     amountToWei = parseInt(amount * Number(`1e+${asset.erc20Decimals}`)).toLocaleString('fullwide', {useGrouping:false});
                 }else{
@@ -754,7 +784,7 @@ class Store {
                     )
                     .call({from: account.address});
 
-                finallPrice = toStringDecimals(finallPrice, asset.decimals);
+                finallPrice = toStringDecimals(finallPrice, finallPriceDecimals);
 
                 callback(null, {
                     price: {
@@ -927,7 +957,7 @@ class Store {
                     maxIn: toStringDecimals(maxIn, asset.decimals),
                     maxOut: toStringDecimals(maxOut, asset.decimals),
                     weight: parseInt(toStringDecimals(weight1, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2, asset.decimals)),
-                    erc20Balance2: toStringDecimals(erc20Balance2, asset.decimals),
+                    erc20Balance2: toStringDecimals(erc20Balance2, asset.erc20Decimals2),
                     erc20Balance: toStringDecimals(erc20Balance, asset.erc20Decimals),
                     totalSupply: toStringDecimals(totalSupply, asset.decimals)
                 });
@@ -947,7 +977,15 @@ class Store {
                 let price = await contract.methods
                     .getSpotPrice(asset.erc20Address, asset.erc20Address2)
                     .call();
-                callback(null, toStringDecimals(price, asset.erc20Decimals));
+                let decimals = 18;
+                if(asset.erc20Decimals != asset.erc20Decimals2){
+                    if(asset.erc20Decimals < asset.erc20Decimals2){
+                        decimals = asset.erc20Decimals;
+                    }else{
+                        decimals = asset.erc20Decimals + asset.erc20Decimals - asset.erc20Decimals2
+                    }
+                }
+                callback(null, toStringDecimals(price, decimals));
             } catch (ex) {
                 return callback(ex);
             }

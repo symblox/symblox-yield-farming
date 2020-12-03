@@ -194,8 +194,8 @@ export default function Pool(props) {
                                         <NumberFormat value={data.totalSupply} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'VLX'} decimalScale={4} fixedDecimalScale={true} />
                                     :
                                     <>
-                                        <NumberFormat value={data.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.name} decimalScale={4} fixedDecimalScale={true} />
-                                        <NumberFormat value={data.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"SYX"} decimalScale={4} fixedDecimalScale={true} renderText={value => <div style={{margin:"10px 0 0 95px"}}>{value}</div>}/>
+                                        <NumberFormat value={data.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
+                                        <NumberFormat value={data.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} renderText={value => <div style={{margin:"10px 0 0 95px"}}>{value}</div>}/>
                                     </>
                                     }
                             </div>
