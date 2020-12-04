@@ -557,7 +557,7 @@ class DepositModal extends Component {
                         <span className={classes.text}>
                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                         </span>
-                        <NumberFormat value={pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.tokens[1]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                        <NumberFormat value={pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                     </Typography>
                 </DialogContent>
                 <DialogActions>
