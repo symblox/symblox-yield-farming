@@ -5,7 +5,7 @@ const en_US = {
     LABEL_CONTACT: "Contact Us",
     LP_LIST_TITLE: "Swaps",
     LP_TRADING_PAIR: "Trading Pair",
-    LP_SYX_PRICE: "SYX Price",
+    LP_SYX_PRICE: "Price",
     LP_MY_SHARE: "My Shares",
     LP_DEPOSIT: "Add Liquidity",
     LP_DEPOSIT_WITHDRAW_REWARD: "Confirm",

@@ -234,13 +234,13 @@ class TransactionModal extends Component {
                             type,
                             tokenName: that.state.token,
                             tokenIn:
-                                that.state.token === "SYX"
-                                    ? that.props.data.rewardsAddress
-                                    : that.props.data.erc20Address,
+                                that.state.token === that.props.data.tokens[1]
+                                    ? that.props.data.erc20Address
+                                    : that.props.data.erc20Address2,
                             tokenOut:
-                                that.state.buyToken === "SYX"
-                                    ? that.props.data.rewardsAddress
-                                    : that.props.data.erc20Address
+                                that.state.buyToken === that.props.data.tokens[1]
+                                    ? that.props.data.erc20Address
+                                    : that.props.data.erc20Address2
                         }
                     });
                 },
@@ -249,7 +249,7 @@ class TransactionModal extends Component {
         } else {
             this.setState({
                 price:
-                    this.state.token === "SYX"
+                    this.state.token === this.props.data.tokens[0]
                         ? this.props.data.price
                         : 1 / this.props.data.price
             });
@@ -339,9 +339,9 @@ class TransactionModal extends Component {
             erc20Balance = pool.erc20Balance;
         }
 
-        return token === "SYX"
-            ? parseFloat(pool.maxSyxIn) > parseFloat(pool.rewardsBalance)
-                ? formatNumberPrecision(pool.rewardsBalance)
+        return token === pool.tokens[0]
+            ? parseFloat(pool.maxSyxIn) > parseFloat(pool.erc20Balance2)
+                ? formatNumberPrecision(pool.erc20Balance2)
                 : formatNumberPrecision(pool.maxSyxIn)
             : parseFloat(pool.maxErc20In) > erc20Balance
             ? formatNumberPrecision(erc20Balance+'')
@@ -384,12 +384,12 @@ class TransactionModal extends Component {
                 amount: parseFloat(this.state.amount).toString(),
                 price: (parseFloat(this.state.finallPrice)*1.1).toString(),
                 token:
-                    this.state.token === "SYX"
-                        ? this.props.data.rewardsAddress
+                    this.state.token === this.props.data.tokens[0]
+                        ? this.props.data.erc20Address2
                         : this.props.data.erc20Address,
                 token2:
-                    this.state.buyToken === "SYX"
-                        ? this.props.data.rewardsAddress
+                    this.state.buyToken === this.props.data.tokens[0]
+                        ? this.props.data.erc20Address2
                         : this.props.data.erc20Address
             }
         });
@@ -402,8 +402,8 @@ class TransactionModal extends Component {
 
         const availableAmount = parseFloat(
             this.state.token === data.tokens[0]
-                ? parseFloat(data.maxSyxIn) > parseFloat(data.rewardsBalance)
-                    ? parseFloat(data.rewardsBalance)
+                ? parseFloat(data.maxSyxIn) > parseFloat(data.erc20Balance2)
+                    ? parseFloat(data.erc20Balance2)
                     : parseFloat(data.maxSyxIn)
                 : parseFloat(data.maxErc20In) > parseFloat(data.erc20Balance)
                 ? parseFloat(data.erc20Balance)
@@ -444,8 +444,8 @@ class TransactionModal extends Component {
                             {": "}
                             {this.state.token === data.tokens[0]
                                 ? parseFloat(data.maxSyxIn) >
-                                  parseFloat(data.rewardsBalance)
-                                    ? <NumberFormat value={data.rewardsBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                  parseFloat(data.erc20Balance2)
+                                    ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
                                     : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
                                 : parseFloat(data.maxErc20In) >
                                   parseFloat(data.erc20Balance)
@@ -556,8 +556,8 @@ class TransactionModal extends Component {
                             {": "}
                             {this.state.token === data.tokens[1]
                                 ? parseFloat(data.maxSyxIn) >
-                                  parseFloat(data.rewardsBalance)
-                                    ? <NumberFormat value={data.rewardsBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                  parseFloat(data.erc20Balance2)
+                                    ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
                                     : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
                                 : parseFloat(data.maxErc20In) >
                                   parseFloat(data.erc20Balance)
