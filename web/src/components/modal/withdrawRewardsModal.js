@@ -341,11 +341,11 @@ class WithdrawRewardsModal extends Component {
         return pool.type === "seed"
             ? formatNumberPrecision(pool.stakeAmount)
             : this.state.token == pool.tokens[0] ? (parseFloat(this.state.availableAmount) >
-              parseFloat(pool.maxErc20Out)
-            ? formatNumberPrecision(pool.maxErc20Out)
-            : formatNumberPrecision(this.state.availableAmount)):(parseFloat(this.state.availableAmount) >
               parseFloat(pool.maxSyxOut)
             ? formatNumberPrecision(pool.maxSyxOut)
+            : formatNumberPrecision(this.state.availableAmount)):(parseFloat(this.state.availableAmount) >
+              parseFloat(pool.maxErc20Out)
+            ? formatNumberPrecision(pool.maxErc20Out)
             : formatNumberPrecision(this.state.availableAmount));
     };
 
@@ -558,15 +558,15 @@ class WithdrawRewardsModal extends Component {
                                             }}
                                         ></CircularProgress>
                                     ) : this.state.token === this.state.pool.tokens[1]?(parseFloat(this.state.availableAmount) >
-                                      parseFloat(this.state.pool.maxSyxOut) ? 
-                                          <NumberFormat value={this.state.pool.maxSyxOut} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                      parseFloat(this.state.pool.maxErc20Out) ? 
+                                          <NumberFormat value={this.state.pool.maxErc20Out} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                      
                                      : 
                                         <NumberFormat value={this.state.availableAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                      
                                     ):(parseFloat(this.state.availableAmount) >
-                                      parseFloat(this.state.pool.maxErc20Out) ? 
-                                          <NumberFormat value={this.state.pool.maxErc20Out} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
+                                      parseFloat(this.state.pool.maxSyxOut) ? 
+                                          <NumberFormat value={this.state.pool.maxSyxOut} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                         
                                      : 
                                         <NumberFormat value={this.state.availableAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
