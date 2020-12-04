@@ -42,7 +42,8 @@ contract RewardManager is Ownable {
         uint256 accSyxPerShare; // Accumulated syX per share, times 1e12. See below.
     }
 
-    uint256 public constant seasonBlocks = 725760;//The length of a mining cycle. 5s per block ~= 4 week;
+    uint256 public initSupply;
+    uint256 public seasonBlocks;//The length of a mining cycle.
     // The REWARD TOKEN!
     SymbloxToken public syx;
     // Dev address.
@@ -82,15 +83,19 @@ contract RewardManager is Ownable {
         address _syx,
         address _devaddr,
         uint256 _startBlock,
-        uint256 _bonusEndBlock
+        uint256 _bonusEndBlock,
+        uint256 _initSupply,
+        uint256 _seasonBlocks
     ) public {
         syx = SymbloxToken(_syx);
         devaddr = _devaddr;
-        uint256 initSupply = 800000 ether;
-        syxPerBlock = initSupply.mul(9).div(10).div(seasonBlocks);//90%, 10% to devaddr
         startBlock = _startBlock;
         bonusEndBlock = _bonusEndBlock;
-        endBlock = _startBlock.add(seasonBlocks);
+        initSupply = _initSupply;
+        seasonBlocks = _seasonBlocks;
+        endBlock = _startBlock.add(_seasonBlocks);
+        syxPerBlock = _initSupply.mul(9).div(10).div(_seasonBlocks);//90%, 10% to devaddr
+        
     }
 
     /**

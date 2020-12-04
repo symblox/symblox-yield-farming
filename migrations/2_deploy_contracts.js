@@ -10,25 +10,25 @@ module.exports = async function (deployer, network, accounts) {
                 rewardsPerBlock: "1000000000000000000", // 1 syx
                 startBlock: "100",
                 bonusEndBlock: "100000",
-                endBlock: "100100"
+                seasonBlocks: "10",
+                initSupply: "8000000000000000000"//8 syx
             },
             coverage: {
                 rewardsPerBlock: "1000000000000000000", // 1 syx
                 startBlock: "100",
-                bonusEndBlock: "100000",
-                endBlock: "100100"
+                bonusEndBlock: "100000"
             },
             vlxtest: {
                 rewardsPerBlock: "688932980599647000", // 0.688932980599647
                 startBlock: "1052894",
                 bonusEndBlock: "1294814",
-                endBlock: "2020574"
+                seasonBlocks: "725760",
+                initSupply: "800000000000000000000000"//800000 syx
             },
             vlxmain: {
                 rewardsPerBlock: "688932980599647000", // 0.688932980599647
                 startBlock: "3326255",
-                bonusEndBlock: "3568175",
-                endBlock: "4293935"
+                bonusEndBlock: "3568175"
             }
         }
     };
@@ -43,10 +43,10 @@ module.exports = async function (deployer, network, accounts) {
         RewardManager,
         syx.address, // reward token
         "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d", // dev address
-        contractSettings["RewardManager"][network]["rewardsPerBlock"],
         contractSettings["RewardManager"][network]["startBlock"],
         contractSettings["RewardManager"][network]["bonusEndBlock"],
-        contractSettings["RewardManager"][network]["endBlock"]
+        contractSettings["RewardManager"][network]["initSupply"],
+        contractSettings["RewardManager"][network]["seasonBlocks"]
     );
 
     // Transfer Symblox to the RewardManager
