@@ -555,14 +555,14 @@ class TransactionModal extends Component {
                             <FormattedMessage id="POPUP_TRADEABLE_AMOUNT" />
                             {": "}
                             {this.state.token === data.tokens[1]
-                                ? parseFloat(data.maxErc20In) >
-                                  parseFloat(data.erc20Balance)
-                                    ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
-                                    : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
-                                : parseFloat(data.maxSyxIn) >
+                                ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.erc20Balance2)
-                                ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
-                                : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />}
+                                    ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                    : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                : parseFloat(data.maxErc20In) >
+                                  parseFloat(data.erc20Balance)
+                                ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
+                                : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />}
                         </span>
                     </Typography>
                     <div className={classes.formContent}>
