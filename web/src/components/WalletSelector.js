@@ -55,7 +55,7 @@ export const WalletSelector = props => {
                         <div className={"header__menu_wallet"}>
                             <Button
                                 aria-describedby={id}
-                                // {...bindTrigger(popupState)}
+                                {...bindTrigger(popupState)}
                             >
                                 {formatAddress(
                                     account,
@@ -63,7 +63,7 @@ export const WalletSelector = props => {
                                 )}
                             </Button>
                             <Popover
-                                // {...bindPopover(popupState)}
+                                {...bindPopover(popupState)}
                                 anchorOrigin={{
                                     vertical: "bottom",
                                     horizontal: "center"
