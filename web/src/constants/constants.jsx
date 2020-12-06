@@ -48,3 +48,39 @@ export const languageOptions = [
         value: "中"
     }
 ];
+
+export const nodeConfigs = {
+    infuraId:
+        process.env.REACT_APP_INFURA_ID || "61a5aaecc27646d9ba6ece87c1065806"
+};
+
+export const networkOptions = [
+    {
+        value: 106,
+        key: 1,
+        bridge: {chainId: 1, name: "ETH Mainnet"},
+        label: "VELAS",
+        name: "VELAS"
+    },
+    {
+        value: 1,
+        key: 0,
+        bridge: {chainId: 106, name: "VELAS"},
+        label: "Mainnet",
+        name: "ETH Mainnet"
+    },
+    {
+        value: 111,
+        key: 3,
+        bridge: {chainId: 42, name: "Kovan Testnet"},
+        label: "VELAS (Testnet)",
+        name: "VELAS Testnet"
+    },
+    {
+        value: 42,
+        key: 4,
+        bridge: {chainId: 111, name: "VELAS Testnet"},
+        label: "Kovan",
+        name: "Kovan Testnet"
+    }
+];

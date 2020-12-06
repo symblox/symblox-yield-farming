@@ -1,5 +1,5 @@
 const en_US = {
-    LABEL_CONNECT_WALLET: "Connect wallet",
+    LABEL_CONNECT_WALLET: "Connect Wallet",
     LABEL_RESOURCE: "Resources",
     LABEL_COMMUNITY: "Communities",
     LABEL_CONTACT: "Contact Us",
@@ -79,6 +79,8 @@ const en_US = {
     USDT_TOKEN: "USDT on VELAS",
     WVLX_TOKEN: "VLX Escrow",
     DEV_FUND: "Dev Fund",
-    REFERRER: "Referrer Address"
+    REFERRER: "Referrer Address",
+    WALLET_CONNECT_TO: "Connected to {network}",
+    WALLET_DISCONNECT: "Discconnect"
 };
 export default en_US;
