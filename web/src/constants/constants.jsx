@@ -1,3 +1,5 @@
+import React from "react";
+
 export const CONNECTION_CONNECTED = "CONNECTION_CONNECTED";
 export const CONNECTION_DISCONNECTED = "CONNECTION_DISCONNECTED";
 
@@ -35,3 +37,14 @@ export const CALCULATE_BPT_AMOUNT = "CALCULATE_BPT_AMOUNT";
 export const CALCULATE_BPT_AMOUNT_RETURNED = "CALCULATE_BPT_AMOUNT_RETURNED";
 
 export const TX_CONFIRM = "TX_CONFIRM";
+
+export const languageOptions = [
+    {
+        key: "en",
+        value: "EN"
+    },
+    {
+        key: "zh",
+        value: "中"
+    }
+];

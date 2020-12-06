@@ -19,7 +19,7 @@ import {FormattedMessage} from "react-intl";
 import NumberFormat from "react-number-format";
 import config from "../../config";
 import Snackbar from "../snackbar";
-import Header from "../header";
+import {Header} from "../header";
 import Footer from "../footer";
 import Pool from "../pool";
 import Balance from "../balance";
@@ -648,7 +648,9 @@ class Home extends Component {
                                                 gutterBottom
                                             >
                                                 <NumberFormat
-                                                    value={rewardsAvailable || 0}
+                                                    value={
+                                                        rewardsAvailable || 0
+                                                    }
                                                     defaultValue={"-"}
                                                     displayType={"text"}
                                                     thousandSeparator={true}
@@ -725,7 +727,9 @@ class Home extends Component {
                                                 gutterBottom
                                             >
                                                 <NumberFormat
-                                                    value={rewardsAvailable || 0}
+                                                    value={
+                                                        rewardsAvailable || 0
+                                                    }
                                                     defaultValue={"-"}
                                                     displayType={"text"}
                                                     thousandSeparator={true}
@@ -826,7 +830,11 @@ class Home extends Component {
                                                                     }
                                                                     src={
                                                                         "/" +
-                                                                        (pool.tokens[1]?pool.tokens[1]:pool.name) +
+                                                                        (pool
+                                                                            .tokens[1]
+                                                                            ? pool
+                                                                                  .tokens[1]
+                                                                            : pool.name) +
                                                                         ".png"
                                                                     }
                                                                     style={{
@@ -841,9 +849,11 @@ class Home extends Component {
                                                                         classes.icon
                                                                     }
                                                                     src={
-                                                                        "/"+pool.tokens[0]+".png"
+                                                                        "/" +
+                                                                        pool
+                                                                            .tokens[0] +
+                                                                        ".png"
                                                                     }
-                                                                    
                                                                     alt=""
                                                                 />
                                                                 {pool.id}
@@ -851,7 +861,8 @@ class Home extends Component {
                                                             <td>
                                                                 <NumberFormat
                                                                     value={
-                                                                        pool.price || 0
+                                                                        pool.price ||
+                                                                        0
                                                                     }
                                                                     defaultValue={
                                                                         "-"
@@ -1007,7 +1018,11 @@ class Home extends Component {
                                                                         }
                                                                         src={
                                                                             "/" +
-                                                                            (pool.tokens[1]?pool.tokens[1]:pool.name) +
+                                                                            (pool
+                                                                                .tokens[1]
+                                                                                ? pool
+                                                                                      .tokens[1]
+                                                                                : pool.name) +
                                                                             ".png"
                                                                         }
                                                                         style={{
@@ -1022,7 +1037,10 @@ class Home extends Component {
                                                                             classes.icon
                                                                         }
                                                                         src={
-                                                                            "/"+pool.tokens[0]+".png"
+                                                                            "/" +
+                                                                            pool
+                                                                                .tokens[0] +
+                                                                            ".png"
                                                                         }
                                                                         alt=""
                                                                     />
@@ -1040,7 +1058,8 @@ class Home extends Component {
                                                                 <td>
                                                                     <NumberFormat
                                                                         value={
-                                                                            pool.price || 0
+                                                                            pool.price ||
+                                                                            0
                                                                         }
                                                                         defaultValue={
                                                                             "-"
@@ -1115,12 +1134,14 @@ class Home extends Component {
                                                                         xs={6}
                                                                     >
                                                                         {
-                                                                            pool.tokens[1]
+                                                                            pool
+                                                                                .tokens[1]
                                                                         }
                                                                         :
                                                                         <NumberFormat
                                                                             value={
-                                                                                pool.bptVlxBalance || 0
+                                                                                pool.bptVlxBalance ||
+                                                                                0
                                                                             }
                                                                             defaultValue={
                                                                                 "-"
@@ -1219,12 +1240,14 @@ class Home extends Component {
                                                                         xs={6}
                                                                     >
                                                                         {
-                                                                            pool.tokens[0]
+                                                                            pool
+                                                                                .tokens[0]
                                                                         }
                                                                         :
                                                                         <NumberFormat
                                                                             value={
-                                                                                pool.bptSyxBalance || 0
+                                                                                pool.bptSyxBalance ||
+                                                                                0
                                                                             }
                                                                             defaultValue={
                                                                                 "-"
