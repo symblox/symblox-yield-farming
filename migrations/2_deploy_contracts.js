@@ -7,26 +7,24 @@ module.exports = async function (deployer, network, accounts) {
     const contractSettings = {
         RewardManager: {
             development: {
-                rewardsPerBlock: "1000000000000000000", // 1 syx
+                syx: "0x0000000000000000000000000000000000000000",
                 startBlock: "100",
                 bonusEndBlock: "100000",
                 seasonBlocks: "10",
                 initSupply: "8000000000000000000"//8 syx
             },
             coverage: {
-                rewardsPerBlock: "1000000000000000000", // 1 syx
                 startBlock: "100",
                 bonusEndBlock: "100000"
             },
             vlxtest: {
-                rewardsPerBlock: "688932980599647000", // 0.688932980599647
-                startBlock: "1052894",
-                bonusEndBlock: "1294814",
+                syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
+                startBlock: "2176800",
+                bonusEndBlock: "2176800",
                 seasonBlocks: "725760",
                 initSupply: "800000000000000000000000"//800000 syx
             },
-            vlxmain: {
-                rewardsPerBlock: "688932980599647000", // 0.688932980599647
+            vlxmain: {    
                 startBlock: "3326255",
                 bonusEndBlock: "3568175"
             }
@@ -35,7 +33,7 @@ module.exports = async function (deployer, network, accounts) {
 
     await deployer.deploy(
         Symblox,
-        "0x0000000000000000000000000000000000000000"
+        contractSettings["RewardManager"][network]["syx"]
     );
     const syx = await Symblox.deployed();
 
