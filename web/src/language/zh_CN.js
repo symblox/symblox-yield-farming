@@ -79,6 +79,12 @@ const zh_CN = {
     DEV_FUND: "开发基金",
     REFERRER: "推荐人地址",
     WALLET_CONNECT_TO: "已连接网络 {network}",
-    WALLET_DISCONNECT: "取消连接"
+    WALLET_DISCONNECT: "取消连接",
+    EXCHANGE: "兑换",
+    EXCHANGE_TITLE: "兑换新syx代币",
+    EXCHANGE_SUB_TITLE: "您想兑换多少个新的syx？",
+    EXCHANGE_TIP: "输入您想兑换的金额",
+    EXCHANGE_RATE: "新旧SYX兑换率",
+    EXCHANGE_TOTAL_SUPPLY: "最大旧SYX到新SYX的流动性"
 };
 export default zh_CN;

@@ -81,6 +81,12 @@ const en_US = {
     DEV_FUND: "Dev Fund",
     REFERRER: "Referrer Address",
     WALLET_CONNECT_TO: "Connected to {network}",
-    WALLET_DISCONNECT: "Discconnect"
+    WALLET_DISCONNECT: "Discconnect",
+    EXCHANGE: "Exchange",
+    EXCHANGE_TITLE: "Exchange new syx tokens",
+    EXCHANGE_SUB_TITLE: "How much new syx would you like to redeem for old syx?",
+    EXCHANGE_TIP: "Enter the amount you would like to exchange",
+    EXCHANGE_RATE: "Old syx to new syx exchange rate",
+    EXCHANGE_TOTAL_SUPPLY: "Max old syx to new syx liquidity"
 };
 export default en_US;

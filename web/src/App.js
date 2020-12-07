@@ -6,6 +6,7 @@ import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import "./i18n";
 import {LanguageProvider} from "./contexts/LanguageContext";
 import {Web3Provider} from "./contexts/Web3Context";
+import {PoolContextProvider} from "./contexts/PoolContext";
 
 import interestTheme from "./theme";
 import Routes from "./Routes";
@@ -17,9 +18,11 @@ class App extends Component {
                 <MuiThemeProvider theme={createMuiTheme(interestTheme)}>
                     <CssBaseline />
                     <Web3Provider>
-                        <Router>
-                            <Routes />
-                        </Router>
+                        <PoolContextProvider>
+                            <Router>
+                                <Routes />
+                            </Router>
+                        </PoolContextProvider>
                     </Web3Provider>
                 </MuiThemeProvider>
             </LanguageProvider>
