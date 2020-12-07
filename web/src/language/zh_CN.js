@@ -77,6 +77,8 @@ const zh_CN = {
     USDT_TOKEN: "USDT (VELAS)",
     WVLX_TOKEN: "VLX 托管",
     DEV_FUND: "开发基金",
-    REFERRER: "推荐人地址"
+    REFERRER: "推荐人地址",
+    WALLET_CONNECT_TO: "已连接网络 {network}",
+    WALLET_DISCONNECT: "取消连接"
 };
 export default zh_CN;
