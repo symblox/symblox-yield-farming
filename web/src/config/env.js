@@ -54,14 +54,14 @@ function env() {
             pVlxBpt: "0x8622C2315d4DDDff42C695D44f139032578b7A8a",
             usdtBpt: "0x2466290Cf22A134b72BC4Fb7fc3c07cD0300eEc5",
             vlxUsdtBpt: "0xc90EbE31b1AaF8f18Ad7c027327129Fd3c98e3Bb",
-            syx: "0xF3A961322CbC8f14fB1858B346099760bE9473C4",
+            syx: "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa",
             oldSyx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
             wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f",
             usdt: "0xA23bAeA56de679FD1baf200E92a75ac8d5eeBc8A",
             pVlx: "0x3724d456d7D02327A06B6a12DB429D83A2617c9B",
-            rewardPool: "0x677935Df0Ac56B6C359c91791bd71092cC012991",
+            rewardPool: "0x2c140E4561ef42c20B60E600CA52B86147858AC5",
             //connectorFactory: "0xff165a0eeCc3CcB0057e7a8cf7E83Af4ea4d253a",
-            connectorFactory: "0xb123641EF0b86cB717c899D4be89a605CEeD2f07", //no set governor
+            connectorFactory: "0x27A3978690569f3eC71A920Fb65B01950c2A37C1", //no set governor
             wvlxConnector: "0xf56DE4B7D4A5e399edaA10DbF3e041793Bce4141",
             //bptConnector: "0x3aa6730C8F773c5920501e6782E83181d0370dCA",
             bptConnector: "0xC1625837bBfD08dC6c3a1a766BC3EE3b0Ab0474B", //BptReferralConnector
