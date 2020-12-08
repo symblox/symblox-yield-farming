@@ -1,34 +1,54 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {parseEther, formatEther} from '@ethersproject/units';
+import React, {useContext, useEffect, useState} from "react";
+import {parseEther, formatEther} from "@ethersproject/units";
 import {withRouter} from "react-router-dom";
 import NumberFormat from "react-number-format";
 import {withStyles} from "@material-ui/core/styles";
 import {FormattedMessage} from "react-intl";
-import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Typography from "@material-ui/core/Typography";
-import Grid from '@material-ui/core/Grid';
+import {
+    Box,
+    Button,
+    FormControl,
+    InputAdornment,
+    OutlinedInput,
+    Typography,
+    Grid,
+    Divider
+} from "@material-ui/core";
 
-import { PoolContext } from '../contexts/PoolContext';
+import {PoolContext} from "../contexts/PoolContext";
 
 const styles = theme => ({
+    container: {
+        textAlign: "center"
+    },
+    heroText: {
+        color: "#FFFFFF",
+        textAlign: "center",
+        marginTop: "2rem",
+        marginBottom: "4rem",
+        [theme.breakpoints.down("xs")]: {
+            display: "none"
+        }
+    },
     root: {
         background: "#FFFFFF",
         boxShadow: "0px 0px 35px 0px rgba(94, 85, 126, 0.15)",
         borderRadius: "12px",
-        margin: "16px",
-        padding: "32px 16px",
+        textAlign: "left",
 
-        "& Button": {}
+        "& Button": {},
+        "& p": {
+            margin: "8px 0"
+        }
     },
+
     title: {
-        margin: "16px 0",
-        textAlign: "center"
+        margin: "0 0 16px 0",
+        textAlign: "left"
     },
     subTitle: {
-        margin: "8px 0",
+        // margin: "8px 0",
+        fontWeight: "500"
     },
     box: {
         width: "100%"
@@ -57,13 +77,13 @@ const styles = theme => ({
 });
 
 const ExchangeSyx = ({classes}) => {
-    const { oldSyxBalance, oldSyxSupply, exchangeSyx } = useContext(PoolContext);
+    const {oldSyxBalance, oldSyxSupply, exchangeSyx} = useContext(PoolContext);
     const [amount, setAmount] = useState(0);
 
     const amountChange = event => {
-        if(Number.isNaN(parseFloat(event.target.value))){
+        if (Number.isNaN(parseFloat(event.target.value))) {
             setAmount(0);
-        }else{
+        } else {
             setAmount(event.target.value);
         }
     };
@@ -72,84 +92,98 @@ const ExchangeSyx = ({classes}) => {
         setAmount(formatEther(oldSyxBalance));
     };
 
-    return <div className={classes.root}>
-        <Typography variant="h2" className={classes.title}>
-            <FormattedMessage id="EXCHANGE_TITLE" />
-        </Typography>
-        <Typography variant="h6" className={classes.title}>
-            <FormattedMessage id="EXCHANGE_SUB_TITLE" />
-        </Typography>
-        <Grid container spacing={3}>
-            <Grid item xs={12} sm={8}>
-                <FormControl variant="outlined" className={classes.box}>
-                    <Typography variant="body2" className={classes.subTitle}>
-                        <FormattedMessage id="EXCHANGE_TIP" />
-                    </Typography>
-                    <OutlinedInput
-                        // className={classes.customInput}
-                        id="outlined-adornment-password"
-                        type={"text"}
-                        value={amount}
-                        onChange={amountChange}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <Button
-                                    onClick={getMaxAmount}
-                                >
-                                    <FormattedMessage id="POPUP_INPUT_MAX" />
-                                </Button>
-                            </InputAdornment>
-                        }
-                    />
-                    <Typography variant="body2" className={classes.subTitle}>
-                        <FormattedMessage id="WALLET_BALANCE" />
-                    </Typography>
-                    <Typography variant="body2" className={classes.subTitle}>
-                        <NumberFormat
-                            value={formatEther(oldSyxBalance)}
-                            defaultValue={"-"}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            isNumericString={true}
-                            suffix={"SYX"}
-                            decimalScale={4}
-                            fixedDecimalScale={true}
-                        />
-                    </Typography>
-                </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-                <FormControl variant="outlined" className={classes.box}>
-                    <Typography variant="body2" className={classes.subTitle}>
-                        <FormattedMessage id="EXCHANGE_RATE" />
-                    </Typography>
-                    <Typography variant="body2" className={classes.subTitle}>
-                        1:1
-                    </Typography>
-                    <Typography variant="body2" className={classes.subTitle}>
-                        <FormattedMessage id="EXCHANGE_TOTAL_SUPPLY" />
-                    </Typography>
-                    <Typography variant="body2" className={classes.subTitle}>
-                        <NumberFormat
-                            value={formatEther(oldSyxSupply)}
-                            defaultValue={"-"}
-                            displayType={"text"}
-                            thousandSeparator={true}
-                            isNumericString={true}
-                            suffix={"SYX"}
-                            decimalScale={4}
-                            fixedDecimalScale={true}
-                        />
-                    </Typography>
-                </FormControl>
-            </Grid>
-        </Grid>
-        <Button className={classes.button} onClick={() =>
-            exchangeSyx(parseEther(amount))
-        }>
-            <FormattedMessage id="EXCHANGE" />
-        </Button>
-    </div>
+    return (
+        <Box paddingX={2}>
+            <Typography variant="h2" className={classes.heroText}>
+                <FormattedMessage id="EXCHANGE_TITLE" />
+            </Typography>
+            <Box
+                maxWidth="60rem"
+                marginX="auto"
+                marginY="2rem"
+                p={6}
+                className={classes.root}
+            >
+                <Grid container spacing={8}>
+                    <Grid item xs={12} sm={8}>
+                        <Typography variant="h6" className={classes.title}>
+                            {" "}
+                            <FormattedMessage id="EXCHANGE_SUB_TITLE" />
+                        </Typography>
+                        <FormControl variant="outlined" className={classes.box}>
+                            <Typography>
+                                <FormattedMessage id="EXCHANGE_TIP" />
+                            </Typography>
+                            <OutlinedInput
+                                // className={classes.customInput}
+                                id="outlined-adornment-password"
+                                type={"text"}
+                                value={amount}
+                                onChange={amountChange}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <Button onClick={getMaxAmount}>
+                                            <FormattedMessage id="POPUP_INPUT_MAX" />
+                                        </Button>
+                                    </InputAdornment>
+                                }
+                            />
+                            <Typography variant="body2">
+                                <FormattedMessage
+                                    id="EXCHANGE_WALLET_BALANCE"
+                                    values={{
+                                        amount: (
+                                            <NumberFormat
+                                                value={formatEther(
+                                                    oldSyxBalance
+                                                )}
+                                                defaultValue={"-"}
+                                                displayType={"text"}
+                                                thousandSeparator={true}
+                                                isNumericString={true}
+                                                suffix={" SYX"}
+                                                decimalScale={4}
+                                                fixedDecimalScale={true}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </Typography>
+                        </FormControl>
+                        <Button
+                            className={classes.button}
+                            onClick={() => exchangeSyx(parseEther(amount))}
+                        >
+                            <FormattedMessage id="EXCHANGE" />
+                        </Button>
+                    </Grid>
+                    <Divider orientation="vertical" flexItem />
+                    <Grid item xs={12} sm={3}>
+                        <Typography className={classes.subTitle}>
+                            <FormattedMessage id="EXCHANGE_RATE" />
+                        </Typography>
+                        <Typography>1:1</Typography>
+                        <br />
+                        <Typography className={classes.subTitle}>
+                            <FormattedMessage id="EXCHANGE_TOTAL_SUPPLY" />
+                        </Typography>
+                        <Typography>
+                            <NumberFormat
+                                value={formatEther(oldSyxSupply)}
+                                defaultValue={"-"}
+                                displayType={"text"}
+                                thousandSeparator={true}
+                                isNumericString={true}
+                                suffix={" SYX"}
+                                decimalScale={4}
+                                fixedDecimalScale={true}
+                            />
+                        </Typography>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Box>
+    );
 };
 
 export default withRouter(withStyles(styles)(ExchangeSyx));

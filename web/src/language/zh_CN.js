@@ -81,10 +81,11 @@ const zh_CN = {
     WALLET_CONNECT_TO: "已连接网络 {network}",
     WALLET_DISCONNECT: "取消连接",
     EXCHANGE: "兑换",
-    EXCHANGE_TITLE: "兑换新syx代币",
-    EXCHANGE_SUB_TITLE: "您想兑换多少个新的syx？",
+    EXCHANGE_TITLE: "兑换新的 SYX 代币参与 Symblox 最新流动性挖矿",
+    EXCHANGE_SUB_TITLE: "您想兑换多少个新的 SYX 代币？",
     EXCHANGE_TIP: "输入您想兑换的金额",
-    EXCHANGE_RATE: "新旧SYX兑换率",
-    EXCHANGE_TOTAL_SUPPLY: "最大旧SYX到新SYX的流动性"
+    EXCHANGE_RATE: "SYX 兑换比例",
+    EXCHANGE_TOTAL_SUPPLY: "SYX 可兑换总数",
+    EXCHANGE_WALLET_BALANCE: "可兑换余额: {amount}"
 };
 export default zh_CN;

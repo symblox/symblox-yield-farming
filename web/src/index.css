@@ -22,7 +22,7 @@ html {
 @media screen and (min-width: 600px) {
     #root {
         /* background: linear-gradient(130.49deg, #1f314c 0%, #051731 93.26%); */
-        min-height: 720px !important;
+        min-height: 520px !important;
         position: relative;
         /* z-index: -1; */
         overflow-x: hidden;
@@ -30,12 +30,13 @@ html {
         background-size: auto;
         background-position: top center;
         background-repeat: no-repeat;
+        background-position-y: -200px;
     }
 
     #root::after {
         content: "";
         width: 160%;
-        min-height: 720px !important;
+        min-height: 520px !important;
         position: absolute;
         left: -30%;
         top: 0;

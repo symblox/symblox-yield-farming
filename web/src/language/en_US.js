@@ -83,10 +83,12 @@ const en_US = {
     WALLET_CONNECT_TO: "Connected to {network}",
     WALLET_DISCONNECT: "Discconnect",
     EXCHANGE: "Exchange",
-    EXCHANGE_TITLE: "Exchange new syx tokens",
-    EXCHANGE_SUB_TITLE: "How much new syx would you like to redeem for old syx?",
+    EXCHANGE_TITLE: "Redeem new SYX tokens for Symblox yield farming 2.0",
+    EXCHANGE_SUB_TITLE:
+        "How many SYX tokens would you like to redeem for the new ones?",
     EXCHANGE_TIP: "Enter the amount you would like to exchange",
-    EXCHANGE_RATE: "Old syx to new syx exchange rate",
-    EXCHANGE_TOTAL_SUPPLY: "Max old syx to new syx liquidity"
+    EXCHANGE_RATE: "Old SYX to new SYX exchange rate",
+    EXCHANGE_TOTAL_SUPPLY: "Max old SYX to new SYX liquidity",
+    EXCHANGE_WALLET_BALANCE: "Redeemable balance: {amount}"
 };
 export default en_US;
