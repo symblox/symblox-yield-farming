@@ -33,24 +33,6 @@ export default class App extends React.Component {
             <div style={{background: "#051731", height: "280px"}}>
                 <Container>
                     <Hidden mdUp>
-                        <div style={{textAlign: "center"}}>
-                            <a
-                                href={this.props.linkTo}
-                                className={"header__logo"}
-                                style={{
-                                    width: "188px",
-                                    height: "auto",
-                                    marginTop: "40px",
-                                    display: "inline-block"
-                                }}
-                            >
-                                <img
-                                    src={logo_xswap}
-                                    alt="logo"
-                                    style={{height: "33px"}}
-                                />
-                            </a>
-                        </div>
                         <Grid
                             container
                             spacing={3}
@@ -66,12 +48,17 @@ export default class App extends React.Component {
                                 textAlign: "center"
                             }}
                         >
+                            
+                            <Grid item xs={12}>
+                                <FormattedMessage id="LANGUAGE" />:{' '}
+                                <LanguageSelector />
+                            </Grid>
                             <Grid
                                 item
                                 xs={12}
                                 style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
+                                    fontSize: "16px",
+                                    padding: "6px 16px"
                                 }}
                             >
                                 <a
@@ -90,8 +77,8 @@ export default class App extends React.Component {
                                 item
                                 xs={12}
                                 style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
+                                    fontSize: "16px",
+                                    padding: "6px 16px"
                                 }}
                             >
                                 <a
@@ -110,8 +97,8 @@ export default class App extends React.Component {
                                 item
                                 xs={12}
                                 style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
+                                    fontSize: "16px",
+                                    padding: "6px 16px"
                                 }}
                             >
                                 <a
@@ -130,8 +117,8 @@ export default class App extends React.Component {
                                 item
                                 xs={12}
                                 style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
+                                    fontSize: "16px",
+                                    padding: "6px 16px"
                                 }}
                             >
                                 <a
@@ -222,209 +209,168 @@ export default class App extends React.Component {
                             <Grid item xs={2}></Grid>
                         </Grid>
                     </Hidden>
+
                     <Hidden smDown>
-                        <Grid
-                            container
-                            spacing={3}
-                            style={{
-                                width: "200px",
-                                marginRight: "10px",
-                                float: "right",
-                                fontStyle: "normal",
+                        <Grid container spacing={3} style={{marginTop: "40px",fontStyle: "normal",
                                 fontWeight: "300",
                                 fontSize: "20px",
                                 lineHeight: "28px",
                                 color: "#FFFFFF",
-                                mixBlendMode: "normal",
-                                // opacity: 0.6,
-                                marginTop: "40px"
-                            }}
-                        >
-                            <Grid item xs={12}>
-                                <FormattedMessage id="LANGUAGE" />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <LanguageSelector />
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            container
-                            spacing={3}
-                            style={{
-                                width: "200px",
-                                marginRight: "10px",
-                                float: "right",
-                                fontStyle: "normal",
-                                fontWeight: "300",
-                                fontSize: "20px",
-                                lineHeight: "28px",
-                                color: "#FFFFFF",
-                                mixBlendMode: "normal",
-                                // opacity: 0.6,
-                                marginTop: "40px"
-                            }}
-                        >
-                            <Grid item xs={12}>
-                                <FormattedMessage id="COMMUNITY" />
-                            </Grid>
-                            <Grid item xs={3}>
-                                <a
-                                    href="https://twitter.com/symbloxdefi"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    <img
-                                        src={"/twitter.svg"}
-                                        alt="twitter"
-                                        style={{height: "39px"}}
-                                    />
-                                </a>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <a
-                                    href="https://t.me/symblox"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    <img
-                                        src={"/terims.svg"}
-                                        alt="terims"
-                                        style={{height: "39px"}}
-                                    />
-                                </a>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <a
-                                    href="https://medium.com/@symbloxsyx"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    <img
-                                        src={"/media.svg"}
-                                        alt="media"
-                                        style={{height: "39px"}}
-                                    />
-                                </a>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <a
-                                    href="https://github.com/symblox/symblox-yield-farming"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    <img
-                                        src={"/github.svg"}
-                                        alt="github"
+                                mixBlendMode: "normal"}}>
+                                    
+                                <Grid item sm={6}>
+                                    <Grid item xs={12} style={{padding:"32px 0 16px 0"}}>
+                                        <FormattedMessage id="CONTRACT" />
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={12}
                                         style={{
-                                            background: "#49475F",
-                                            borderRadius: "50%",
-                                            padding: "6px",
-                                            height: "39px"
+                                            fontSize: "16px"
                                         }}
-                                    />
-                                </a>
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            container
-                            spacing={3}
-                            style={{
-                                width: "480px",
-                                marginRight: "10px",
-                                fontStyle: "normal",
-                                fontWeight: "300",
-                                fontSize: "20px",
-                                float: "right",
-                                lineHeight: "28px",
-                                color: "#FFFFFF",
-                                mixBlendMode: "normal",
-                                // opacity: 0.6,
-                                marginTop: "40px"
-                            }}
-                        >
-                            <Grid item xs={12}>
-                                <FormattedMessage id="CONTRACT" />
-                            </Grid>
-                            <Grid
-                                item
-                                xs={12}
-                                style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
-                                }}
-                            >
-                                <a
-                                    href={
-                                        config.browser +
-                                        "/address/" +
-                                        ethToVlx(config.syx)
-                                    }
-                                    target="_blank"
-                                >
-                                    <FormattedMessage id="SYX_TOKEN" />:{" "}
-                                    {ethToVlx(config.syx)}
-                                </a>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={12}
-                                style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
-                                }}
-                            >
-                                <a
-                                    href={
-                                        config.browser +
-                                        "/address/" +
-                                        ethToVlx(config.wvlx)
-                                    }
-                                    target="_blank"
-                                >
-                                    <FormattedMessage id="WVLX_TOKEN" />:{" "}
-                                    {ethToVlx(config.wvlx)}
-                                </a>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={12}
-                                style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
-                                }}
-                            >
-                                <a
-                                    href={
-                                        config.browser +
-                                        "/address/" +
-                                        ethToVlx(config.usdt)
-                                    }
-                                    target="_blank"
-                                >
-                                    <FormattedMessage id="USDT_TOKEN" />:{" "}
-                                    {ethToVlx(config.usdt)}
-                                </a>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={12}
-                                style={{
-                                    padding: "0 0 0 12px",
-                                    fontSize: "16px"
-                                }}
-                            >
-                                <a
-                                    href={
-                                        config.browser +
-                                        "/address/" +
-                                        ethToVlx(config.devFund)
-                                    }
-                                    target="_blank"
-                                >
-                                    <FormattedMessage id="DEV_FUND" />:{" "}
-                                    {ethToVlx(config.devFund)}
-                                </a>
-                            </Grid>
+                                    >
+                                        <a
+                                            href={
+                                                config.browser +
+                                                "/address/" +
+                                                ethToVlx(config.syx)
+                                            }
+                                            target="_blank"
+                                        >
+                                            <FormattedMessage id="SYX_TOKEN" />:{" "}
+                                            {ethToVlx(config.syx)}
+                                        </a>
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        style={{
+                                            fontSize: "16px"
+                                        }}
+                                    >
+                                        <a
+                                            href={
+                                                config.browser +
+                                                "/address/" +
+                                                ethToVlx(config.wvlx)
+                                            }
+                                            target="_blank"
+                                        >
+                                            <FormattedMessage id="WVLX_TOKEN" />:{" "}
+                                            {ethToVlx(config.wvlx)}
+                                        </a>
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        style={{
+                                            fontSize: "16px"
+                                        }}
+                                    >
+                                        <a
+                                            href={
+                                                config.browser +
+                                                "/address/" +
+                                                ethToVlx(config.usdt)
+                                            }
+                                            target="_blank"
+                                        >
+                                            <FormattedMessage id="USDT_TOKEN" />:{" "}
+                                            {ethToVlx(config.usdt)}
+                                        </a>
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        style={{
+                                            fontSize: "16px"
+                                        }}
+                                    >
+                                        <a
+                                            href={
+                                                config.browser +
+                                                "/address/" +
+                                                ethToVlx(config.devFund)
+                                            }
+                                            target="_blank"
+                                        >
+                                            <FormattedMessage id="DEV_FUND" />:{" "}
+                                            {ethToVlx(config.devFund)}
+                                        </a>
+                                    </Grid>
+                                </Grid>
+                                <Grid item sm={4}>
+                                    <Grid container xs={12} style={{padding:"32px 0 16px 0"}}>
+                                        <FormattedMessage id="COMMUNITY" />
+                                    </Grid>
+                                    <Grid container item xs={12}>
+                                        <Grid item xs={3}>
+                                            <a
+                                                href="https://twitter.com/symbloxdefi"
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <img
+                                                    src={"/twitter.svg"}
+                                                    alt="twitter"
+                                                    style={{height: "39px"}}
+                                                />
+                                            </a>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <a
+                                                href="https://t.me/symblox"
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <img
+                                                    src={"/terims.svg"}
+                                                    alt="terims"
+                                                    style={{height: "39px"}}
+                                                />
+                                            </a>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <a
+                                                href="https://medium.com/@symbloxsyx"
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <img
+                                                    src={"/media.svg"}
+                                                    alt="media"
+                                                    style={{height: "39px"}}
+                                                />
+                                            </a>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <a
+                                                href="https://github.com/symblox/symblox-yield-farming"
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <img
+                                                    src={"/github.svg"}
+                                                    alt="github"
+                                                    style={{
+                                                        background: "#49475F",
+                                                        borderRadius: "50%",
+                                                        padding: "6px",
+                                                        height: "39px"
+                                                    }}
+                                                />
+                                            </a>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item sm={2}>
+                                    <Grid item xs={12} style={{padding:"32px 0 16px 0"}}>
+                                        <FormattedMessage id="LANGUAGE" />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <LanguageSelector />
+                                    </Grid>
+                                </Grid>
                         </Grid>
                     </Hidden>
                 </Container>

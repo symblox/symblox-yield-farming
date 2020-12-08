@@ -20,7 +20,9 @@ const useStyles = makeStyles({
     bar: {
         background: "inherit",
         boxShadow: "inherit",
-        padding: "32px 0"
+        padding: "32px 0",
+        maxWidth: "1200px",
+        margin: "auto"
     },
     growFlex: {
         flexGrow: 1,

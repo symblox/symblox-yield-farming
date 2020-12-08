@@ -12,7 +12,10 @@ export function PoolContextProvider ({ children }) {
 
     const [oldSyxBalance, setOldSyxBalance] = useState(0);
     const [oldSyxSupply, setOldSyxSupply] = useState(0);
+    const [loading, setLoading] = useState(false);
     const [lastChainId, setLastChainId] = useState(0);
+    const [isError, setIsError] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
   
     const getOldSyxData = useCallback(
         async () => {
@@ -29,20 +32,28 @@ export function PoolContextProvider ({ children }) {
 
     const exchangeSyx = useCallback(
         async (amount) => {
-            if(account && amount > 0){
-                const signer = ethersProvider.getSigner();        
-                const syxContract = new Contract(config.syx, config.syxABI, signer);
-                const oldSyxContract = new Contract(config.oldSyx, config.erc20ABI, signer);
-                const allowance = await oldSyxContract.allowance(account, config.syx);
-                if(parseFloat(allowance) < parseFloat(amount)){
-                    const tx = await oldSyxContract.approve(
-                        config.syx,
-                        amount
-                    );
-                    await tx.wait();
-                }  
+            if(account){
+                setLoading(true);
+                try {
+                    const signer = ethersProvider.getSigner();        
+                    const syxContract = new Contract(config.syx, config.syxABI, signer);
+                    const oldSyxContract = new Contract(config.oldSyx, config.erc20ABI, signer);
+                    const allowance = await oldSyxContract.allowance(account, config.syx);
+                    if(parseFloat(allowance) < parseFloat(amount)){
+                        const tx = await oldSyxContract.approve(
+                            config.syx,
+                            amount
+                        );
+                        await tx.wait();
+                    }  
 
-                await syxContract.exchangeSyx(amount);
+                    await syxContract.exchangeSyx(amount);
+                } catch (error) {
+                    setIsError(true);
+                    setErrorMsg(JSON.stringify(error));
+                } finally{
+                    setLoading(false);
+                }   
             }
         },
         [account, ethersProvider, config],
@@ -69,7 +80,12 @@ export function PoolContextProvider ({ children }) {
             value={{
                 oldSyxBalance,
                 oldSyxSupply,
-                exchangeSyx
+                exchangeSyx,
+                loading,
+                isError, 
+                setIsError, 
+                errorMsg,
+                setErrorMsg
             }}
         >
             {children}
