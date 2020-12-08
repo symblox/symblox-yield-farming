@@ -96,7 +96,7 @@ const ExchangeSyx = ({classes}) => {
     };
 
     return (
-        <Box paddingX={2}>
+        <Box paddingX={2} marginBottom={32}>
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 open={isError}
