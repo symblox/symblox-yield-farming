@@ -72,10 +72,7 @@ contract BaseConnector is syxOwnable {
         emit LogReward(msg.sender, syxAmount);
     }
 
-    /**
-     * @dev Don't need to check onlyOwner as the caller needs to check that
-     */
-    function stakeLpToken(uint256 amount) internal {
+    function stakeLpToken(uint256 amount) public onlyOwner {
         IERC20 syx = IERC20(rewardManager.syx());
         (uint256 currBalance, ) = rewardManager.userInfo(
             uint256(rewardPoolId),
@@ -102,10 +99,7 @@ contract BaseConnector is syxOwnable {
         emit LogStake(msg.sender, newBalance);
     }
 
-    /**
-     * @dev Don't need to check onlyOwner as the caller needs to check that
-     */
-    function unstakeLpToken(uint256 lpTokenAmount) internal {
+    function unstakeLpToken(uint256 lpTokenAmount) public onlyOwner {
         IERC20 syx = IERC20(rewardManager.syx());
         (uint256 currBalance, ) = rewardManager.userInfo(
             uint256(rewardPoolId),
@@ -128,5 +122,10 @@ contract BaseConnector is syxOwnable {
 
         emit LogReward(msg.sender, syxAmount);
         emit LogUnstake(msg.sender, lpTokenAmount);
+    }
+
+    function claimTokens(address token) public onlyOwner {
+        IERC20 erc20Token = IERC20(token);
+        erc20Token.safeTransfer(msg.sender, erc20Token.balanceOf(address(this)));
     }
 }
