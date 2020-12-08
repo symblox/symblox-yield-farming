@@ -3,6 +3,9 @@ import {parseEther, formatEther} from "@ethersproject/units";
 import {withRouter} from "react-router-dom";
 import NumberFormat from "react-number-format";
 import {withStyles} from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import {FormattedMessage} from "react-intl";
 import {
     Box,
@@ -77,11 +80,11 @@ const styles = theme => ({
 });
 
 const ExchangeSyx = ({classes}) => {
-    const {oldSyxBalance, oldSyxSupply, exchangeSyx} = useContext(PoolContext);
+    const {oldSyxBalance, oldSyxSupply, exchangeSyx, loading, isError, setIsError, errorMsg, setErrorMsg} = useContext(PoolContext);
     const [amount, setAmount] = useState(0);
 
     const amountChange = event => {
-        if (Number.isNaN(parseFloat(event.target.value))) {
+        if (event.target.value && Number.isNaN(parseFloat(event.target.value))) {
             setAmount(0);
         } else {
             setAmount(event.target.value);
@@ -94,6 +97,15 @@ const ExchangeSyx = ({classes}) => {
 
     return (
         <Box paddingX={2}>
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                open={isError}
+                onClose={()=>{setIsError(false);setErrorMsg('')}}
+            >
+                <MuiAlert severity="error" onClose={()=>{setIsError(false);setErrorMsg('')}}>
+                    {errorMsg}
+                </MuiAlert>
+            </Snackbar>
             <Typography variant="h2" className={classes.heroText}>
                 <FormattedMessage id="EXCHANGE_TITLE" />
             </Typography>
@@ -152,9 +164,18 @@ const ExchangeSyx = ({classes}) => {
                         </FormControl>
                         <Button
                             className={classes.button}
-                            onClick={() => exchangeSyx(parseEther(amount))}
+                            disabled={amount == 0 || parseFloat(amount) > parseFloat(formatEther(oldSyxBalance)) || loading }
+                            onClick={() => {
+                                if(amount>0)
+                                exchangeSyx(parseEther(amount))
+                            }}
                         >
-                            <FormattedMessage id="EXCHANGE" />
+                            {loading?<CircularProgress
+                                    style={{
+                                        width: "24px",
+                                        height: "24px"
+                                    }}
+                                ></CircularProgress>:<FormattedMessage id="EXCHANGE" />}
                         </Button>
                     </Grid>
                     <Divider orientation="vertical" flexItem />
