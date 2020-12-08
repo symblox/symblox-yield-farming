@@ -87,9 +87,10 @@ const zh_CN = {
     EXCHANGE_RATE: "SYX 兑换比例",
     EXCHANGE_TOTAL_SUPPLY: "SYX 可兑换总数",
     EXCHANGE_WALLET_BALANCE: "可兑换余额: {amount}",
-    HOME: "首页",
-    EXCHANGE: "兑换",
-    CROSS_CHAIN: "跨链",
+    DAPP_MINING_OLD: "老版矿池",
+    DAPP_MINING_NEW: "新版矿池",
+    SYX_TOKEN_EXCHANGE: "新 SYX 兑换",
+    DAPP_CROSS_CHAIN: "跨链应用",
     V1: "V1",
     LANGUAGE: "语言"
 };

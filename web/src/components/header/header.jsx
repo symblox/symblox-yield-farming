@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
 import "../../App.scss";
 import "./header.scss";
-import Link from '@material-ui/core/Link';
-import { makeStyles } from "@material-ui/core/styles";
+import Link from "@material-ui/core/Link";
+import {makeStyles} from "@material-ui/core/styles";
 import {FormattedMessage} from "react-intl";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -24,12 +24,12 @@ const useStyles = makeStyles({
     },
     growFlex: {
         flexGrow: 1,
-        textAlign: "center",
+        textAlign: "right",
         fontSize: "20px"
     },
     link: {
         color: "white",
-        padding: "0 6px"
+        padding: "0 12px"
     },
     mobileLink: {
         color: "white",
@@ -51,7 +51,8 @@ const useStyles = makeStyles({
         transitionDuration: ".2s, .2s, .35s",
         transitionTimingFunction: "linear, linear, ease",
         width: "100%",
-        boxShadow: "0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2)",
+        boxShadow:
+            "0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2)",
         position: "fixed",
         display: "block",
         top: "120px",
@@ -77,7 +78,7 @@ export const Header = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    return (    
+    return (
         <AppBar className={classes.bar} position="static">
             <Toolbar className={classes.container}>
                 <div className={classes.flex}>
@@ -88,18 +89,15 @@ export const Header = () => {
                     />
                 </div>
                 <div className={classes.growFlex}>
-                    <Hidden xsDown implementation="css">            
-                        <Link href="/" className={classes.link}>
-                            <FormattedMessage id="HOME" />
-                        </Link>
+                    <Hidden xsDown implementation="css">
                         <Link href="/exchange" className={classes.link}>
-                            <FormattedMessage id="EXCHANGE" />
-                        </Link>
-                        <Link href="/app.symblox.io" className={classes.link}>
-                            <FormattedMessage id="V1" />
+                            <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
                         </Link>
                         <Link href="/" className={classes.link}>
-                            <FormattedMessage id="CROSS_CHAIN" />
+                            <FormattedMessage id="DAPP_MINING_OLD" />
+                        </Link>
+                        <Link href="//xc.symblox.net" className={classes.link}>
+                            <FormattedMessage id="DAPP_CROSS_CHAIN" />
                         </Link>
                     </Hidden>
                 </div>
@@ -125,21 +123,18 @@ export const Header = () => {
                     onClose={handleDrawerToggle}
                 >
                     <div className={classes.appResponsive}>
-                        <Link href="/" className={classes.mobileLink}>
-                            <FormattedMessage id="HOME" />
-                        </Link>
                         <Link href="/exchange" className={classes.mobileLink}>
-                            <FormattedMessage id="EXCHANGE" />
-                        </Link>
-                        <Link href="/app.symblox.io" className={classes.mobileLink}>
-                            <FormattedMessage id="V1" />
+                            <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
                         </Link>
                         <Link href="/" className={classes.mobileLink}>
-                            <FormattedMessage id="CROSS_CHAIN" />
+                            <FormattedMessage id="DAPP_MINING_OLD" />
+                        </Link>
+                        <Link href="/" className={classes.mobileLink}>
+                            <FormattedMessage id="DAPP_CROSS_CHAIN" />
                         </Link>
                     </div>
                 </Drawer>
             </Hidden>
-        </AppBar> 
+        </AppBar>
     );
 };

@@ -93,7 +93,7 @@ const ExchangeSyx = ({classes}) => {
     };
 
     return (
-        <Box paddingX={2}>
+        <Box paddingX={2} minHeight={720}>
             <Typography variant="h2" className={classes.heroText}>
                 <FormattedMessage id="EXCHANGE_TITLE" />
             </Typography>

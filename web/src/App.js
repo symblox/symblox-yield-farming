@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
-import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import {BrowserRouter as Router} from "react-router-dom";
 
 import "./i18n";
 import {LanguageProvider} from "./contexts/LanguageContext";
