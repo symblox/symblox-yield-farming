@@ -6,7 +6,7 @@ import ExchangeSyx from "../components/ExchangeSyx";
 
 const Exchange = () => {
     return <>
-        <Header show={true} linkTo={"/"} />
+        <Header />
         <ExchangeSyx />
     </>;
 };

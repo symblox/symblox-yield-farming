@@ -462,14 +462,7 @@ class Home extends Component {
 
         return (
             <div>
-                <Header
-                    show={true}
-                    address={address}
-                    overlayClicked={this.overlayClicked}
-                    cur_language={this.props.cur_language}
-                    linkTo={"/"}
-                    setLanguage={this.props.setLanguage}
-                />
+                <Header />
                 <Container>
                     <Hidden xsDown>
                         <Typography
