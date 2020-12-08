@@ -93,10 +93,16 @@ export const Header = () => {
                         <Link href="/exchange" className={classes.link}>
                             <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
                         </Link>
-                        <Link href="/" className={classes.link}>
+                        <Link
+                            href="https://app.symblox.io"
+                            className={classes.link}
+                        >
                             <FormattedMessage id="DAPP_MINING_OLD" />
                         </Link>
-                        <Link href="//xc.symblox.net" className={classes.link}>
+                        <Link
+                            href="https://x.symblox.io"
+                            className={classes.link}
+                        >
                             <FormattedMessage id="DAPP_CROSS_CHAIN" />
                         </Link>
                     </Hidden>
@@ -126,10 +132,16 @@ export const Header = () => {
                         <Link href="/exchange" className={classes.mobileLink}>
                             <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
                         </Link>
-                        <Link href="/" className={classes.mobileLink}>
+                        <Link
+                            href="https://app.symblox.io"
+                            className={classes.mobileLink}
+                        >
                             <FormattedMessage id="DAPP_MINING_OLD" />
                         </Link>
-                        <Link href="/" className={classes.mobileLink}>
+                        <Link
+                            href="https://x.symblox.io"
+                            className={classes.mobileLink}
+                        >
                             <FormattedMessage id="DAPP_CROSS_CHAIN" />
                         </Link>
                     </div>
