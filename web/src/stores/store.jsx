@@ -38,7 +38,7 @@ const Emitter = require("events").EventEmitter;
 const dispatcher = new Dispatcher();
 const emitter = new Emitter();
 
-const blocksPerYear = 2102400;
+const blocksPerYear = 3600*24*365/config.secPerBlock;
 
 class Store {
     constructor() {
