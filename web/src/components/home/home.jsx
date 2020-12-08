@@ -14,7 +14,7 @@ import {
     CardActions,
     CardContent
 } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+
 import {FormattedMessage} from "react-intl";
 import NumberFormat from "react-number-format";
 import config from "../../config";

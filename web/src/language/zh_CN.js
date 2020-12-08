@@ -86,6 +86,11 @@ const zh_CN = {
     EXCHANGE_TIP: "输入您想兑换的金额",
     EXCHANGE_RATE: "SYX 兑换比例",
     EXCHANGE_TOTAL_SUPPLY: "SYX 可兑换总数",
-    EXCHANGE_WALLET_BALANCE: "可兑换余额: {amount}"
+    EXCHANGE_WALLET_BALANCE: "可兑换余额: {amount}",
+    HOME: "首页",
+    EXCHANGE: "兑换",
+    CROSS_CHAIN: "跨链",
+    V1: "V1",
+    LANGUAGE: "语言"
 };
 export default zh_CN;

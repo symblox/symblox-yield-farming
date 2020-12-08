@@ -7,6 +7,7 @@ import "../header/header.scss";
 
 import {Container, Grid, Hidden} from "@material-ui/core";
 import logo_xswap from "../../assets/symblox-logo@2x.png";
+import {LanguageSelector} from "../LanguageSelector";
 
 export default class App extends React.Component {
     constructor(porps) {
@@ -222,22 +223,30 @@ export default class App extends React.Component {
                         </Grid>
                     </Hidden>
                     <Hidden smDown>
-                        <a
-                            href={this.props.linkTo}
-                            className={"header__logo"}
+                        <Grid
+                            container
+                            spacing={3}
                             style={{
-                                widht: "188px",
-                                height: "auto",
-                                marginTop: "83px",
-                                display: "inline-block"
+                                width: "200px",
+                                marginRight: "10px",
+                                float: "right",
+                                fontStyle: "normal",
+                                fontWeight: "300",
+                                fontSize: "20px",
+                                lineHeight: "28px",
+                                color: "#FFFFFF",
+                                mixBlendMode: "normal",
+                                // opacity: 0.6,
+                                marginTop: "40px"
                             }}
                         >
-                            <img
-                                src={logo_xswap}
-                                alt="logo"
-                                style={{height: "33px"}}
-                            />
-                        </a>
+                            <Grid item xs={12}>
+                                <FormattedMessage id="LANGUAGE" />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <LanguageSelector />
+                            </Grid>
+                        </Grid>
                         <Grid
                             container
                             spacing={3}
@@ -322,10 +331,10 @@ export default class App extends React.Component {
                             style={{
                                 width: "480px",
                                 marginRight: "10px",
-                                float: "right",
                                 fontStyle: "normal",
                                 fontWeight: "300",
                                 fontSize: "20px",
+                                float: "right",
                                 lineHeight: "28px",
                                 color: "#FFFFFF",
                                 mixBlendMode: "normal",

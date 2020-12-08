@@ -89,6 +89,11 @@ const en_US = {
     EXCHANGE_TIP: "Enter the amount you would like to exchange",
     EXCHANGE_RATE: "Old SYX to new SYX exchange rate",
     EXCHANGE_TOTAL_SUPPLY: "Max old SYX to new SYX liquidity",
-    EXCHANGE_WALLET_BALANCE: "Redeemable balance: {amount}"
+    EXCHANGE_WALLET_BALANCE: "Redeemable balance: {amount}",
+    HOME: "Home",
+    EXCHANGE: "Exchange",
+    CROSS_CHAIN: "Cross chain",
+    V1: "V1",
+    LANGUAGE: "Language"
 };
 export default en_US;
