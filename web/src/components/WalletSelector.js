@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
 import {FormattedMessage} from "react-intl";
 import {Button, Popover, Grid, Typography} from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import PopupState, {bindTrigger, bindPopover} from "material-ui-popup-state";
-
 import {Web3Context} from "../contexts/Web3Context";
 import {networkOptions} from "../constants/constants";
 import {ethToVlx} from "../utils/vlxAddressConversion.js";
@@ -15,7 +15,7 @@ const formatAddress = (address, chainId) => {
     return `${address.substr(0, 6)}...${address.substr(len - 4, len - 1)}`;
 };
 export const WalletSelector = props => {
-    const {connectWeb3, disconnect, account, providerNetwork} = useContext(
+    const {connectWeb3, disconnect, account, providerNetwork, providerLoading} = useContext(
         Web3Context
     );
 
@@ -45,7 +45,11 @@ export const WalletSelector = props => {
             {!account && (
                 <div className={"header__menu_wallet"}>
                     <Button onClick={connectWeb3}>
-                        <FormattedMessage id="LABEL_CONNECT_WALLET" />
+                        {
+                            providerLoading?
+                            <CircularProgress style={{width: "24px",height: "24px"}}></CircularProgress>:
+                            <FormattedMessage id="LABEL_CONNECT_WALLET" />
+                        }
                     </Button>
                 </div>
             )}
@@ -57,7 +61,8 @@ export const WalletSelector = props => {
                                 aria-describedby={id}
                                 {...bindTrigger(popupState)}
                             >
-                                {formatAddress(
+                                {providerLoading?<CircularProgress style={{
+                                        width: "24px",height: "24px"}}></CircularProgress>:formatAddress(
                                     account,
                                     providerNetwork.chainId
                                 )}
@@ -101,10 +106,7 @@ export const WalletSelector = props => {
                                             style={{height: "2rem"}}
                                             onClick={disconnect}
                                         >
-                                            <p>
-                                                {" "}
-                                                <FormattedMessage id="WALLET_DISCONNECT" />
-                                            </p>
+                                            <FormattedMessage id="WALLET_DISCONNECT" />
                                         </Button>
                                     </Grid>
                                 </Grid>

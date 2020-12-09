@@ -300,7 +300,7 @@ export default class App extends React.Component {
                                     </Grid>
                                 </Grid>
                                 <Grid item sm={4}>
-                                    <Grid container xs={12} style={{padding:"32px 0 16px 0"}}>
+                                    <Grid container item xs={12} style={{padding:"32px 0 16px 0"}}>
                                         <FormattedMessage id="COMMUNITY" />
                                     </Grid>
                                     <Grid container item xs={12}>
