@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, useContext} from "react";
 import {withRouter} from "react-router-dom";
 import {withStyles} from "@material-ui/core/styles";
 import {
@@ -17,13 +17,14 @@ import {
 
 import {FormattedMessage} from "react-intl";
 import NumberFormat from "react-number-format";
+import {Web3Context} from "../../contexts/Web3Context";
 import config from "../../config";
 import Snackbar from "../snackbar";
 import {Header} from "../header";
 import Footer from "../footer";
 import Pool from "../pool";
 import Balance from "../balance";
-import UnlockModal from "../unlock/unlockModal";
+// import UnlockModal from "../unlock/unlockModal";
 import DepositModal from "../modal/depositModal";
 import TransactionModal from "../modal/transactionModal";
 import WithdrawRewardsModal from "../modal/withdrawRewardsModal";
@@ -270,6 +271,7 @@ const styles = theme => ({
 });
 
 class Home extends Component {
+    static contextType = Web3Context;
     constructor(props) {
         super(props);
         const account = store.getStore("account");
@@ -278,7 +280,7 @@ class Home extends Component {
             rewardPools,
             loading: true,
             account,
-            modalOpen: false,
+            // modalOpen: false,
             depositModalOpen: false,
             withdrawRewardsModalOpen: false,
             transactionModalOpen: false
@@ -399,9 +401,9 @@ class Home extends Component {
     connectionConnected = async () => {
         dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
         this.setState({account: store.getStore("account")});
-        this.setState(() => ({
-            modalOpen: false
-        }));
+        // this.setState(() => ({
+        //     modalOpen: false
+        // }));
     };
 
     connectionDisconnected = () => {
@@ -412,7 +414,7 @@ class Home extends Component {
         const {classes} = this.props;
         const {
             account,
-            modalOpen,
+            // modalOpen,
             depositModalOpen,
             withdrawRewardsModalOpen,
             transactionModalOpen,
@@ -1316,7 +1318,7 @@ class Home extends Component {
                         </div>
                     </div>
                 </Container>
-                {modalOpen && this.renderModal()}
+                {/* {modalOpen && this.renderModal()} */}
                 {depositModalOpen &&
                     this.renderDepositModal(this.state.depositData)}
                 {withdrawRewardsModalOpen &&
@@ -1372,9 +1374,10 @@ class Home extends Component {
             !Object.getOwnPropertyNames(account).length ||
             account.address === undefined
         ) {
-            this.setState(() => ({
-                modalOpen: true
-            }));
+            // this.setState(() => ({
+            //     modalOpen: true
+            // }));
+            this.context.connectWeb3();
         } else {
             this.showLoading();
             setTimeout(() => {
@@ -1426,9 +1429,9 @@ class Home extends Component {
         }, 10000);
     };
 
-    overlayClicked = () => {
-        this.setState({modalOpen: true});
-    };
+    // overlayClicked = () => {
+    //     this.setState({modalOpen: true});
+    // };
 
     openDepositModal = data => {
         this.setState({
@@ -1449,9 +1452,10 @@ class Home extends Component {
             !Object.getOwnPropertyNames(account).length ||
             account.address === undefined
         ) {
-            this.setState(() => ({
-                modalOpen: true
-            }));
+            // this.setState(() => ({
+            //     modalOpen: true
+            // }));
+            this.context.connectWeb3();
         } else {
             this.setState({
                 transactionModalOpen: true,
@@ -1460,9 +1464,9 @@ class Home extends Component {
         }
     };
 
-    closeUnlockModal = () => {
-        this.setState({modalOpen: false});
-    };
+    // closeUnlockModal = () => {
+    //     this.setState({modalOpen: false});
+    // };
 
     closeDepositModal = () => {
         this.setState({depositModalOpen: false});
@@ -1487,14 +1491,14 @@ class Home extends Component {
         );
     };
 
-    renderModal = () => {
-        return (
-            <UnlockModal
-                closeModal={this.closeUnlockModal}
-                modalOpen={this.state.modalOpen}
-            />
-        );
-    };
+    // renderModal = () => {
+    //     return (
+    //         <UnlockModal
+    //             closeModal={this.closeUnlockModal}
+    //             modalOpen={this.state.modalOpen}
+    //         />
+    //     );
+    // };
 
     renderDepositModal = data => {
         return (
