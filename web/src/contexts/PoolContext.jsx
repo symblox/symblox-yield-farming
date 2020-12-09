@@ -1,16 +1,36 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState, useReducer } from 'react';
 import {Contract} from '@ethersproject/contracts';
 import { Web3Context } from './Web3Context';
 import config, {pools} from "../config";
 
 export const PoolContext = React.createContext({});
 
+const initialBalanceState = {
+    syx: 0,
+    oldSyx: 0
+}
+
+function balanceReducer(state, action) {
+  switch (action.type) {
+    case 'syx':
+      return Object.assign({}, state, {
+        syx: action.data
+      });
+    case 'oldSyx':
+      return Object.assign({}, state, {
+        oldSyx: action.data
+      });
+    default:
+      return state;
+  }
+}
+
 export function PoolContextProvider ({ children }) {
     const { ethersProvider, account, providerNetwork } = useContext(
         Web3Context,
     );
 
-    const [oldSyxBalance, setOldSyxBalance] = useState(0);
+    const [balanceState, balanceDispatch] = useReducer(balanceReducer, initialBalanceState);
     const [oldSyxSupply, setOldSyxSupply] = useState(0);
     const [loading, setLoading] = useState(false);
     const [lastChainId, setLastChainId] = useState(0);
@@ -23,11 +43,24 @@ export function PoolContextProvider ({ children }) {
                 const oldSyxContract = new Contract(config.oldSyx, config.erc20ABI, ethersProvider);
                 const oldSyxBalance = await oldSyxContract.balanceOf(account);
                 const oldSyxSupply = await oldSyxContract.totalSupply();
-                setOldSyxBalance(oldSyxBalance);
+
                 setOldSyxSupply(oldSyxSupply);
+                balanceDispatch({type: "oldSyx", data: oldSyxBalance});
             }
         },
-        [account, oldSyxBalance, oldSyxSupply, ethersProvider, config],
+        [account, balanceDispatch, setOldSyxSupply, ethersProvider, config],
+    );
+
+    const getSyxData = useCallback(
+        async () => {
+            if(account){
+                const syxContract = new Contract(config.syx, config.erc20ABI, ethersProvider);
+                const syxBalance = await syxContract.balanceOf(account);
+                
+                balanceDispatch({type: "syx", data: syxBalance});
+            }
+        },
+        [account, balanceDispatch, ethersProvider, config],
     );
 
     const exchangeSyx = useCallback(
@@ -47,7 +80,10 @@ export function PoolContextProvider ({ children }) {
                         await tx.wait();
                     }  
 
-                    await syxContract.exchangeSyx(amount);
+                    const tx2 = await syxContract.exchangeSyx(amount);
+                    await tx2.wait();
+                    getSyxData();
+                    getOldSyxData();
                 } catch (error) {
                     setIsError(true);
                     setErrorMsg(JSON.stringify(error));
@@ -68,6 +104,7 @@ export function PoolContextProvider ({ children }) {
         ) {
             setLastChainId(providerNetwork.chainId);
             getOldSyxData();
+            getSyxData();
         }
     }, [
         account,
@@ -78,7 +115,7 @@ export function PoolContextProvider ({ children }) {
     return (
         <PoolContext.Provider
             value={{
-                oldSyxBalance,
+                balanceState,
                 oldSyxSupply,
                 exchangeSyx,
                 loading,

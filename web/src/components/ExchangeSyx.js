@@ -19,6 +19,7 @@ import {
 } from "@material-ui/core";
 
 import {PoolContext} from "../contexts/PoolContext";
+import BalanceBar from "./BalanceBar";
 
 const styles = theme => ({
     container: {
@@ -80,8 +81,10 @@ const styles = theme => ({
 });
 
 const ExchangeSyx = ({classes}) => {
-    const {oldSyxBalance, oldSyxSupply, exchangeSyx, loading, isError, setIsError, errorMsg, setErrorMsg} = useContext(PoolContext);
+    const {oldSyxSupply, balanceState, exchangeSyx, loading, isError, setIsError, errorMsg, setErrorMsg} = useContext(PoolContext);
+
     const [amount, setAmount] = useState(0);
+    const [balances, setBalances] = useState([]);
 
     const amountChange = event => {
         if (event.target.value && Number.isNaN(parseFloat(event.target.value))) {
@@ -92,8 +95,21 @@ const ExchangeSyx = ({classes}) => {
     };
 
     const getMaxAmount = () => {
-        setAmount(formatEther(oldSyxBalance));
+        setAmount(formatEther(balanceState.oldSyx));
     };
+
+    useEffect(() => {
+        let array = [];
+        for(let i in balanceState){
+            const balance = formatEther(balanceState[i]);
+            if(i!="oldSyx")
+            array.push({
+                name: i,
+                balance
+            })
+        }
+        setBalances(array);
+    }, [balanceState]);
 
     return (
         <Box paddingX={2} marginBottom={32}>
@@ -109,6 +125,12 @@ const ExchangeSyx = ({classes}) => {
             <Typography variant="h2" className={classes.heroText}>
                 <FormattedMessage id="EXCHANGE_TITLE" />
             </Typography>
+            <Box
+                maxWidth="60rem"
+                marginX="auto"
+            >
+                <BalanceBar balances={balances}/>
+            </Box>
             <Box
                 maxWidth="60rem"
                 marginX="auto"
@@ -147,7 +169,7 @@ const ExchangeSyx = ({classes}) => {
                                         amount: (
                                             <NumberFormat
                                                 value={formatEther(
-                                                    oldSyxBalance
+                                                    balanceState.oldSyx
                                                 )}
                                                 defaultValue={"-"}
                                                 displayType={"text"}
@@ -164,7 +186,7 @@ const ExchangeSyx = ({classes}) => {
                         </FormControl>
                         <Button
                             className={classes.button}
-                            disabled={amount == 0 || parseFloat(amount) > parseFloat(formatEther(oldSyxBalance)) || loading }
+                            disabled={amount == 0 || parseFloat(amount) > parseFloat(formatEther(balanceState.oldSyx)) || loading }
                             onClick={() => {
                                 if(amount>0)
                                 exchangeSyx(parseEther(amount))
