@@ -6,15 +6,15 @@ import config, {pools} from "../config";
 export const PoolContext = React.createContext({});
 
 const initialBalanceState = {
-    syx: 0,
+    syxv2: 0,
     oldSyx: 0
 }
 
 function balanceReducer(state, action) {
   switch (action.type) {
-    case 'syx':
+    case 'syxv2':
       return Object.assign({}, state, {
-        syx: action.data
+        syxv2: action.data
       });
     case 'oldSyx':
       return Object.assign({}, state, {
@@ -60,10 +60,10 @@ export function PoolContextProvider ({ children }) {
         async () => {
             if(account){
                 try {
-                    const syxContract = new Contract(config.syx, config.erc20ABI, ethersProvider);
+                    const syxContract = new Contract(config.syxv2, config.erc20ABI, ethersProvider);
                     const syxBalance = await syxContract.balanceOf(account);
                     
-                    balanceDispatch({type: "syx", data: syxBalance});
+                    balanceDispatch({type: "syxv2", data: syxBalance});
                 } catch (error) {
                     setIsError(true);
                     setErrorMsg(JSON.stringify(error));
@@ -79,12 +79,12 @@ export function PoolContextProvider ({ children }) {
                 setLoading(true);
                 try {
                     const signer = ethersProvider.getSigner();        
-                    const syxContract = new Contract(config.syx, config.syxABI, signer);
+                    const syxContract = new Contract(config.syxv2, config.syxABI, signer);
                     const oldSyxContract = new Contract(config.oldSyx, config.erc20ABI, signer);
-                    const allowance = await oldSyxContract.allowance(account, config.syx);
+                    const allowance = await oldSyxContract.allowance(account, config.syxv2);
                     if(parseFloat(allowance) < parseFloat(amount)){
                         const tx = await oldSyxContract.approve(
-                            config.syx,
+                            config.syxv2,
                             amount
                         );
                         await tx.wait();

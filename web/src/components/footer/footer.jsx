@@ -65,12 +65,12 @@ export default class App extends React.Component {
                                         href={
                                             config.browser +
                                             "/address/" +
-                                            ethToVlx(config.syx)
+                                            ethToVlx(config.syxv2)
                                         }
                                         target="_blank"
                                     >
                                         <FormattedMessage id="SYX_TOKEN" />:{" "}
-                                        {this.formatAddress(config.syx)}
+                                        {this.formatAddress(config.syxv2)}
                                     </a>
                                 </Grid>
                                 <Grid
@@ -231,12 +231,12 @@ export default class App extends React.Component {
                                         href={
                                             config.browser +
                                             "/address/" +
-                                            ethToVlx(config.syx)
+                                            ethToVlx(config.syxv2)
                                         }
                                         target="_blank"
                                     >
                                         <FormattedMessage id="SYX_TOKEN" />:{" "}
-                                        {ethToVlx(config.syx)}
+                                        {ethToVlx(config.syxv2)}
                                     </a>
                                 </Grid>
                                 <Grid
