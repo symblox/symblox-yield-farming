@@ -17,32 +17,38 @@ console.log("REACT_APP_ENV: ", process.env.REACT_APP_ENV);
 function env() {
     if (process.env.REACT_APP_ENV === "production") {
         return {
-            // requiredNetworkId,
-            // rpcUrl: rpcUrls[requiredNetworkId],
-            // browser: browserUrls[requiredNetworkId],
-            // minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
+            requiredNetworkId,
+            rpcUrl: rpcUrls[requiredNetworkId],
+            browser: browserUrls[requiredNetworkId],
+            minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
             // bpt: "0x63a4cB3251CC3A93aF72C121d661C700637Fc7CB",
             // usdtBpt: "0x95853604e6dec040b45D4Ee13fDC8732492B3cBB",
             // vlxUsdtBpt: "0x2598cAa01C04b8eB7Ec4dC82AC0458593B823262",
             usdt: "0x4b773e1ae1baa4894e51cc1d1faf485c91b1012f",
             syx: "0x01Db6ACFA20562Ba835aE9F5085859580A0b1386",
+            oldSyx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
             wvlx: "0x2b1aBEb48f875465bf0D3A262a2080ab1C7A3E39",
             rewardPool: "0x9fCdD9eb40CaC90A5C385C9Ef37b48E847B178a3",
-            connectorFactory: "0xBE6A1f0b0236BB39E0b16B0fc5cb6C291fFdFC2E"
+            connectorFactory: "0xBE6A1f0b0236BB39E0b16B0fc5cb6C291fFdFC2E",
+            vlxSyxBpt: "",
+            vlxUsdtBpt: "",
+            usdtSyxBpt: "",
+            ethSyxBpt: "",
+            vlxEthBpt: "",
             // wvlxConnector: "0xf6182f2924065343947E7F12ec4a989Fd9D2A9Ec",
             // bptConnector: "0xbF3357651540a8259dbd4E35bb761D12c4592Ef5",
             // bptReferralConnector: "0x66Be02528e1dC95DF60B5B3C908FCF11Bf2b16AC",
             // timelock: "0x19eb08763450504b2bc07a773dff2ac49e4f3bde",
             // governor: "0xdEdBCBdEc215a32bB75acfc278F57dCEb2fb6da1",
-            // devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
-            // erc20ABI: abis.erc20ABI,
-            // rewardPoolABI: abis.rewardPoolABI,
-            // bptABI: abis.bptABI,
-            // syxABI: abis.syxABI,
-            // bptRefConnectorABI: abis.bptRefConnectorABI,
-            // wvlxConnectorABI: abis.wvlxConnectorABI,
-            // connectorFactoryABI: abis.connectorFactoryABI,
-            // secPerBlock: 5
+            devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
+            erc20ABI: abis.erc20ABI,
+            rewardPoolABI: abis.rewardPoolABI,
+            bptABI: abis.bptABI,
+            syxABI: abis.syxABI,
+            bptRefConnectorABI: abis.bptRefConnectorABI,
+            wvlxConnectorABI: abis.wvlxConnectorABI,
+            connectorFactoryABI: abis.connectorFactoryABI,
+            secPerBlock: 5
         };
     } else {
         return {
