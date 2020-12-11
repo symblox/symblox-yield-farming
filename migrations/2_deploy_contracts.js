@@ -28,9 +28,9 @@ module.exports = async function (deployer, network, accounts) {
                 initSupply: "800000000000000000000000" //800000 syx
             },
             vlxmain: {
-                syx: "",
-                startBlock: "",
-                bonusEndBlock: "",
+                syx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
+                startBlock: "4360518",
+                bonusEndBlock: "4360518",
                 seasonBlocks: "725760",
                 initSupply: "800000000000000000000000" //800000 syx
             }

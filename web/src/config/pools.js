@@ -208,6 +208,7 @@ function getPools() {
         //     3
         // ];
         // return [seedPool, vlxPool, usdtPool, vlxUsdtPool];
+        return [];
     } else {
         [
             vlxPool.index,
