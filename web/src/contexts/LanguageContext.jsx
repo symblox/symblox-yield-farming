@@ -11,7 +11,7 @@ export const LanguageProvider = ({children}) => {
     const [language, setLanguage] = useState(languageOptions[0]); //default en
     useEffect(() => {
         const browserLang = navigator.language.toLowerCase();
-        if (browserLang === "zh-cn") {
+        if (browserLang.indexOf("cn") >= 0 || browserLang.indexOf("zh") >= 0) {
             setLanguage(languageOptions[1]);
         } else {
             setLanguage(languageOptions[0]);
