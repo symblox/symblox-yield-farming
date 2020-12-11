@@ -24,6 +24,7 @@ function env() {
             // bpt: "0x63a4cB3251CC3A93aF72C121d661C700637Fc7CB",
             // usdtBpt: "0x95853604e6dec040b45D4Ee13fDC8732492B3cBB",
             // vlxUsdtBpt: "0x2598cAa01C04b8eB7Ec4dC82AC0458593B823262",
+            weth: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
             usdt: "0x4b773e1ae1baa4894e51cc1d1faf485c91b1012f",
             syx: "0x01Db6ACFA20562Ba835aE9F5085859580A0b1386",
             oldSyx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
