@@ -40,12 +40,17 @@ export function PoolContextProvider ({ children }) {
     const getOldSyxData = useCallback(
         async () => {
             if(account){
-                const oldSyxContract = new Contract(config.oldSyx, config.erc20ABI, ethersProvider);
-                const oldSyxBalance = await oldSyxContract.balanceOf(account);
-                const oldSyxSupply = await oldSyxContract.totalSupply();
+                try {
+                    const oldSyxContract = new Contract(config.oldSyx, config.erc20ABI, ethersProvider);
+                    const oldSyxBalance = await oldSyxContract.balanceOf(account);
+                    const oldSyxSupply = await oldSyxContract.totalSupply();
 
-                setOldSyxSupply(oldSyxSupply);
-                balanceDispatch({type: "oldSyx", data: oldSyxBalance});
+                    setOldSyxSupply(oldSyxSupply);
+                    balanceDispatch({type: "oldSyx", data: oldSyxBalance});
+                } catch (error) {
+                    setIsError(true);
+                    setErrorMsg(JSON.stringify(error));
+                }
             }
         },
         [account, balanceDispatch, setOldSyxSupply, ethersProvider, config],
@@ -54,10 +59,15 @@ export function PoolContextProvider ({ children }) {
     const getSyxData = useCallback(
         async () => {
             if(account){
-                const syxContract = new Contract(config.syx, config.erc20ABI, ethersProvider);
-                const syxBalance = await syxContract.balanceOf(account);
-                
-                balanceDispatch({type: "syx", data: syxBalance});
+                try {
+                    const syxContract = new Contract(config.syx, config.erc20ABI, ethersProvider);
+                    const syxBalance = await syxContract.balanceOf(account);
+                    
+                    balanceDispatch({type: "syx", data: syxBalance});
+                } catch (error) {
+                    setIsError(true);
+                    setErrorMsg(JSON.stringify(error));
+                }  
             }
         },
         [account, balanceDispatch, ethersProvider, config],
