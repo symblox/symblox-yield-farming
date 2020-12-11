@@ -72,7 +72,7 @@ contract BaseConnector is syxOwnable {
         emit LogReward(msg.sender, syxAmount);
     }
 
-    function stakeLpToken(uint256 amount) public onlyOwner {
+    function stakeLpToken(uint256 amount) public {
         IERC20 syx = IERC20(rewardManager.syx());
         (uint256 currBalance, ) = rewardManager.userInfo(
             uint256(rewardPoolId),
@@ -93,9 +93,10 @@ contract BaseConnector is syxOwnable {
         require(newBalance - currBalance == amount, "ERR_STAKE_REWARD");
 
         uint256 syxAmount = syx.balanceOf(address(this));
-        syx.safeTransfer(msg.sender, syxAmount);
+        address receive = owner();
+        syx.safeTransfer(receive, syxAmount);
 
-        emit LogReward(msg.sender, syxAmount);
+        emit LogReward(receive, syxAmount);
         emit LogStake(msg.sender, newBalance);
     }
 
