@@ -1129,8 +1129,8 @@ class Home extends Component {
                                                                         xs={6}
                                                                     >
                                                                         {
-                                                                            pool
-                                                                                .tokens[1]
+                                                                            tokensName[pool
+                                                                                .tokens[1].toLowerCase()]
                                                                         }
                                                                         :
                                                                         <NumberFormat
@@ -1235,8 +1235,8 @@ class Home extends Component {
                                                                         xs={6}
                                                                     >
                                                                         {
-                                                                            pool
-                                                                                .tokens[0]
+                                                                            tokensName[pool
+                                                                                .tokens[0].toLowerCase()]
                                                                         }
                                                                         :
                                                                         <NumberFormat
