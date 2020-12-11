@@ -68,7 +68,7 @@ const en_US = {
     SEE_DETAIL: "See detail",
     REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio",
     NETWORK_ERROR:
-        "Current newtwork is not supported, please switch to VELAS mainnet (RPC URL: https://explorer.velas.com/rpc)",
+        "Current newtwork is not supported, please switch to {requiredNetwork} (RPC URL: {rpcUrl})",
     POPUP_WITHDRAW_AMOUNT: "Amount to withdraw",
     POPUP_WITHDRAW_REWARD: "Rewards to claim",
     RISK_WARNING:

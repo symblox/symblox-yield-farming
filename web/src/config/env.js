@@ -18,6 +18,7 @@ function env() {
     if (process.env.REACT_APP_ENV === "production") {
         return {
             requiredNetworkId,
+            requiredNetwork: "VELAS Mainnet",
             rpcUrl: rpcUrls[requiredNetworkId],
             browser: browserUrls[requiredNetworkId],
             minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
@@ -54,6 +55,7 @@ function env() {
     } else {
         return {
             requiredNetworkId,
+            requiredNetwork: "VELAS Testnet",
             rpcUrl: rpcUrls[requiredNetworkId],
             browser: browserUrls[requiredNetworkId],
             minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
