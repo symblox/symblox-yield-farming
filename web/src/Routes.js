@@ -6,9 +6,10 @@ import Exchange from "./pages/Exchange";
 
 const Routes = () => (
     <Switch>
-        <Route exact path="/" component={Home} />
+        <Route exact path="/" component={Exchange} />
+        <Route path="/home" component={Home} />
         <Route path="/exchange" component={Exchange} />
-        <Route path="*" component={Home} />
+        <Route path="*" component={Exchange} />
     </Switch>
 );
 export default Routes;
