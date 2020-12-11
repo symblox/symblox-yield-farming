@@ -30,6 +30,8 @@ import {
     CALCULATE_BPT_AMOUNT_RETURNED
 } from "../../constants";
 
+import config, {tokensName} from "../../config";
+
 const dispatcher = Store.dispatcher;
 const emitter = Store.emitter;
 
@@ -631,7 +633,7 @@ class WithdrawRewardsModal extends Component {
                                                     src={"/" + v + ".png"}
                                                     alt=""
                                                 />
-                                                {v}
+                                                {tokensName[v.toLowerCase()]}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -643,14 +645,14 @@ class WithdrawRewardsModal extends Component {
                                         <span className={classes.text}>
                                             <FormattedMessage id="POPUP_WITHDRAW_AMOUNT" />
                                         </span>
-                                        <NumberFormat value={this.state.amount} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.token} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                                        <NumberFormat value={this.state.amount} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[this.state.token.toLowerCase()]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                                         
                                     </Typography>
                                     <Typography gutterBottom>
                                         <span className={classes.text}>
                                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                                         </span>
-                                        <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                                        <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'0'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[this.state.pool.rewardsSymbol.toLowerCase()]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                                     </Typography>
                                 </>
                             ) : (
@@ -673,7 +675,7 @@ class WithdrawRewardsModal extends Component {
                                         src={"/"+this.state.pool.rewardsSymbol+".png"}
                                         alt=""
                                     />{" "}
-                                    <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={this.state.pool.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} />
+                                    <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[this.state.pool.rewardsSymbol.toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
                                 </span>
                             </Typography>
                             <div className={classes.customSelect}>

@@ -18,7 +18,7 @@ import {
 import {FormattedMessage} from "react-intl";
 import NumberFormat from "react-number-format";
 import {Web3Context} from "../../contexts/Web3Context";
-import config from "../../config";
+import config, {tokensName} from "../../config";
 import Snackbar from "../snackbar";
 import {Header} from "../header";
 import Footer from "../footer";
@@ -654,7 +654,7 @@ class Home extends Component {
                                                     fixedDecimalScale={true}
                                                 />
                                                 <span className="small-text">
-                                                    SYX
+                                                    SYX2
                                                 </span>
                                             </Typography>
                                             <Button

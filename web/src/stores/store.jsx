@@ -201,7 +201,7 @@ class Store {
             store.setStore({currentBlock: currentBlock});
 
             //The reward tokens of several pools are all syx, so make a separate request to avoid repeated requests
-            syxBalance = await this.getErc20Balance(web3,config.syxv2,18,account);
+            syxBalance = await this.getErc20Balance(web3,config.syx,18,account);
         } catch (err) {
             console.log(err);
             return;

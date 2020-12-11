@@ -1,6 +1,6 @@
 import env from "./env";
 const config = env;
-//If syxv2 is a tradable token of the pool, it is defined to erc20Address2
+//If syx is a tradable token of the pool, it is defined to erc20Address2
 //If vlx is a tradable token of the pool, it is defined to erc20Address
 let seedPool = {
     id: "VLX",
@@ -19,15 +19,15 @@ let seedPool = {
     entryContractABI: config.wvlxConnectorABI,
     entryContractFactoryAddress: config.connectorFactory,
     entryContractFactoryABI: config.connectorFactoryABI,
-    rewardsAddress: config.syxv2,
+    rewardsAddress: config.syx,
     rewardsABI: config.syxABI,
-    rewardsSymbol: "SYXV2",
+    rewardsSymbol: "SYX",
     poolAddress: config.rewardPool,
     poolABI: config.rewardPoolABI
 };
 
 let vlxPool = {
-    id: "VLX/SYXV2",
+    id: "VLX/SYX2",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
@@ -35,19 +35,19 @@ let vlxPool = {
     symbol: "BPT",
     ROI: "DF",
     type: "swap-native",
-    tokens: ["SYXV2", "VLX"], //reward token must in first
+    tokens: ["SYX", "VLX"], //reward token must in first
     abi: config.bptABI,
     decimals: 18,
-    rewardsAddress: config.syxv2,
+    rewardsAddress: config.syx,
     rewardsABI: config.syxABI,
-    rewardsSymbol: "SYXV2",
+    rewardsSymbol: "SYX",
     entryContractABI: config.bptRefConnectorABI,
     entryContractFactoryAddress: config.connectorFactory,
     entryContractFactoryABI: config.connectorFactoryABI,
     erc20Address: config.wvlx,
     erc20ABI: config.erc20ABI,
     erc20Decimals: 18,
-    erc20Address2: config.syxv2,
+    erc20Address2: config.syx,
     erc20ABI2: config.syxABI,
     erc20Decimals2: 18,
     poolAddress: config.rewardPool,
@@ -55,7 +55,7 @@ let vlxPool = {
 };
 
 let ticketPool = {
-    id: "pVLX/SYXV2",
+    id: "pVLX/SYX2",
     featured: false,
     name: "pVLX",
     website: "Reward Pool",
@@ -63,19 +63,19 @@ let ticketPool = {
     symbol: "BPT",
     ROI: "DF",
     type: "swap",
-    tokens: ["SYXV2", "pVLX"], //reward token must in first
+    tokens: ["SYX", "pVLX"], //reward token must in first
     abi: config.bptABI,
     entryContractABI: config.bptRefConnectorABI,
     entryContractFactoryAddress: config.connectorFactory,
     entryContractFactoryABI: config.connectorFactoryABI,
     decimals: 18,
-    rewardsAddress: config.syxv2,
+    rewardsAddress: config.syx,
     rewardsABI: config.syxABI,
-    rewardsSymbol: "SYXV2",
+    rewardsSymbol: "SYX",
     erc20Address: config.pVlx,
     erc20ABI: config.erc20ABI,
     erc20Decimals: 18,
-    erc20Address2: config.syxv2,
+    erc20Address2: config.syx,
     erc20ABI2: config.syxABI,
     erc20Decimals2: 18,
     poolAddress: config.rewardPool,
@@ -83,7 +83,7 @@ let ticketPool = {
 };
 
 let usdtSyxPool = {
-    id: "USDT/SYXV2",
+    id: "USDT/SYX2",
     featured: false,
     name: "USDT",
     website: "Reward Pool",
@@ -92,19 +92,19 @@ let usdtSyxPool = {
     ROI: "DF",
     type: "swap",
     referral: true,
-    tokens: ["SYXV2", "USDT"], //reward token must in first
+    tokens: ["SYX", "USDT"], //reward token must in first
     abi: config.bptABI,
     decimals: 18,
     entryContractABI: config.bptRefConnectorABI,
     entryContractFactoryAddress: config.connectorFactory,
     entryContractFactoryABI: config.connectorFactoryABI,
-    rewardsAddress: config.syxv2,
+    rewardsAddress: config.syx,
     rewardsABI: config.syxABI,
-    rewardsSymbol: "SYXV2",
+    rewardsSymbol: "SYX",
     erc20Address: config.usdt,
     erc20ABI: config.erc20ABI,
     erc20Decimals: 6,
-    erc20Address2: config.syxv2,
+    erc20Address2: config.syx,
     erc20ABI2: config.syxABI,
     erc20Decimals2: 18,
     poolAddress: config.rewardPool,
@@ -124,9 +124,9 @@ let vlxUsdtPool = {
     tokens: ["USDT", "VLX"], //reward token must in first
     abi: config.bptABI,
     decimals: 18,
-    rewardsAddress: config.syxv2,
+    rewardsAddress: config.syx,
     rewardsABI: config.syxABI,
-    rewardsSymbol: "SYXV2",
+    rewardsSymbol: "SYX",
     entryContractABI: config.bptRefConnectorABI,
     entryContractFactoryAddress: config.connectorFactory,
     entryContractFactoryABI: config.connectorFactoryABI,
@@ -153,9 +153,9 @@ let vlxEthPool = {
     tokens: ["ETH", "VLX"], //reward token must in first
     abi: config.bptABI,
     decimals: 18,
-    rewardsAddress: config.syxv2,
+    rewardsAddress: config.syx,
     rewardsABI: config.syxABI,
-    rewardsSymbol: "SYXV2",
+    rewardsSymbol: "SYX",
     entryContractABI: config.bptRefConnectorABI,
     entryContractFactoryAddress: config.connectorFactory,
     entryContractFactoryABI: config.connectorFactoryABI,
@@ -170,7 +170,7 @@ let vlxEthPool = {
 };
 
 let ethSyxPool = {
-    id: "ETH/SYXV2",
+    id: "ETH/SYX2",
     featured: false,
     name: "ETH",
     website: "Reward Pool",
@@ -179,19 +179,19 @@ let ethSyxPool = {
     ROI: "DF",
     type: "swap",
     referral: false,
-    tokens: ["SYXV2", "ETH"], //reward token must in first
+    tokens: ["SYX", "ETH"], //reward token must in first
     abi: config.bptABI,
     decimals: 18,
-    rewardsAddress: config.syxv2,
+    rewardsAddress: config.syx,
     rewardsABI: config.syxABI,
-    rewardsSymbol: "SYXV2",
+    rewardsSymbol: "SYX",
     entryContractABI: config.bptRefConnectorABI,
     entryContractFactoryAddress: config.connectorFactory,
     entryContractFactoryABI: config.connectorFactoryABI,
     erc20Address: config.weth,
     erc20ABI: config.erc20ABI,
     erc20Decimals: 18,
-    erc20Address2: config.syxv2,
+    erc20Address2: config.syx,
     erc20ABI2: config.erc20ABI,
     erc20Decimals2: 18,
     poolAddress: config.rewardPool,

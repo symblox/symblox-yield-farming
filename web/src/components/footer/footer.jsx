@@ -72,11 +72,11 @@ const Footer = ({classes}) => {
                                     href={
                                         config.browser +
                                         "/address/" +
-                                        ethToVlx(config.syxv2)
+                                        ethToVlx(config.syx)
                                     }
                                 >
                                     <FormattedMessage id="SYX_TOKEN" />:
-                                    {formatAddress(config.syxv2)}
+                                    {formatAddress(config.syx)}
                                 </Link>
                             </Grid>
                             <Grid
@@ -272,12 +272,12 @@ const Footer = ({classes}) => {
                                     href={
                                         config.browser +
                                         "/address/" +
-                                        ethToVlx(config.syxv2)
+                                        ethToVlx(config.syx)
                                     }
                                     target="_blank"
                                 >
                                     <FormattedMessage id="SYX_TOKEN" />:{" "}
-                                    {ethToVlx(config.syxv2)}
+                                    {ethToVlx(config.syx)}
                                 </Link>
                             </Grid>
                             <Grid
