@@ -19,7 +19,10 @@ import {
 } from "@material-ui/core";
 
 import {PoolContext} from "../contexts/PoolContext";
+import {Web3Context} from "../contexts/Web3Context";
 import BalanceBar from "./BalanceBar";
+import NetworkErrModal from "./modal/networkErrModal";
+import config from "../config";
 
 const styles = theme => ({
     container: {
@@ -82,6 +85,7 @@ const styles = theme => ({
 
 const ExchangeSyx = ({classes}) => {
     const {oldSyxSupply, balanceState, exchangeSyx, loading, isError, setIsError, errorMsg, setErrorMsg} = useContext(PoolContext);
+    const {providerNetwork} = useContext(Web3Context);
 
     const [amount, setAmount] = useState(0);
     const [balances, setBalances] = useState([]);
@@ -122,6 +126,7 @@ const ExchangeSyx = ({classes}) => {
                     {errorMsg}
                 </MuiAlert>
             </Snackbar>
+            {providerNetwork && (config.requiredNetworkId.toString() !== providerNetwork.chainId.toString() ? <NetworkErrModal /> : <></>)}
             <Typography variant="h2" className={classes.heroText}>
                 <FormattedMessage id="EXCHANGE_TITLE" />
             </Typography>

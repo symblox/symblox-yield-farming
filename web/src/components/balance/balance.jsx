@@ -1,6 +1,7 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
+import {tokensName} from "../../config";
 
 const useStyles = makeStyles({
     root: {
@@ -31,7 +32,18 @@ export default function Balance(props) {
     return (
         <div className={classes.root}>
             <img src={tokenIcon} alt="" />
-            <NumberFormat value={parseFloat(balance || 0).toLocaleString(undefined,{maximumFractionDigits: 10})} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={name.toUpperCase()} decimalScale={4} fixedDecimalScale={true} />
+            <NumberFormat
+                value={parseFloat(balance || 0).toLocaleString(undefined, {
+                    maximumFractionDigits: 10
+                })}
+                defaultValue={"-"}
+                displayType={"text"}
+                thousandSeparator={true}
+                isNumericString={true}
+                suffix={" " + tokensName[name.toLowerCase()]}
+                decimalScale={4}
+                fixedDecimalScale={true}
+            />
         </div>
     );
 }

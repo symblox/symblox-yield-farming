@@ -25,7 +25,7 @@ import {
     CALCULATE_AMOUNT_RETURNED
 } from "../../constants";
 
-import config from "../../config";
+import config, {tokensName} from "../../config";
 
 const dispatcher = Store.dispatcher;
 const emitter = Store.emitter;
@@ -472,7 +472,7 @@ class DepositModal extends Component {
                             ) : (
                                 <NumberFormat value={this.state.availableAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                             )}
-                            {" " + this.state.token}
+                            {" " + tokensName[this.state.token.toLowerCase()]}
                         </span>
                     </Typography>
                     <Typography gutterBottom style={{overflow: "scroll"}}>
@@ -480,7 +480,7 @@ class DepositModal extends Component {
                             <FormattedMessage id="POPUP_DEPOSITABLE_AMOUNT" />
                             {": "}
                         </span>
-                        <NumberFormat value={this.getMaxAmount()} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.type === "seed"?pool.symbol:token} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                        <NumberFormat value={this.getMaxAmount()} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.type === "seed"?tokensName[pool.symbol.toLowerCase()]:tokensName[token.toLowerCase()]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                     </Typography>
                     <div className={classes.formContent}>
                         <FormControl variant="outlined" style={{flex: "4"}}>
@@ -547,7 +547,7 @@ class DepositModal extends Component {
                                             src={"/" + v + ".png"}
                                             alt=""
                                         />
-                                        {v}
+                                        {tokensName[v.toLowerCase()]}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -557,7 +557,7 @@ class DepositModal extends Component {
                         <span className={classes.text}>
                             <FormattedMessage id="POPUP_WITHDRAW_REWARD" />
                         </span>
-                        <NumberFormat value={pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={pool.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
+                        <NumberFormat value={pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[pool.rewardsSymbol.toLowerCase()]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.rightText}>{value}</span>}/>
                     </Typography>
                 </DialogContent>
                 <DialogActions>

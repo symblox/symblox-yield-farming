@@ -11,7 +11,7 @@ const SymbloxToken = artifacts.require("SymbloxToken");
 const EIP712 = require("../../scripts/EIP712.js");
 
 const Domain = contract => ({
-    name: "Symblox",
+    name: "Symblox V2",
     chainId: 1,
     verifyingContract: contract.address
 });
@@ -54,7 +54,7 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
         const name = await this.symblox.name();
         const symbol = await this.symblox.symbol();
         const decimals = await this.symblox.decimals();
-        assert.equal(name.valueOf(), "Symblox");
+        assert.equal(name.valueOf(), "Symblox V2");
         assert.equal(symbol.valueOf(), "SYX");
         assert.equal(decimals.valueOf(), "18");
     });
