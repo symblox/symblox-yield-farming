@@ -19,7 +19,7 @@ function env() {
         return {
             requiredNetworkId,
             requiredNetwork: "VELAS Mainnet",
-            rpcUrl: rpcUrls[requiredNetworkId],
+            rpcUrl: "https://explorer.velas.com/rpc",
             browser: browserUrls[requiredNetworkId],
             minReservedAmount: 0.1, //18 wei，The minimum reserved amount of native tokens, so as not to pay the handling fee
             // bpt: "0x63a4cB3251CC3A93aF72C121d661C700637Fc7CB",

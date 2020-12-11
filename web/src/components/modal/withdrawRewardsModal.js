@@ -573,7 +573,7 @@ class WithdrawRewardsModal extends Component {
                                      : 
                                         <NumberFormat value={this.state.availableAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} decimalScale={4} fixedDecimalScale={true} />
                                     )}
-                                    {" " + this.state.token}
+                                    {" " + tokensName[this.state.token.toLowerCase()]}
                                 </span>
                             </div>
                             <div className={classes.formContent}>
