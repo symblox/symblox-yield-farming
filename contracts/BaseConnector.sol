@@ -93,10 +93,10 @@ contract BaseConnector is syxOwnable {
         require(newBalance - currBalance == amount, "ERR_STAKE_REWARD");
 
         uint256 syxAmount = syx.balanceOf(address(this));
-        address receive = owner();
-        syx.safeTransfer(receive, syxAmount);
+        address receiver = owner();
+        syx.safeTransfer(receiver, syxAmount);
 
-        emit LogReward(receive, syxAmount);
+        emit LogReward(receiver, syxAmount);
         emit LogStake(msg.sender, newBalance);
     }
 
