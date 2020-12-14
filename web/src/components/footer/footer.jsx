@@ -13,6 +13,8 @@ import {LanguageSelector} from "../LanguageSelector";
 
 const styles = theme => ({
     footer: {
+        height: "320px",
+        background: "#051731", 
         "& a": {
             color: "#ffffff"
         }
@@ -33,8 +35,8 @@ const formatAddress = function (address) {
 
 const Footer = ({classes}) => {
     return (
-        <div style={{background: "#051731", height: "280px"}}>
-            <Container className={classes.footer}>
+        <div className={classes.footer}>
+            <Container>
                 <Hidden mdUp>
                     <Grid
                         container
@@ -297,6 +299,25 @@ const Footer = ({classes}) => {
                                 >
                                     <FormattedMessage id="WVLX_TOKEN" />:{" "}
                                     {ethToVlx(config.wvlx)}
+                                </Link>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    fontSize: "16px"
+                                }}
+                            >
+                                <Link
+                                    href={
+                                        config.browser +
+                                        "/address/" +
+                                        ethToVlx(config.usdt)
+                                    }
+                                    target="_blank"
+                                >
+                                    <FormattedMessage id="USDT_TOKEN" />:{" "}
+                                    {ethToVlx(config.usdt)}
                                 </Link>
                             </Grid>
                             <Grid
