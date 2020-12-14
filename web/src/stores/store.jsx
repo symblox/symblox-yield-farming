@@ -393,6 +393,8 @@ class Store {
                                 }
                             }
                         }
+
+
                     }
                 }
                 if (err) {
@@ -551,14 +553,18 @@ class Store {
             let [
                 rate,
                 bonusEndBlock,
+                startBlock,
                 endBlock
             ] = await makeBatchRequest(web3,[
                 erc20Contract.methods.syxPerBlock().call,
                 erc20Contract.methods.bonusEndBlock().call,
+                erc20Contract.methods.startBlock().call,
                 erc20Contract.methods.endBlock().call
             ],account.address)
 
             if(parseFloat(curBlockNumber)>=parseFloat(endBlock)){
+                callback(null, toStringDecimals(0, 18));
+            }else if(parseFloat(curBlockNumber)<parseFloat(startBlock)){
                 callback(null, toStringDecimals(0, 18));
             }else if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
                 const bonusMultiplier = await erc20Contract.methods.BONUS_MULTIPLIER().call();
