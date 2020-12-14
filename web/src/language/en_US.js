@@ -92,7 +92,7 @@ const en_US = {
     EXCHANGE_RATE: "Old SYX to new SYX exchange rate",
     EXCHANGE_TOTAL_SUPPLY: "Max old SYX to new SYX liquidity",
     EXCHANGE_WALLET_BALANCE: "Redeemable balance: {amount}",
-    DAPP_MINING_OLD: "Yield Farming",
+    DAPP_MINING_OLD: "Yield Farming (V1)",
     DAPP_MINING_NEW: "New Yield Farming",
     SYX_TOKEN_EXCHANGE: "Redeem New SYX",
     DAPP_CROSS_CHAIN: "Cross-Chain",
