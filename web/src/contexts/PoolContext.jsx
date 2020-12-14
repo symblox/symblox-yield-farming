@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState, useReducer } from 'react';
 import {Contract} from '@ethersproject/contracts';
 import { Web3Context } from './Web3Context';
-import config, {pools} from "../config";
+import config from "../config";
 
 export const PoolContext = React.createContext({});
 
@@ -53,7 +53,7 @@ export function PoolContextProvider ({ children }) {
                 }
             }
         },
-        [account, balanceDispatch, setOldSyxSupply, ethersProvider, config],
+        [account, balanceDispatch, setOldSyxSupply, ethersProvider],
     );
 
     const getSyxData = useCallback(
@@ -70,7 +70,7 @@ export function PoolContextProvider ({ children }) {
                 }  
             }
         },
-        [account, balanceDispatch, ethersProvider, config],
+        [account, balanceDispatch, ethersProvider],
     );
 
     const exchangeSyx = useCallback(
@@ -102,7 +102,7 @@ export function PoolContextProvider ({ children }) {
                 }   
             }
         },
-        [account, ethersProvider, config],
+        [account, ethersProvider, getOldSyxData, getSyxData],
     );
 
     useEffect(() => {
@@ -120,6 +120,8 @@ export function PoolContextProvider ({ children }) {
         account,
         providerNetwork,
         lastChainId,
+        getOldSyxData,
+        getSyxData
     ]);
 
     return (

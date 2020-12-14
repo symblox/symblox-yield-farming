@@ -5,6 +5,9 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 
 import {nodeConfigs, networkOptions} from "../constants/constants";
+import Store from "../stores";
+
+const store = Store.store;
 
 export const Web3Context = React.createContext({});
 
@@ -51,6 +54,7 @@ export const Web3Provider = ({children}) => {
             const signer = provider.getSigner();
             const gotAccount = await signer.getAddress();
             setAccount(gotAccount);
+            store.setStore({account: {address: gotAccount}, web3context: signer.provider.provider});
         } catch (error) {
             // eslint-disable-next-line
             console.log({web3ModalError: error});
