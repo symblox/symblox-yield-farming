@@ -987,7 +987,7 @@ class Store {
                 callback(null, {
                     maxIn: toStringDecimals(maxIn, asset.decimals),
                     maxOut: toStringDecimals(maxOut, asset.decimals),
-                    weight: parseInt(toStringDecimals(weight1*100, asset.decimals)) + "% : " + parseInt(toStringDecimals(weight2*100, asset.decimals)+"%"),
+                    weight: parseInt(toStringDecimals(weight1*100, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2*100, asset.decimals)),
                     erc20Balance2: toStringDecimals(erc20Balance2, asset.erc20Decimals2),
                     erc20Balance: toStringDecimals(erc20Balance, asset.erc20Decimals),
                     totalSupply: toStringDecimals(totalSupply, asset.decimals)
