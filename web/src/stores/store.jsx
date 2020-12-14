@@ -393,6 +393,8 @@ class Store {
                                 }
                             }
                         }
+
+
                     }
                 }
                 if (err) {
@@ -551,14 +553,18 @@ class Store {
             let [
                 rate,
                 bonusEndBlock,
+                startBlock,
                 endBlock
             ] = await makeBatchRequest(web3,[
                 erc20Contract.methods.syxPerBlock().call,
                 erc20Contract.methods.bonusEndBlock().call,
+                erc20Contract.methods.startBlock().call,
                 erc20Contract.methods.endBlock().call
             ],account.address)
 
             if(parseFloat(curBlockNumber)>=parseFloat(endBlock)){
+                callback(null, toStringDecimals(0, 18));
+            }else if(parseFloat(curBlockNumber)<parseFloat(startBlock)){
                 callback(null, toStringDecimals(0, 18));
             }else if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
                 const bonusMultiplier = await erc20Contract.methods.BONUS_MULTIPLIER().call();
@@ -971,17 +977,17 @@ class Store {
                 ] = await makeBatchRequest(web3,[
                     bptContract.methods.MAX_IN_RATIO().call,
                     bptContract.methods.MAX_OUT_RATIO().call,
-                    bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
-                    bptContract.methods.getDenormalizedWeight(asset.erc20Address2).call,
+                    bptContract.methods.getNormalizedWeight(asset.erc20Address).call,
+                    bptContract.methods.getNormalizedWeight(asset.erc20Address2).call,
                     bptContract.methods.getBalance(asset.erc20Address2).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.totalSupply().call
                 ],account.address)
-                
+                console.log(weight1.toString(),weight2.toString())
                 callback(null, {
                     maxIn: toStringDecimals(maxIn, asset.decimals),
                     maxOut: toStringDecimals(maxOut, asset.decimals),
-                    weight: parseInt(toStringDecimals(weight1, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2, asset.decimals)),
+                    weight: parseInt(toStringDecimals(weight1*100, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2*100, asset.decimals)),
                     erc20Balance2: toStringDecimals(erc20Balance2, asset.erc20Decimals2),
                     erc20Balance: toStringDecimals(erc20Balance, asset.erc20Decimals),
                     totalSupply: toStringDecimals(totalSupply, asset.decimals)

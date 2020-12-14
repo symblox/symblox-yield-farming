@@ -201,14 +201,26 @@ let ethSyxPool = {
 function getPools() {
     // assign pool IDs to the pools
     if (process.env.REACT_APP_ENV === "production") {
-        // [seedPool.index, vlxPool.index, usdtPool.index, vlxUsdtPool.index] = [
-        //     0,
-        //     1,
-        //     2,
-        //     3
-        // ];
-        // return [seedPool, vlxPool, usdtPool, vlxUsdtPool];
-        return [];
+        [
+            vlxPool.index,
+            vlxUsdtPool.index,
+            usdtSyxPool.index,
+            ethSyxPool.index,
+            vlxEthPool.index,
+        ] = [
+            0,
+            1,
+            2,
+            3,
+            4
+        ];
+        return [
+            vlxPool,
+            vlxUsdtPool,
+            usdtSyxPool,
+            ethSyxPool,
+            vlxEthPool
+        ];
     } else {
         [
             vlxPool.index,
