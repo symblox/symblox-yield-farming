@@ -355,7 +355,7 @@ class Store {
                         if (poolData[i] && poolData[i].type === "seed") {
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] && poolData[j].id === "VLX/SYX"
+                                    poolData[j] && poolData[j].id === "VLX/SYX2"
                                 ) {
                                     poolData[i].price = poolData[j].price;
                                     poolData[i].totalBalanceForSyx =
@@ -376,7 +376,7 @@ class Store {
                         if (poolData[i] && poolData[i].id === "VLX/USDT"){
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] && poolData[j].id === "VLX/SYX"
+                                    poolData[j] && poolData[j].id === "VLX/SYX2"
                                 ) {
                                     const vlxSyxPrice = poolData[j].price;
                                     const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
@@ -394,7 +394,26 @@ class Store {
                             }
                         }
 
+                        if (poolData[i] && poolData[i].id === "VLX/ETH"){
+                            for (let j = 0; j < poolData.length; j++) {
+                                if (
+                                    poolData[j] && poolData[j].id === "VLX/SYX2"
+                                ) {
+                                    const vlxSyxPrice = poolData[j].price;
+                                    const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
+                                    const totalSyx = totalVlx/vlxSyxPrice;
 
+                                    poolData[i].rewardApr = (poolData[i]
+                                        .totalBalanceForSyx > 0
+                                        ? ((parseFloat(poolData[i].rewardRate) *
+                                              blocksPerYear) /
+                                              totalSyx *
+                                          100)
+                                        : 0
+                                    ).toFixed(1);
+                                }
+                            }
+                        }
                     }
                 }
                 if (err) {
