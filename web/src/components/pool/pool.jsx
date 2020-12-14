@@ -219,7 +219,7 @@ export default function Pool(props) {
                 </Tooltip>
 
                 <Typography className={classes.textSecondary}>
-                    <FormattedMessage id="TOTAL_STAKING_APR" />:{" "}
+                    <FormattedMessage id="AVG_STAKING_APR" />:{" "}
                     <NumberFormat value={data.rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={1} fixedDecimalScale={true} renderText={value => <span className={classes.textSecondaryColor} style={{float: "right"}}>{value}</span>}/>
                 </Typography>
 

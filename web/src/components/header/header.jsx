@@ -1,15 +1,9 @@
 import React, {useContext} from "react";
 import "../../App.scss";
 import "./header.scss";
-import Link from "@material-ui/core/Link";
+import {Link, AppBar, Toolbar, IconButton, Hidden, Drawer} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {FormattedMessage} from "react-intl";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import Hidden from "@material-ui/core/Hidden";
-import Drawer from "@material-ui/core/Drawer";
 import Menu from "@material-ui/icons/Menu";
 
 import logo_xswap from "../../assets/symblox-logo@2x.png";
@@ -84,11 +78,13 @@ export const Header = () => {
         <AppBar className={classes.bar} position="static">
             <Toolbar className={classes.container}>
                 <div className={classes.flex}>
+                    <Link href="https://new.symblox.io">
                     <img
                         src={logo_xswap}
                         alt="logo"
-                        style={{height: "22px", marginTop: "4px"}}
+                        style={{height: "32px", marginTop: "4px"}}
                     />
+                    </Link>
                 </div>
                 <div className={classes.growFlex}>
                     <Hidden xsDown implementation="css">

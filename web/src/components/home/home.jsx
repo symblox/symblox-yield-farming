@@ -557,7 +557,7 @@ class Home extends Component {
                                                 className={classes.paperTitle}
                                                 gutterBottom
                                             >
-                                                <FormattedMessage id="TOTAL_STAKING_APR" />
+                                                <FormattedMessage id="MY_STAKING_APR" />
                                             </Typography>
                                             <Typography
                                                 className={
@@ -688,7 +688,7 @@ class Home extends Component {
                     <Hidden smUp>
                         <Card className={classes.root}>
                             <CardActions className={classes.actionsSm}>
-                                <FormattedMessage id="TOTAL_STAKING_APR" />
+                                <FormattedMessage id="MY_STAKING_APR" />
                                 <NumberFormat
                                     value={rewardApr || 0}
                                     defaultValue={"-"}
