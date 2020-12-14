@@ -33,6 +33,7 @@ export default function Balance(props) {
         <div className={classes.root}>
             <img src={tokenIcon} alt="" />
             <NumberFormat
+                style={{whiteSpace: "nowrap"}}
                 value={parseFloat(balance || 0).toLocaleString(undefined, {
                     maximumFractionDigits: 10
                 })}
@@ -40,7 +41,7 @@ export default function Balance(props) {
                 displayType={"text"}
                 thousandSeparator={true}
                 isNumericString={true}
-                suffix={" " + tokensName[name.toLowerCase()]}
+                suffix={' '+tokensName[name.toLowerCase()]}
                 decimalScale={4}
                 fixedDecimalScale={true}
             />
