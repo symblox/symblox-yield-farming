@@ -118,7 +118,7 @@ class Store {
         if (store.getStore("web3context") === null) {
             return false;
         }
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = new Web3(store.getStore("web3context"));
         const currentBlock = await web3.eth.getBlockNumber();
 
         store.setStore({currentBlock: currentBlock});
@@ -131,10 +131,9 @@ class Store {
     getWeb3 = async () => {
         let web3;
         if (
-            store.getStore("web3context") &&
-            store.getStore("web3context").library.provider
+            store.getStore("web3context")
         ) {
-            web3 = new Web3(store.getStore("web3context").library.provider);
+            web3 = new Web3(store.getStore("web3context"));
         } else {
             web3 = new Web3(config.rpcUrl);
         }
