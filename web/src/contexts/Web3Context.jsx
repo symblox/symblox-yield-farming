@@ -7,7 +7,12 @@ import Web3Modal from "web3modal";
 import {nodeConfigs, networkOptions} from "../constants/constants";
 import Store from "../stores";
 
+import {
+    GET_BALANCES_PERPETUAL
+} from "../constants";
+
 const store = Store.store;
+const emitter = Store.emitter;
 
 export const Web3Context = React.createContext({});
 
@@ -39,10 +44,30 @@ export const Web3Provider = ({children}) => {
     const [ethersProvider, setEthersProvider] = useState();
     const [account, setAccount] = useState();
 
+    const subscribeProvider = async (provider) => {
+        if (!provider.on) {
+            return;
+        }
+
+        provider.on("close", () => {});
+        provider.on("accountsChanged", async (accounts) => {
+            setAccount(accounts[0]);
+            store.setStore({account: {address: accounts[0]}});
+            emitter.emit("accountsChanged");
+        });
+        provider.on("chainChanged", async (chainId) => {
+            
+        });
+        provider.on("networkChanged", async (networkId) => {
+        
+        });
+    }
+
     const connectWeb3 = useCallback(async () => {
         setProviderLoading(true);
         try {
             const modalProvider = await web3Modal.connect();
+            await subscribeProvider(modalProvider);
             const web3Provider = new Web3(modalProvider);
             const provider = new ethers.providers.Web3Provider(
                 web3Provider.currentProvider
@@ -63,17 +88,6 @@ export const Web3Provider = ({children}) => {
         setProviderLoading(false);
     }, []);
 
-    // useEffect(() => {
-    //     if (
-    //         providerNetwork &&
-    //         chosenNetwork &&
-    //         providerNetwork.chainId === chosenNetwork.value
-    //     ) {
-    //         setNetworkMismatch(false);
-    //     } else {
-    //         setNetworkMismatch(true);
-    //     }
-    // }, [chosenNetwork, providerNetwork]);
     const disconnect = useCallback(async () => {
         web3Modal.clearCachedProvider();
         setAccount();

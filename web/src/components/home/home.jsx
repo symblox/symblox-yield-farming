@@ -34,8 +34,6 @@ import Loader from "../loader";
 import Store from "../../stores";
 import "./home.scss";
 
-import {injected} from "../../stores/connectors";
-
 import {
     ERROR,
     WITHDRAW_RETURNED,
@@ -43,7 +41,6 @@ import {
     TRADE_RETURNED,
     TX_CONFIRM,
     GET_REWARDS_RETURNED,
-    CONNECTION_CONNECTED,
     CONNECTION_DISCONNECTED,
     GET_BALANCES_PERPETUAL_RETURNED,
     GET_BALANCES_PERPETUAL,
@@ -287,7 +284,6 @@ class Home extends Component {
     }
 
     componentWillMount() {
-        //emitter.on(CONNECTION_CONNECTED, this.connectionConnected);
         emitter.on(CONNECTION_DISCONNECTED, this.connectionDisconnected);
         emitter.on(GET_BALANCES_PERPETUAL_RETURNED, this.getBalancesReturned);
         emitter.on(ERROR, this.errorReturned);
@@ -297,71 +293,22 @@ class Home extends Component {
         emitter.on(GET_REWARDS_RETURNED, this.showHash);
         emitter.on(CREATE_ENTRY_CONTRACT_RETURNED, this.showHash);
         emitter.on(TX_CONFIRM, this.hideLoading);
-        // const that = this;
-        // injected.isAuthorized().then(isAuthorized => {
-        //     if (isAuthorized) {
-        //         injected
-        //             .activate()
-        //             .then(a => {
-        //                 console.log(a.provider)
-        //                 store.setStore({
-        //                     account: {address: a.account},
-        //                     web3context: {library: {provider: a.provider}}
-        //                 });
-        //                 that.setState({
-        //                     networkId: a.provider.networkVersion
-        //                 });
-        //                 emitter.emit(CONNECTION_CONNECTED);
-        //             })
-        //             .catch(e => {
-        //                 console.log(e);
-        //             });
-        //     }
-        // });
+        emitter.on("accountsChanged", () => {
+            this.setState({loading: true,pools: null},()=>{
+                dispatcher.dispatch({
+                    type: GET_BALANCES_PERPETUAL,
+                    content: {}
+                });
+            });      
+        })
     }
+
     componentDidMount() {
         const networkId = store.getStore("networkId");
         this.setState({
             networkId
         });
 
-        // if (window.ethereum && window.ethereum.on) {
-        //     // metamask networkChange
-        //     window.ethereum.autoRefreshOnNetworkChange = false;
-        //     const that = this;
-        //     window.ethereum.on("chainChanged", _chainId => {
-        //         console.log("networkId: ", _chainId);
-        //         if (window.sessionStorage.getItem("chainId") !== _chainId) {
-        //             window.sessionStorage.setItem("chainId", _chainId);
-        //             that.setState({
-        //                 networkId: _chainId
-        //             });
-        //             window.location.reload();
-        //         }
-        //     });
-
-        //     // metamask disConnect
-        //     window.ethereum.on("disconnect", () => {
-        //         console.log("disConnect");
-        //     });
-        //     // accountChange
-        //     window.ethereum.on("accountsChanged", accounts => {
-        //         const account = {address: accounts[0]};
-        //         store.setStore("account", account);
-        //         this.setState(() => ({
-        //             account
-        //         }));
-        //         if (
-        //             window.sessionStorage.getItem("accounts") !==
-        //             accounts[0] + ""
-        //         ) {
-        //             window.sessionStorage.setItem("accounts", accounts[0]);
-        //             window.location.reload();
-        //         }
-        //     });
-        // } else {
-        //     dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
-        // }
         const that = this;
         setTimeout(async () => {
             const account = store.getStore("account");
@@ -375,7 +322,6 @@ class Home extends Component {
         }, 2000);
     }
     componentWillUnmount() {
-        //emitter.removeListener(CONNECTION_CONNECTED, this.connectionConnected);
         emitter.removeListener(
             CONNECTION_DISCONNECTED,
             this.connectionDisconnected
@@ -392,14 +338,6 @@ class Home extends Component {
         emitter.removeListener(ERROR, this.errorReturned);
         emitter.removeListener(TX_CONFIRM, this.hideLoading);
     }
-
-    // connectionConnected = async () => {
-    //     dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
-    //     this.setState({account: store.getStore("account")});
-    //     // this.setState(() => ({
-    //     //     modalOpen: false
-    //     // }));
-    // };
 
     connectionDisconnected = () => {
         this.setState({account: store.getStore("account")});
@@ -1366,9 +1304,6 @@ class Home extends Component {
             !Object.getOwnPropertyNames(account).length ||
             account.address === undefined
         ) {
-            // this.setState(() => ({
-            //     modalOpen: true
-            // }));
             this.context.connectWeb3();
         } else {
             this.showLoading();
@@ -1425,10 +1360,6 @@ class Home extends Component {
             dispatcher.dispatch({type: GET_BALANCES_PERPETUAL, content: {}});
         }, 10000);
     };
-
-    // overlayClicked = () => {
-    //     this.setState({modalOpen: true});
-    // };
 
     openDepositModal = data => {
         this.setState({

@@ -1003,7 +1003,7 @@ class Store {
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.totalSupply().call
                 ],account.address)
-                console.log(weight1.toString(),weight2.toString())
+
                 callback(null, {
                     maxIn: toStringDecimals(maxIn, asset.decimals),
                     maxOut: toStringDecimals(maxOut, asset.decimals),
