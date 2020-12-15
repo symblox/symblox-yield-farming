@@ -6,3 +6,4 @@ flatterned
 .env
 .coveralls.yml
 BPool.sol
+SymbloxToken.sol

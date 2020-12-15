@@ -1,5 +1,5 @@
 const en_US = {
-    LABEL_CONNECT_WALLET: "Connect wallet",
+    LABEL_CONNECT_WALLET: "Connect Wallet",
     LABEL_RESOURCE: "Resources",
     LABEL_COMMUNITY: "Communities",
     LABEL_CONTACT: "Contact Us",
@@ -43,7 +43,8 @@ const en_US = {
     POPUP_LABEL_SWAP_RATE: "1 {tokenFrom} = {rate} {tokenTo}",
     POPUP_ACTION_CONFIRM: "Confirm",
     TOTAL_UNSTAKED_SHARE: "Total Available Shares",
-    TOTAL_STAKING_APR: "Average APR",
+    MY_STAKING_APR: "My Avgerage APR",
+    AVG_STAKING_APR: "Average APR",
     TOTAL_REWARDS: "My Total Rewards",
     WITHDRAWABLE_REWARDS: "Claimable Rewards",
     END_TIME: "End Time",
@@ -68,17 +69,34 @@ const en_US = {
     SEE_DETAIL: "See detail",
     REWARD_DISTRIBUTION_RATIO: "Reward distribution ratio",
     NETWORK_ERROR:
-        "Current newtwork is not supported, please switch to VELAS mainnet (RPC URL: https://explorer.velas.com/rpc)",
+        "Current newtwork is not supported, please switch to {requiredNetwork} (RPC URL: {rpcUrl})",
     POPUP_WITHDRAW_AMOUNT: "Amount to withdraw",
     POPUP_WITHDRAW_REWARD: "Rewards to claim",
     RISK_WARNING:
         "This contract is under auditing. PLEASE REVIEW THE CONTRACT BEFORE PROCEEDING.",
     COMMUNITY: "Community",
     CONTRACT: "Contract",
-    SYX_TOKEN: "SYX Token",
+    SYX_TOKEN: "SYX (V2)",
     USDT_TOKEN: "USDT on VELAS",
+    WETH_TOKEN: "WETH on VELAS",
     WVLX_TOKEN: "VLX Escrow",
     DEV_FUND: "Dev Fund",
-    REFERRER: "Referrer Address"
+    REFERRER: "Referrer Address",
+    WALLET_CONNECT_TO: "Connected to {network}",
+    WALLET_DISCONNECT: "Discconnect",
+    EXCHANGE: "Exchange",
+    EXCHANGE_TITLE: "Redeem new SYX tokens for Symblox yield farming 2.0",
+    EXCHANGE_SUB_TITLE:
+        "How many SYX tokens would you like to redeem for the new ones?",
+    EXCHANGE_TIP: "Enter the amount you would like to exchange",
+    EXCHANGE_RATE: "Old SYX to new SYX exchange rate",
+    EXCHANGE_TOTAL_SUPPLY: "Max old SYX to new SYX liquidity",
+    EXCHANGE_WALLET_BALANCE: "Redeemable balance: {amount}",
+    DAPP_MINING_OLD: "Yield Farming (V1)",
+    DAPP_MINING_NEW: "New Yield Farming",
+    SYX_TOKEN_EXCHANGE: "Redeem New SYX",
+    DAPP_CROSS_CHAIN: "Cross-Chain",
+    V1: "V1",
+    LANGUAGE: "Language"
 };
 export default en_US;

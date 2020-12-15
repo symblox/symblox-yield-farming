@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import NumberFormat from 'react-number-format';
+import {tokensName} from "../../config";
 
 const useStyles = makeStyles({
     root: {
@@ -194,8 +195,8 @@ export default function Pool(props) {
                                         <NumberFormat value={data.totalSupply} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={'VLX'} decimalScale={4} fixedDecimalScale={true} />
                                     :
                                     <>
-                                        <NumberFormat value={data.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
-                                        <NumberFormat value={data.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} renderText={value => <div style={{margin:"10px 0 0 95px"}}>{value}</div>}/>
+                                        <NumberFormat value={data.bptVlxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[1].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
+                                        <NumberFormat value={data.bptSyxBalance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[0].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} renderText={value => <div style={{margin:"10px 0 0 95px"}}>{value}</div>}/>
                                     </>
                                     }
                             </div>
@@ -218,19 +219,19 @@ export default function Pool(props) {
                 </Tooltip>
 
                 <Typography className={classes.textSecondary}>
-                    <FormattedMessage id="TOTAL_STAKING_APR" />:{" "}
+                    <FormattedMessage id="AVG_STAKING_APR" />:{" "}
                     <NumberFormat value={data.rewardApr} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={"%"} decimalScale={1} fixedDecimalScale={true} renderText={value => <span className={classes.textSecondaryColor} style={{float: "right"}}>{value}</span>}/>
                 </Typography>
 
                 <Typography className={classes.textThird}>
                     <FormattedMessage id="WITHDRAWABLE_REWARDS" />:{" "}
-                    <NumberFormat value={data.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.rewardsSymbol} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.textSecondaryColor} style={{float: "right"}}>{value}</span>}/>
+                    <NumberFormat value={data.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={' '+tokensName[data.rewardsSymbol.toLowerCase()]} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.textSecondaryColor} style={{float: "right"}}>{value}</span>}/>
                 </Typography>
                 <Typography className={classes.textThird}>
                     {data.type === "seed" ? (
                         <>
                             <FormattedMessage id="TOTAL_STAKE" />:
-                            <NumberFormat value={data.stakeAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.name} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.textThirdColor} style={{float: "right"}}>{value}</span>}/>
+                            <NumberFormat value={data.stakeAmount} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName(data.name.toLowerCase())} decimalScale={4} fixedDecimalScale={true} renderText={value => <span className={classes.textThirdColor} style={{float: "right"}}>{value}</span>}/>
                         </>
                     ) : (
                         <>

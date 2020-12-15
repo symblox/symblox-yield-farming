@@ -20,7 +20,7 @@ contract BptReferralConnector is BptConnector {
         uint256 tokenAmountIn,
         uint256 minPoolAmountOut,
         address referral
-    ) external validBpt(tokenIn) onlyOwner returns (uint256 poolAmountOut) {
+    ) external validBpt(tokenIn) returns (uint256 poolAmountOut) {
         IERC20 tokenDeposit = IERC20(tokenIn);
         require(
             tokenDeposit.allowance(msg.sender, address(this)) >= tokenAmountIn,
@@ -56,7 +56,6 @@ contract BptReferralConnector is BptConnector {
     function deposit(uint256 minPoolAmountOut, address referral)
         external
         payable
-        onlyOwner
         returns (uint256 poolAmountOut)
     {
         poolAmountOut = IBPool(lpToken).joinswapWTokenIn.value(msg.value)(
