@@ -78,7 +78,7 @@ export const Header = () => {
         <AppBar className={classes.bar} position="static">
             <Toolbar className={classes.container}>
                 <div className={classes.flex}>
-                    <Link href="https://new.symblox.io">
+                    <Link href="https://app.symblox.io">
                     <img
                         src={logo_xswap}
                         alt="logo"
