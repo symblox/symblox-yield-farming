@@ -92,7 +92,7 @@ export const Header = () => {
                             <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
                         </Link>
                         <Link
-                            href="https://app.symblox.io"
+                            href="https://v1.symblox.io"
                             className={classes.link}
                         >
                             <FormattedMessage id="DAPP_MINING_OLD" />
@@ -131,7 +131,7 @@ export const Header = () => {
                             <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
                         </Link>
                         <Link
-                            href="https://app.symblox.io"
+                            href="https://v1.symblox.io"
                             className={classes.mobileLink}
                         >
                             <FormattedMessage id="DAPP_MINING_OLD" />
