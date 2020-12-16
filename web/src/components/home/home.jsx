@@ -1,4 +1,4 @@
-import React, {Component, useContext} from "react";
+import React, {Component} from "react";
 import {withRouter} from "react-router-dom";
 import {withStyles} from "@material-ui/core/styles";
 import {
@@ -276,6 +276,7 @@ class Home extends Component {
         this.state = {
             rewardPools,
             loading: true,
+            txLoading: false,
             // modalOpen: false,
             depositModalOpen: false,
             withdrawRewardsModalOpen: false,
@@ -294,7 +295,7 @@ class Home extends Component {
         emitter.on(CREATE_ENTRY_CONTRACT_RETURNED, this.showHash);
         emitter.on(TX_CONFIRM, this.hideLoading);
         emitter.on("accountsChanged", () => {
-            this.setState({loading: true,pools: null},()=>{
+            this.setState({loading: true},()=>{
                 dispatcher.dispatch({
                     type: GET_BALANCES_PERPETUAL,
                     content: {}
@@ -352,7 +353,8 @@ class Home extends Component {
             transactionModalOpen,
             rewardPools,
             snackbarMessage,
-            loading
+            loading,
+            txLoading
         } = this.state;
 
         if (!rewardPools) {
@@ -362,13 +364,13 @@ class Home extends Component {
         let rewardApr = 0,
             rewardsAvailable = 0,
             totalStakeAmount = 0;
-        if (this.state.pools) {
-            this.state.pools.forEach(pool => {
+        if (this.state.rewardPools) {
+            this.state.rewardPools.forEach(pool => {
                 const toSyxAmount =
                     (parseFloat(pool.stakeAmount) * parseFloat(pool.BPTPrice)) /
                     parseFloat(pool.price);
                 rewardApr += parseFloat(pool.rewardApr) * toSyxAmount;
-                rewardsAvailable += parseFloat(pool.rewardsAvailable);
+                rewardsAvailable += parseFloat(pool.rewardsAvailable || 0);
                 totalStakeAmount += toSyxAmount;
             });
 
@@ -516,7 +518,7 @@ class Home extends Component {
                                                         classes.buttonSecondary
                                                     }
                                                     style={{marginTop: "9px"}}
-                                                    disabled={loading}
+                                                    disabled={loading || txLoading}
                                                     onClick={() =>
                                                         this.createEntryContract(
                                                             rewardPools[0]
@@ -532,7 +534,8 @@ class Home extends Component {
                                                     variant="contained"
                                                     disabled={
                                                         hasJoinedCount === 0 ||
-                                                        loading
+                                                        loading ||
+                                                        txLoading
                                                     }
                                                     onClick={() =>
                                                         this.openDepositModal(
@@ -595,7 +598,8 @@ class Home extends Component {
                                                 variant="contained"
                                                 disabled={
                                                     hasJoinedCount === 0 ||
-                                                    loading
+                                                    loading ||
+                                                    txLoading
                                                 }
                                                 onClick={() => {
                                                     this.openWithdrawRewardsModal();
@@ -672,7 +676,8 @@ class Home extends Component {
                                                 variant="contained"
                                                 disabled={
                                                     hasJoinedCount === 0 ||
-                                                    loading
+                                                    loading ||
+                                                    txLoading
                                                 }
                                                 onClick={() => {
                                                     this.openWithdrawRewardsModal();
@@ -700,7 +705,7 @@ class Home extends Component {
                             <Grid item xs={12} sm={6} md={4} key={i}>
                                 <Pool
                                     data={data}
-                                    loading={loading}
+                                    loading={loading || txLoading}
                                     onDeposit={() =>
                                         this.openDepositModal(data)
                                     }
@@ -738,8 +743,8 @@ class Home extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.pools ? (
-                                            this.state.pools.map((pool, i) => {
+                                        {this.state.rewardPools ? (
+                                            this.state.rewardPools.map((pool, i) => {
                                                 if (pool.type !== "seed") {
                                                     return (
                                                         <tr
@@ -876,7 +881,7 @@ class Home extends Component {
                                                                         );
                                                                     }}
                                                                     disabled={
-                                                                        loading
+                                                                        loading || txLoading
                                                                     }
                                                                 >
                                                                     <FormattedMessage id="LP_SWAP" />
@@ -914,8 +919,8 @@ class Home extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.pools ? (
-                                            this.state.pools.map((pool, i) => {
+                                        {this.state.rewardPools ? (
+                                            this.state.rewardPools.map((pool, i) => {
                                                 if (pool.type !== "seed") {
                                                     return (
                                                         <React.Fragment key={i}>
@@ -1029,7 +1034,7 @@ class Home extends Component {
                                                                             );
                                                                         }}
                                                                         disabled={
-                                                                            loading
+                                                                            loading || txLoading
                                                                         }
                                                                     >
                                                                         <FormattedMessage id="LP_SWAP" />
@@ -1252,7 +1257,7 @@ class Home extends Component {
                 {depositModalOpen &&
                     this.renderDepositModal(this.state.depositData)}
                 {withdrawRewardsModalOpen &&
-                    this.renderWithdrawRewardsModal(this.state.pools)}
+                    this.renderWithdrawRewardsModal(this.state.rewardPools)}
                 {transactionModalOpen &&
                     this.renderTransactionModal(this.state.tradeData)}
                 {this.state.networkId &&
@@ -1261,7 +1266,7 @@ class Home extends Component {
                     this.renderNetworkErrModal()}
                 {snackbarMessage && this.renderSnackbar()}
 
-                {loading && <Loader />}
+                {(loading || txLoading) && <Loader />}
                 <Footer />
             </div>
         );
@@ -1274,7 +1279,7 @@ class Home extends Component {
             depositModalOpen: false,
             withdrawRewardsModalOpen: false,
             transactionModalOpen: false,
-            loading: true
+            txLoading: true
         });
         const that = this;
         setTimeout(() => {
@@ -1289,12 +1294,12 @@ class Home extends Component {
     };
 
     showLoading = () => {
-        this.setState({loading: true});
+        this.setState({txLoading: true});
     };
 
     hideLoading = () => {
         this.setState({
-            loading: false
+            txLoading: false
         });
     };
 
@@ -1322,7 +1327,7 @@ class Home extends Component {
     errorReturned = error => {
         const snackbarObj = {snackbarMessage: null, snackbarType: null};
         this.setState(snackbarObj);
-        this.setState({loading: false});
+        this.setState({loading: false,txLoading:false});
         const that = this;
         setTimeout(() => {
             const snackbarObj = {
@@ -1337,19 +1342,11 @@ class Home extends Component {
     };
 
     getBalancesReturned = () => {
-        const oldPools = this.state.pools;
-        const pools = store.getStore("rewardPools");
-        //The loading is hidden when the data is requested for the first time, and will not be hidden later, so as not to affect the loading displayed by the transaction
-        if (!oldPools && pools) {
-            this.setState({
-                loading: false,
-                pools
-            });
-        } else {
-            this.setState({
-                pools
-            });
-        }
+        const rewardPools = store.getStore("rewardPools");
+        this.setState({
+            loading: false,
+            rewardPools
+        });
 
         const that = this;
         window.setTimeout(() => {
@@ -1432,7 +1429,7 @@ class Home extends Component {
         return (
             <DepositModal
                 data={data}
-                loading={this.state.loading}
+                loading={this.state.loading||this.state.txLoading}
                 closeModal={this.closeDepositModal}
                 modalOpen={this.state.depositModalOpen}
             />
@@ -1443,7 +1440,7 @@ class Home extends Component {
         return (
             <WithdrawRewardsModal
                 data={data}
-                loading={this.state.loading}
+                loading={this.state.loading||this.state.txLoading}
                 closeModal={this.closeWithdrawRewardsModal}
                 modalOpen={this.state.withdrawRewardsModalOpen}
             />
@@ -1454,7 +1451,7 @@ class Home extends Component {
         return (
             <TransactionModal
                 data={data}
-                loading={this.state.loading}
+                loading={this.state.loading||this.state.txLoading}
                 closeModal={this.closeTransactionModal}
                 modalOpen={this.state.transactionModalOpen}
             />
