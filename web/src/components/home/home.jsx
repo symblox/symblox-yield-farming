@@ -832,7 +832,7 @@ class Home extends Component {
                                                                         pool.tokens[1]
                                                                     }
                                                                     decimalScale={
-                                                                        4
+                                                                        6
                                                                     }
                                                                     fixedDecimalScale={
                                                                         true
@@ -974,8 +974,13 @@ class Home extends Component {
                                                                         }
                                                                         src={
                                                                             "/" +
-                                                                            pool
-                                                                                .tokens[0] +
+                                                                            (
+                                                                                (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                                pool
+                                                                                .tokens[1] :
+                                                                                pool
+                                                                                .tokens[0]
+                                                                            ) +
                                                                             ".png"
                                                                         }
                                                                         style={{
@@ -991,11 +996,13 @@ class Home extends Component {
                                                                         }
                                                                         src={
                                                                             "/" +
-                                                                            (pool
+                                                                            (
+                                                                                (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                                pool
+                                                                                .tokens[0] :
+                                                                                pool
                                                                                 .tokens[1]
-                                                                                ? pool
-                                                                                      .tokens[1]
-                                                                                : pool.name) +
+                                                                            ) +
                                                                             ".png"
                                                                         } 
                                                                         alt=""
@@ -1008,15 +1015,24 @@ class Home extends Component {
                                                                         }}
                                                                     >
                                                                         {
-                                                                            pool.id
+                                                                            pool.id == "ETH/VLX" ?
+                                                                            "VLX/ETH" :
+                                                                            (
+                                                                                pool.id == "USDT/VLX" ? 
+                                                                                "VLX/USDT" :
+                                                                                pool.id
+                                                                            )
                                                                         }
                                                                     </span>
                                                                 </td>
                                                                 <td>
                                                                     <NumberFormat
                                                                         value={
-                                                                            pool.price ||
-                                                                            0
+                                                                            (
+                                                                                (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                                (1 / pool.price) :
+                                                                                pool.price
+                                                                            ) || 0
                                                                         }
                                                                         defaultValue={
                                                                             "-"
@@ -1031,7 +1047,7 @@ class Home extends Component {
                                                                             true
                                                                         }
                                                                         decimalScale={
-                                                                            4
+                                                                            6
                                                                         }
                                                                         fixedDecimalScale={
                                                                             true
@@ -1044,7 +1060,9 @@ class Home extends Component {
                                                                         }}
                                                                     >
                                                                         {
-                                                                            pool.name
+                                                                            (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                            pool.tokens[0] :
+                                                                            pool.tokens[1]
                                                                         }
                                                                     </div>
                                                                 </td>
@@ -1255,7 +1273,11 @@ class Home extends Component {
                                                                             }}
                                                                         >
                                                                             {
-                                                                                pool.weight
+                                                                                (
+                                                                                    (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") && pool.weight ?
+                                                                                    (pool.weight.split(":")[1]+":"+pool.weight.split(":")[0]) :
+                                                                                    pool.weight
+                                                                                )
                                                                             }
                                                                         </span>
                                                                     </Grid>
