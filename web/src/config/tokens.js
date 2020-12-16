@@ -3,5 +3,5 @@ export default {
     usdt: "USDT",
     vlx: "VLX",
     eth: "ETH",
-    pVlx: "pVlx"
+    pvlx: "pVlx"
 };
