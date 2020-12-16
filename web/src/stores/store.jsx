@@ -353,7 +353,7 @@ class Store {
                         if (poolData[i] && poolData[i].type === "seed") {
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] && poolData[j].id === "VLX/SYX2"
+                                    poolData[j] && poolData[j].id === "SYX2/VLX"
                                 ) {
                                     poolData[i].price = poolData[j].price;
                                     poolData[i].totalBalanceForSyx =
@@ -371,10 +371,10 @@ class Store {
                             }
                         }
 
-                        if (poolData[i] && poolData[i].id === "VLX/USDT"){
+                        if (poolData[i] && poolData[i].id === "USDT/VLX"){
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] && poolData[j].id === "VLX/SYX2"
+                                    poolData[j] && poolData[j].id === "SYX2/VLX"
                                 ) {
                                     const vlxSyxPrice = poolData[j].price;
                                     const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
@@ -392,10 +392,10 @@ class Store {
                             }
                         }
 
-                        if (poolData[i] && poolData[i].id === "VLX/ETH"){
+                        if (poolData[i] && poolData[i].id === "ETH/VLX"){
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] && poolData[j].id === "VLX/SYX2"
+                                    poolData[j] && poolData[j].id === "SYX2/VLX"
                                 ) {
                                     const vlxSyxPrice = poolData[j].price;
                                     const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
@@ -412,8 +412,6 @@ class Store {
                                 }
                             }
                         }
-
-
                     }
                 }
                 if (err) {
@@ -996,8 +994,8 @@ class Store {
                 ] = await makeBatchRequest(web3,[
                     bptContract.methods.MAX_IN_RATIO().call,
                     bptContract.methods.MAX_OUT_RATIO().call,
-                    bptContract.methods.getNormalizedWeight(asset.erc20Address).call,
                     bptContract.methods.getNormalizedWeight(asset.erc20Address2).call,
+                    bptContract.methods.getNormalizedWeight(asset.erc20Address).call,
                     bptContract.methods.getBalance(asset.erc20Address2).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.totalSupply().call

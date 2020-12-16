@@ -27,7 +27,7 @@ let seedPool = {
 };
 
 let vlxPool = {
-    id: "VLX/SYX2",
+    id: "SYX2/VLX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
@@ -83,7 +83,7 @@ let ticketPool = {
 };
 
 let usdtSyxPool = {
-    id: "USDT/SYX2",
+    id: "SYX2/USDT",
     featured: false,
     name: "USDT",
     website: "Reward Pool",
@@ -112,7 +112,7 @@ let usdtSyxPool = {
 };
 
 let vlxUsdtPool = {
-    id: "VLX/USDT",
+    id: "USDT/VLX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
@@ -141,7 +141,7 @@ let vlxUsdtPool = {
 };
 
 let vlxEthPool = {
-    id: "VLX/ETH",
+    id: "ETH/VLX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
@@ -170,7 +170,7 @@ let vlxEthPool = {
 };
 
 let ethSyxPool = {
-    id: "ETH/SYX2",
+    id: "SYX2/ETH",
     featured: false,
     name: "ETH",
     website: "Reward Pool",

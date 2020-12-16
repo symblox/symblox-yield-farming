@@ -760,11 +760,14 @@ class Home extends Component {
                                                                     }
                                                                     src={
                                                                         "/" +
-                                                                        (pool
-                                                                            .tokens[1]
-                                                                            ? pool
-                                                                                  .tokens[1]
-                                                                            : pool.name) +
+                                                                        (
+                                                                            (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                            pool
+                                                                            .tokens[1] :
+                                                                            pool
+                                                                            .tokens[0]
+                                                                        )
+                                                                        +
                                                                         ".png"
                                                                     }
                                                                     style={{
@@ -780,19 +783,36 @@ class Home extends Component {
                                                                     }
                                                                     src={
                                                                         "/" +
-                                                                        pool
-                                                                            .tokens[0] +
+                                                                        (
+                                                                            (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                            pool
+                                                                            .tokens[0] :
+                                                                            pool
+                                                                            .tokens[1]
+                                                                        )
+                                                                        +
                                                                         ".png"
-                                                                    }
+                                                                    } 
                                                                     alt=""
                                                                 />
-                                                                {pool.id}
+                                                                {
+                                                                    pool.id == "ETH/VLX" ?
+                                                                        "VLX/ETH" :
+                                                                        (
+                                                                            pool.id == "USDT/VLX" ? 
+                                                                            "VLX/USDT" :
+                                                                            pool.id
+                                                                        )
+                                                                }
                                                             </td>
                                                             <td>
                                                                 <NumberFormat
                                                                     value={
-                                                                        pool.price ||
-                                                                        0
+                                                                        (
+                                                                            (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                            (1 / pool.price) :
+                                                                            pool.price
+                                                                        ) || 0
                                                                     }
                                                                     defaultValue={
                                                                         "-"
@@ -807,7 +827,9 @@ class Home extends Component {
                                                                         true
                                                                     }
                                                                     suffix={
-                                                                        pool.name
+                                                                        (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                        pool.tokens[0] :
+                                                                        pool.tokens[1]
                                                                     }
                                                                     decimalScale={
                                                                         4
@@ -864,7 +886,11 @@ class Home extends Component {
                                                             <td>
                                                                 <div>
                                                                     {
-                                                                        pool.weight
+                                                                        (
+                                                                            (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") && pool.weight ?
+                                                                            (pool.weight.split(":")[1]+":"+pool.weight.split(":")[0]) :
+                                                                            pool.weight
+                                                                        )
                                                                     }
                                                                 </div>
                                                             </td>
@@ -948,11 +974,8 @@ class Home extends Component {
                                                                         }
                                                                         src={
                                                                             "/" +
-                                                                            (pool
-                                                                                .tokens[1]
-                                                                                ? pool
-                                                                                      .tokens[1]
-                                                                                : pool.name) +
+                                                                            pool
+                                                                                .tokens[0] +
                                                                             ".png"
                                                                         }
                                                                         style={{
@@ -968,12 +991,16 @@ class Home extends Component {
                                                                         }
                                                                         src={
                                                                             "/" +
-                                                                            pool
-                                                                                .tokens[0] +
+                                                                            (pool
+                                                                                .tokens[1]
+                                                                                ? pool
+                                                                                      .tokens[1]
+                                                                                : pool.name) +
                                                                             ".png"
-                                                                        }
+                                                                        } 
                                                                         alt=""
                                                                     />
+                                                                    
                                                                     <span
                                                                         style={{
                                                                             paddingLeft:

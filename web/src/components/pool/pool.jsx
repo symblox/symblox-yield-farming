@@ -174,12 +174,12 @@ export default function Pool(props) {
                             <img
                                 className={classes.icon}
                                 style={{marginRight: "-4px",zIndex: 2}}
-                                src={tokenIcon}
+                                src={tokenIcon2}  
                                 alt=""
                             />
                             <img
                                 className={classes.icon}
-                                src={tokenIcon2}  
+                                src={tokenIcon}
                                 alt=""
                             />
                         </>
