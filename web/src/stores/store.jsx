@@ -149,10 +149,9 @@ class Store {
 
     getEntryContract = async id => {
         const account = store.getStore("account");
-        const keyName = "entryContractAddress" + id;
+        const keyName = "entryContractAddress"+ account.address + id;
 
         let connectorAddress = store.getStore(keyName);
-
         if (
             (!connectorAddress ||
                 connectorAddress ===
