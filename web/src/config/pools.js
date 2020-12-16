@@ -54,12 +54,12 @@ let vlxPool = {
     poolABI: config.rewardPoolABI
 };
 
-let ticketPool = {
-    id: "pVLX/SYX2",
+let pvlxSyxPool = {
+    id: "SYX2/pVLX",
     featured: false,
     name: "pVLX",
     website: "Reward Pool",
-    address: config.pVlxBpt,
+    address: config.pvlxSyxBpt,
     symbol: "BPT",
     ROI: "DF",
     type: "swap",
@@ -228,19 +228,22 @@ function getPools() {
             usdtSyxPool.index,
             ethSyxPool.index,
             vlxEthPool.index,
+            pvlxSyxPool.index
         ] = [
             0,
             1,
             2,
             3,
-            4
+            4,
+            5
         ];
         return [
             vlxPool,
             vlxUsdtPool,
             usdtSyxPool,
             ethSyxPool,
-            vlxEthPool
+            vlxEthPool,
+            pvlxSyxPool
         ];
     }
 }
