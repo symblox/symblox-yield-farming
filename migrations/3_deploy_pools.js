@@ -77,44 +77,44 @@ module.exports = async function (deployer, network, accounts) {
     );
     console.log(`ConnectorFactory: ${connFactory.address}`);
 
-    let wvlxAddress;
+    // let wvlxAddress;
 
-    if (network == "development" || network == "coverage") {
-        wvlxAddress = tokenContracts["WVLX"].address;
-    } else {
-        wvlxAddress = contractAddresses[network]["WVLX"];
-    }
+    // if (network == "development" || network == "coverage") {
+    //     wvlxAddress = tokenContracts["WVLX"].address;
+    // } else {
+    //     wvlxAddress = contractAddresses[network]["WVLX"];
+    // }
 
-    //
-    // Setup the seeding pool
-    //
+    // //
+    // // Setup the seeding pool
+    // //
 
-    // create a new pool with pid: 0
-    await rewardMgr.add(
-        "1000000000000000000", // weight, 1
-        wvlxAddress,
-        false // whether to update all the pools
-    );
+    // // create a new pool with pid: 0
+    // await rewardMgr.add(
+    //     "1000000000000000000", // weight, 1
+    //     wvlxAddress,
+    //     false // whether to update all the pools
+    // );
 
-    const wvlxPoolId = 0;
+    // const wvlxPoolId = 0;
 
-    const wvlxConn = await deployer.deploy(WvlxConnector);
+    // const wvlxConn = await deployer.deploy(WvlxConnector);
 
-    console.log(`WvlxConnector: ${wvlxConn.address}`);
+    // console.log(`WvlxConnector: ${wvlxConn.address}`);
 
-    await connFactory.setConnectorImpl(wvlxPoolId, wvlxConn.address);
+    // await connFactory.setConnectorImpl(wvlxPoolId, wvlxConn.address);
 
-    if (network == "development" || network == "coverage") {
-        const createConnTx = await connFactory.createConnector(
-            wvlxAddress,
-            wvlxPoolId
-        );
-        const logs = createConnTx.logs;
-        for (let log of logs) {
-            // console.log({log});
-        }
-    }
+    // if (network == "development" || network == "coverage") {
+    //     const createConnTx = await connFactory.createConnector(
+    //         wvlxAddress,
+    //         wvlxPoolId
+    //     );
+    //     const logs = createConnTx.logs;
+    //     for (let log of logs) {
+    //         // console.log({log});
+    //     }
+    // }
 
-    const numOfPools = await rewardMgr.poolLength();
-    console.log(`Pools created: ${numOfPools}`);
+    // const numOfPools = await rewardMgr.poolLength();
+    // console.log(`Pools created: ${numOfPools}`);
 };

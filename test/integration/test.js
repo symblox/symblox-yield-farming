@@ -15,7 +15,8 @@ const config = {
     syxPerBlock: "1000000000000000000", //1
     startBlock: "1",
     bonusEndBlock: "1",
-    endBlock: "100000",
+    seasonBlocks: "900",
+    initSupply: "1000000000000000000000",//1000 syx
     denorm1: "5000000000000000000", //5
     balance1: "50000000000000000000", //50
     denorm2: "5000000000000000000", //5
@@ -52,11 +53,12 @@ contract("Integration test", ([admin, alice, bob]) => {
         rewardPool = await RewardManager.new(
             symbloxToken.address,
             admin,
-            config.syxPerBlock,
             config.startBlock,
             config.bonusEndBlock,
-            config.endBlock
+            config.initSupply,
+            config.seasonBlocks
         );
+
 
         await wToken.deposit({from: admin, value: config.balance1});
         await wToken.approve(bpool.address, config.balance1);

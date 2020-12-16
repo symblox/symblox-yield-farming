@@ -27,11 +27,11 @@ let seedPool = {
 };
 
 let vlxPool = {
-    id: "VLX/SYX",
+    id: "SYX2/VLX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
-    address: config.bpt,
+    address: config.vlxSyxBpt,
     symbol: "BPT",
     ROI: "DF",
     type: "swap-native",
@@ -54,12 +54,12 @@ let vlxPool = {
     poolABI: config.rewardPoolABI
 };
 
-let ticketPool = {
-    id: "pVLX/SYX",
+let pvlxSyxPool = {
+    id: "SYX2/pVLX",
     featured: false,
     name: "pVLX",
     website: "Reward Pool",
-    address: config.pVlxBpt,
+    address: config.pvlxSyxBpt,
     symbol: "BPT",
     ROI: "DF",
     type: "swap",
@@ -82,12 +82,12 @@ let ticketPool = {
     poolABI: config.rewardPoolABI
 };
 
-let usdtPool = {
-    id: "USDT/SYX",
+let usdtSyxPool = {
+    id: "SYX2/USDT",
     featured: false,
     name: "USDT",
     website: "Reward Pool",
-    address: config.usdtBpt,
+    address: config.usdtSyxBpt,
     symbol: "BPT",
     ROI: "DF",
     type: "swap",
@@ -112,7 +112,7 @@ let usdtPool = {
 };
 
 let vlxUsdtPool = {
-    id: "VLX/USDT",
+    id: "USDT/VLX",
     featured: false,
     name: "VLX",
     website: "Reward Pool",
@@ -140,36 +140,110 @@ let vlxUsdtPool = {
     poolABI: config.rewardPoolABI
 };
 
+let vlxEthPool = {
+    id: "ETH/VLX",
+    featured: false,
+    name: "VLX",
+    website: "Reward Pool",
+    address: config.vlxEthBpt,
+    symbol: "BPT",
+    ROI: "DF",
+    type: "swap-native",
+    referral: false,
+    tokens: ["ETH", "VLX"], //reward token must in first
+    abi: config.bptABI,
+    decimals: 18,
+    rewardsAddress: config.syx,
+    rewardsABI: config.syxABI,
+    rewardsSymbol: "SYX",
+    entryContractABI: config.bptRefConnectorABI,
+    entryContractFactoryAddress: config.connectorFactory,
+    entryContractFactoryABI: config.connectorFactoryABI,
+    erc20Address: config.wvlx,
+    erc20ABI: config.erc20ABI,
+    erc20Decimals: 18,
+    erc20Address2: config.weth,
+    erc20ABI2: config.erc20ABI,
+    erc20Decimals2: 18,
+    poolAddress: config.rewardPool,
+    poolABI: config.rewardPoolABI
+};
+
+let ethSyxPool = {
+    id: "SYX2/ETH",
+    featured: false,
+    name: "ETH",
+    website: "Reward Pool",
+    address: config.ethSyxBpt,
+    symbol: "BPT",
+    ROI: "DF",
+    type: "swap",
+    referral: false,
+    tokens: ["SYX", "ETH"], //reward token must in first
+    abi: config.bptABI,
+    decimals: 18,
+    rewardsAddress: config.syx,
+    rewardsABI: config.syxABI,
+    rewardsSymbol: "SYX",
+    entryContractABI: config.bptRefConnectorABI,
+    entryContractFactoryAddress: config.connectorFactory,
+    entryContractFactoryABI: config.connectorFactoryABI,
+    erc20Address: config.weth,
+    erc20ABI: config.erc20ABI,
+    erc20Decimals: 18,
+    erc20Address2: config.syx,
+    erc20ABI2: config.erc20ABI,
+    erc20Decimals2: 18,
+    poolAddress: config.rewardPool,
+    poolABI: config.rewardPoolABI
+};
+
 function getPools() {
     // assign pool IDs to the pools
     if (process.env.REACT_APP_ENV === "production") {
-        [seedPool.index, vlxPool.index, usdtPool.index, vlxUsdtPool.index] = [
-            0,
-            1,
-            2,
-            3
-        ];
-        return [seedPool, vlxPool, usdtPool, vlxUsdtPool];
-    } else {
         [
-            seedPool.index,
             vlxPool.index,
-            // ticketPool.index,
-            usdtPool.index,
-            vlxUsdtPool.index
+            vlxUsdtPool.index,
+            usdtSyxPool.index,
+            ethSyxPool.index,
+            vlxEthPool.index,
         ] = [
             0,
             1,
-            // 3,
+            2,
+            3,
+            4
+        ];
+        return [
+            vlxPool,
+            vlxUsdtPool,
+            usdtSyxPool,
+            ethSyxPool,
+            vlxEthPool
+        ];
+    } else {
+        [
+            vlxPool.index,
+            vlxUsdtPool.index,
+            usdtSyxPool.index,
+            ethSyxPool.index,
+            vlxEthPool.index,
+            pvlxSyxPool.index
+        ] = [
+            0,
+            1,
+            2,
+            3,
             4,
             5
         ];
         return [
-            seedPool,
             vlxPool,
-            // ticketPool,
-            usdtPool,
-            vlxUsdtPool
+            vlxUsdtPool,
+            usdtSyxPool,
+            ethSyxPool,
+            vlxEthPool,
+            pvlxSyxPool
         ];
     }
 }

@@ -49,7 +49,7 @@
 
             div {
                 width: 80%;
-                display: inline-flex;
+                display: inline-block;
                 align-items: center;
                 justify-content: space-around;
             }
@@ -82,6 +82,11 @@
     padding: 7px 12px;
     width: 148px;
     margin-right: 8px;
+
+    button {
+        color: #ffffff !important;
+        padding: 0;
+    }
 }
 
 .header__menu_wallet_sm {

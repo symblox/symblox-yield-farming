@@ -20,7 +20,6 @@ contract WvlxConnector is BaseConnector {
     function deposit(uint256)
         external
         payable
-        onlyOwner
         returns (uint256 wvlxAmount)
     {
         // Cast lpToken from address to address payable

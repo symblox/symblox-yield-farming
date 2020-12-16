@@ -42,6 +42,8 @@ contract RewardManager is Ownable {
         uint256 accSyxPerShare; // Accumulated syX per share, times 1e12. See below.
     }
 
+    uint256 public initSupply;
+    uint256 public seasonBlocks;//The length of a mining cycle.
     // The REWARD TOKEN!
     SymbloxToken public syx;
     // Dev address.
@@ -80,17 +82,20 @@ contract RewardManager is Ownable {
     constructor(
         address _syx,
         address _devaddr,
-        uint256 _syxPerBlock,
         uint256 _startBlock,
         uint256 _bonusEndBlock,
-        uint256 _endBlock
+        uint256 _initSupply,
+        uint256 _seasonBlocks
     ) public {
         syx = SymbloxToken(_syx);
         devaddr = _devaddr;
-        syxPerBlock = _syxPerBlock;
         startBlock = _startBlock;
         bonusEndBlock = _bonusEndBlock;
-        endBlock = _endBlock;
+        initSupply = _initSupply;
+        seasonBlocks = _seasonBlocks;
+        endBlock = _startBlock.add(_seasonBlocks);
+        syxPerBlock = _initSupply.mul(9).div(10).div(_seasonBlocks);//90%, 10% to devaddr
+        
     }
 
     /**
@@ -168,11 +173,19 @@ contract RewardManager is Ownable {
 
         pool.lastRewardBlock = block.number;
 
-        syx.mint(devaddr, syxReward.div(10));
+        syx.mint(devaddr, syxReward.div(9));
         syx.mint(address(this), syxReward);
         pool.accSyxPerShare = pool.accSyxPerShare.add(
             syxReward.mul(1e12).div(lpSupply)
         );
+    }
+
+    function startNewSeason() external onlyOwner {
+        require(endBlock < block.number,"The previous season is not over yet");
+        massUpdatePools();
+        startBlock = block.number;
+        endBlock = block.number.add(seasonBlocks);
+        syxPerBlock = syxPerBlock.mul(8).div(10);
     }
 
     /**

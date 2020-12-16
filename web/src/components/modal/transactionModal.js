@@ -19,7 +19,7 @@ import NumberFormat from 'react-number-format';
 import {debounce} from "../../utils/debounce.js";
 import {formatNumberPrecision} from "../../utils/numberFormat.js";
 
-import config from "../../config";
+import config, {tokensName} from "../../config";
 
 import Store from "../../stores";
 import {
@@ -445,12 +445,12 @@ class TransactionModal extends Component {
                             {this.state.token === data.tokens[0]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.erc20Balance2)
-                                    ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
-                                    : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                    ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[0].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
+                                    : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[0].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
                                 : parseFloat(data.maxErc20In) >
                                   parseFloat(data.erc20Balance)
-                                ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
-                                : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
+                                ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[1].toLowerCase]} decimalScale={4} fixedDecimalScale={true} />
+                                : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[1].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
                                   }
                         </span>
                     </Typography>
@@ -518,7 +518,7 @@ class TransactionModal extends Component {
                                             src={"/" + v + ".png"}
                                             alt=""
                                         />
-                                        {v}
+                                        {tokensName[v.toLowerCase()]}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -557,12 +557,12 @@ class TransactionModal extends Component {
                             {this.state.token === data.tokens[1]
                                 ? parseFloat(data.maxSyxIn) >
                                   parseFloat(data.erc20Balance2)
-                                    ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
-                                    : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[0]} decimalScale={4} fixedDecimalScale={true} />
+                                    ? <NumberFormat value={data.erc20Balance2} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[0].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
+                                    : <NumberFormat value={data.maxSyxIn} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[0].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
                                 : parseFloat(data.maxErc20In) >
                                   parseFloat(data.erc20Balance)
-                                ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />
-                                : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={data.tokens[1]} decimalScale={4} fixedDecimalScale={true} />}
+                                ? <NumberFormat value={data.erc20Balance} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[1].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
+                                : <NumberFormat value={data.maxErc20In} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[data.tokens[1].toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />}
                         </span>
                     </Typography>
                     <div className={classes.formContent}>
@@ -596,7 +596,7 @@ class TransactionModal extends Component {
                                             src={"/" + v + ".png"}
                                             alt=""
                                         />
-                                        {v}
+                                        {tokensName[v.toLowerCase()]}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -610,8 +610,8 @@ class TransactionModal extends Component {
                             <FormattedMessage
                                 id="POPUP_LABEL_SWAP_RATE"
                                 values={{
-                                    tokenFrom: this.state.token,
-                                    tokenTo: this.state.buyToken,
+                                    tokenFrom: tokensName[this.state.token.toLowerCase()],
+                                    tokenTo: tokensName[this.state.buyToken.toLowerCase()],
                                     rate: parseFloat(this.state.price).toFixed(
                                         4
                                     )

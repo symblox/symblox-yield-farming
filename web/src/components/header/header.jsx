@@ -1,177 +1,150 @@
-import React from "react";
+import React, {useContext} from "react";
 import "../../App.scss";
 import "./header.scss";
-import {Select, Container, Hidden, MenuItem} from "@material-ui/core";
+import {Link, AppBar, Toolbar, IconButton, Hidden, Drawer} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {FormattedMessage} from "react-intl";
+import Menu from "@material-ui/icons/Menu";
+
 import logo_xswap from "../../assets/symblox-logo@2x.png";
-import icon_user from "../../assets/icon_user.svg";
-import {ethToVlx} from "../../utils/vlxAddressConversion.js";
-// add i18n.
-import {IntlProvider, FormattedMessage} from "react-intl";
-import en_US from "../../language/en_US";
-import zh_CN from "../../language/zh_CN";
 
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+import {WalletSelector} from "../WalletSelector";
 
-    formatAddress = function (address) {
-        address = ethToVlx(address);
-        if (address) {
-            return (
-                address.substring(0, 6) +
-                "..." +
-                address.substring(address.length - 4, address.length)
-            );
+const useStyles = makeStyles({
+    bar: {
+        background: "inherit",
+        boxShadow: "inherit",
+        padding: "32px 0",
+        maxWidth: "1200px",
+        margin: "auto"
+    },
+    growFlex: {
+        flexGrow: 1,
+        textAlign: "right",
+        fontSize: "20px"
+    },
+    link: {
+        color: "white",
+        padding: "0 12px"
+    },
+    mobileLink: {
+        color: "white",
+        display: "block",
+        padding: "16px 32px",
+        fontSize: "18px",
+        // "& a": {
+        //     textDecoration: "none"
+        // },
+
+        "&:hover": {
+            backgroundColor: "white",
+            color: "black"
         }
+    },
+    drawerPaper: {
+        border: "none",
+        transitionProperty: "top, bottom, width",
+        transitionDuration: ".2s, .2s, .35s",
+        transitionTimingFunction: "linear, linear, ease",
+        width: "100%",
+        boxShadow:
+            "0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2)",
+        position: "fixed",
+        display: "block",
+        top: "120px",
+        right: "0",
+        left: "auto",
+        visibility: "visible",
+        overflowY: "visible",
+        borderTop: "none",
+        textAlign: "left",
+        paddingRight: "0px",
+        paddingLeft: "0",
+        // transition: "all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)",
+        backgroundColor: "black",
+        opacity: 0.7
+    }
+});
+
+export const Header = () => {
+    const classes = useStyles();
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
     };
 
-    render() {
-        return (
-            <IntlProvider
-                locale={"en"}
-                messages={this.props.cur_language === "中文" ? zh_CN : en_US}
-            >
-                <Container style={{paddingTop: "41px", paddingBottom: "45px"}}>
-                    <Hidden smUp>
-                        <a
-                            href={this.props.linkTo}
-                            className={"header__logo"}
-                            style={{widht: "80px", height: "auto"}}
+    return (
+        <AppBar className={classes.bar} position="static">
+            <Toolbar className={classes.container}>
+                <div className={classes.flex}>
+                    <Link href="https://app.symblox.io">
+                    <img
+                        src={logo_xswap}
+                        alt="logo"
+                        style={{height: "32px", marginTop: "4px"}}
+                    />
+                    </Link>
+                </div>
+                <div className={classes.growFlex}>
+                    <Hidden xsDown implementation="css">
+                        <Link href="/exchange" className={classes.link}>
+                            <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
+                        </Link>
+                        <Link
+                            href="https://v1.symblox.io"
+                            className={classes.link}
                         >
-                            <img
-                                src={logo_xswap}
-                                alt="logo"
-                                style={{height: "22px", marginTop: "4px"}}
-                            />
-                        </a>
-
-                        <div
-                            className={"header__menu"}
-                            style={{
-                                maginTop: "3px",
-                                float: "right"
-                            }}
+                            <FormattedMessage id="DAPP_MINING_OLD" />
+                        </Link>
+                        <Link
+                            href="https://x.symblox.io"
+                            className={classes.link}
                         >
-                            {this.props.address && this.props.show && (
-                                <div className={"header__menu_wallet_sm"}>
-                                    <div
-                                        onClick={() =>
-                                            this.props.overlayClicked &&
-                                            this.props.overlayClicked()
-                                        }
-                                    >
-                                        {/* <img
-                                            src={icon_user}
-                                            alt=""
-                                            style={{
-                                                width: "16px",
-                                                height: "16px",
-                                                marginRight: "5px"
-                                            }}
-                                        /> */}
-                                        {this.formatAddress(this.props.address)}
-                                    </div>
-                                </div>
-                            )}
-                            {!this.props.address && this.props.show && (
-                                <div
-                                    className={"header__menu_wallet_sm"}
-                                    onClick={() =>
-                                        this.props.overlayClicked &&
-                                        this.props.overlayClicked()
-                                    }
-                                >
-                                    <FormattedMessage id="LABEL_CONNECT_WALLET" />
-                                </div>
-                            )}
-                            <Select
-                                className={"header__menu_wallet_sm"}
-                                value={this.props.cur_language}
-                                onChange={this.props.setLanguage.bind(this)}
-                                label="Lanage"
-                                style={{width: "60px", paddingRight: 0}}
-                                inputProps={{
-                                    name: "lanage",
-                                    id: "outlined-token"
-                                }}
-                            >
-                                <MenuItem value={"中文"}>{"中文"}</MenuItem>
-                                <MenuItem value={"EN"}>{"EN"}</MenuItem>
-                            </Select>
-                        </div>
+                            <FormattedMessage id="DAPP_CROSS_CHAIN" />
+                        </Link>
                     </Hidden>
-                    <Hidden xsDown>
-                        <a
-                            href={this.props.linkTo}
-                            className={"header__logo"}
-                            style={{widht: "188px", height: "auto"}}
+                </div>
+                <WalletSelector />
+                <Hidden smUp>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerToggle}
+                    >
+                        <Menu />
+                    </IconButton>
+                </Hidden>
+            </Toolbar>
+            <Hidden smUp implementation="js">
+                <Drawer
+                    variant="temporary"
+                    anchor={"top"}
+                    open={mobileOpen}
+                    classes={{
+                        paper: classes.drawerPaper
+                    }}
+                    onClose={handleDrawerToggle}
+                >
+                    <div className={classes.appResponsive}>
+                        <Link href="/exchange" className={classes.mobileLink}>
+                            <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
+                        </Link>
+                        <Link
+                            href="https://v1.symblox.io"
+                            className={classes.mobileLink}
                         >
-                            <img
-                                src={logo_xswap}
-                                alt="logo"
-                                style={{height: "39px"}}
-                            />
-                        </a>
-
-                        <div
-                            className={"header__menu"}
-                            style={{
-                                maginTop: "3px",
-                                float: "right"
-                            }}
+                            <FormattedMessage id="DAPP_MINING_OLD" />
+                        </Link>
+                        <Link
+                            href="https://x.symblox.io"
+                            className={classes.mobileLink}
                         >
-                            {this.props.address && this.props.show && (
-                                <div className={"header__menu_wallet"}>
-                                    <div
-                                        onClick={() =>
-                                            this.props.overlayClicked &&
-                                            this.props.overlayClicked()
-                                        }
-                                    >
-                                        <img
-                                            src={icon_user}
-                                            alt=""
-                                            style={{
-                                                width: "16px",
-                                                height: "16px",
-                                                marginRight: "5px"
-                                            }}
-                                        />
-                                        {this.formatAddress(this.props.address)}
-                                    </div>
-                                </div>
-                            )}
-                            {!this.props.address && this.props.show && (
-                                <div
-                                    className={"header__menu_wallet"}
-                                    onClick={() =>
-                                        this.props.overlayClicked &&
-                                        this.props.overlayClicked()
-                                    }
-                                >
-                                    <FormattedMessage id="LABEL_CONNECT_WALLET" />
-                                </div>
-                            )}
-                            <Select
-                                className={"header__menu_wallet"}
-                                value={this.props.cur_language}
-                                onChange={this.props.setLanguage.bind(this)}
-                                label="Lanage"
-                                style={{width: "60px", paddingRight: 0}}
-                                inputProps={{
-                                    name: "lanage",
-                                    id: "outlined-token"
-                                }}
-                            >
-                                <MenuItem value={"中文"}>{"中文"}</MenuItem>
-                                <MenuItem value={"EN"}>{"EN"}</MenuItem>
-                            </Select>
-                        </div>
-                    </Hidden>
-                </Container>
-            </IntlProvider>
-        );
-    }
-}
+                            <FormattedMessage id="DAPP_CROSS_CHAIN" />
+                        </Link>
+                    </div>
+                </Drawer>
+            </Hidden>
+        </AppBar>
+    );
+};

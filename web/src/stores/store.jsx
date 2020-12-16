@@ -118,7 +118,7 @@ class Store {
         if (store.getStore("web3context") === null) {
             return false;
         }
-        const web3 = new Web3(store.getStore("web3context").library.provider);
+        const web3 = new Web3(store.getStore("web3context"));
         const currentBlock = await web3.eth.getBlockNumber();
 
         store.setStore({currentBlock: currentBlock});
@@ -131,10 +131,9 @@ class Store {
     getWeb3 = async () => {
         let web3;
         if (
-            store.getStore("web3context") &&
-            store.getStore("web3context").library.provider
+            store.getStore("web3context")
         ) {
-            web3 = new Web3(store.getStore("web3context").library.provider);
+            web3 = new Web3(store.getStore("web3context"));
         } else {
             web3 = new Web3(config.rpcUrl);
         }
@@ -150,10 +149,9 @@ class Store {
 
     getEntryContract = async id => {
         const account = store.getStore("account");
-        const keyName = "entryContractAddress" + id;
+        const keyName = "entryContractAddress"+ account.address + id;
 
         let connectorAddress = store.getStore(keyName);
-
         if (
             (!connectorAddress ||
                 connectorAddress ===
@@ -355,7 +353,7 @@ class Store {
                         if (poolData[i] && poolData[i].type === "seed") {
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] && poolData[j].id === "VLX/SYX"
+                                    poolData[j] && poolData[j].id === "SYX2/VLX"
                                 ) {
                                     poolData[i].price = poolData[j].price;
                                     poolData[i].totalBalanceForSyx =
@@ -373,10 +371,31 @@ class Store {
                             }
                         }
 
-                        if (poolData[i] && poolData[i].id === "VLX/USDT"){
+                        if (poolData[i] && poolData[i].id === "USDT/VLX"){
                             for (let j = 0; j < poolData.length; j++) {
                                 if (
-                                    poolData[j] && poolData[j].id === "VLX/SYX"
+                                    poolData[j] && poolData[j].id === "SYX2/VLX"
+                                ) {
+                                    const vlxSyxPrice = poolData[j].price;
+                                    const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
+                                    const totalSyx = totalVlx/vlxSyxPrice;
+
+                                    poolData[i].rewardApr = (poolData[i]
+                                        .totalBalanceForSyx > 0
+                                        ? ((parseFloat(poolData[i].rewardRate) *
+                                              blocksPerYear) /
+                                              totalSyx *
+                                          100)
+                                        : 0
+                                    ).toFixed(1);
+                                }
+                            }
+                        }
+
+                        if (poolData[i] && poolData[i].id === "ETH/VLX"){
+                            for (let j = 0; j < poolData.length; j++) {
+                                if (
+                                    poolData[j] && poolData[j].id === "SYX2/VLX"
                                 ) {
                                     const vlxSyxPrice = poolData[j].price;
                                     const totalVlx = poolData[i].totalBalanceForSyx * poolData[i].price;
@@ -551,14 +570,18 @@ class Store {
             let [
                 rate,
                 bonusEndBlock,
+                startBlock,
                 endBlock
             ] = await makeBatchRequest(web3,[
                 erc20Contract.methods.syxPerBlock().call,
                 erc20Contract.methods.bonusEndBlock().call,
+                erc20Contract.methods.startBlock().call,
                 erc20Contract.methods.endBlock().call
             ],account.address)
 
             if(parseFloat(curBlockNumber)>=parseFloat(endBlock)){
+                callback(null, toStringDecimals(0, 18));
+            }else if(parseFloat(curBlockNumber)<parseFloat(startBlock)){
                 callback(null, toStringDecimals(0, 18));
             }else if(parseFloat(curBlockNumber)<parseFloat(bonusEndBlock)){
                 const bonusMultiplier = await erc20Contract.methods.BONUS_MULTIPLIER().call();
@@ -971,17 +994,17 @@ class Store {
                 ] = await makeBatchRequest(web3,[
                     bptContract.methods.MAX_IN_RATIO().call,
                     bptContract.methods.MAX_OUT_RATIO().call,
-                    bptContract.methods.getDenormalizedWeight(asset.erc20Address).call,
-                    bptContract.methods.getDenormalizedWeight(asset.erc20Address2).call,
+                    bptContract.methods.getNormalizedWeight(asset.erc20Address2).call,
+                    bptContract.methods.getNormalizedWeight(asset.erc20Address).call,
                     bptContract.methods.getBalance(asset.erc20Address2).call,
                     bptContract.methods.getBalance(asset.erc20Address).call,
                     bptContract.methods.totalSupply().call
                 ],account.address)
-                
+
                 callback(null, {
                     maxIn: toStringDecimals(maxIn, asset.decimals),
                     maxOut: toStringDecimals(maxOut, asset.decimals),
-                    weight: parseInt(toStringDecimals(weight1, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2, asset.decimals)),
+                    weight: parseInt(toStringDecimals(weight1*100, asset.decimals)) + ":" + parseInt(toStringDecimals(weight2*100, asset.decimals)),
                     erc20Balance2: toStringDecimals(erc20Balance2, asset.erc20Decimals2),
                     erc20Balance: toStringDecimals(erc20Balance, asset.erc20Decimals),
                     totalSupply: toStringDecimals(totalSupply, asset.decimals)
