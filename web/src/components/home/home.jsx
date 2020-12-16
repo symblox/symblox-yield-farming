@@ -827,12 +827,12 @@ class Home extends Component {
                                                                         true
                                                                     }
                                                                     suffix={
-                                                                        (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
+                                                                        " "+((pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
                                                                         pool.tokens[0] :
-                                                                        pool.tokens[1]
+                                                                        pool.tokens[1])
                                                                     }
                                                                     decimalScale={
-                                                                        6
+                                                                        ((pool.id == "ETH/VLX") ? 6 : 4)
                                                                     }
                                                                     fixedDecimalScale={
                                                                         true
@@ -1047,7 +1047,7 @@ class Home extends Component {
                                                                             true
                                                                         }
                                                                         decimalScale={
-                                                                            6
+                                                                            ((pool.id == "ETH/VLX") ? 6 : 4)
                                                                         }
                                                                         fixedDecimalScale={
                                                                             true
