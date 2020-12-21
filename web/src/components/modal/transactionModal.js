@@ -430,13 +430,13 @@ class TransactionModal extends Component {
                             {this.state.token === "SYX" ? (
                                 <img
                                     className={classes.icon}
-                                    src={"/SYX2.png"}
+                                    src={"/" + tokensName["syx"] + ".png"}
                                     alt=""
                                 />
                             ) : (
                                 <img
                                     className={classes.icon}
-                                    src={"/" + data.name + ".png"}
+                                    src={"/" + tokensName[data.name.toLowerCase()] + ".png"}
                                     alt=""
                                 />
                             )}
@@ -515,7 +515,7 @@ class TransactionModal extends Component {
                                     <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
-                                            src={"/" + v + ".png"}
+                                            src={"/" + tokensName[v.toLowerCase()] + ".png"}
                                             alt=""
                                         />
                                         {tokensName[v.toLowerCase()]}
@@ -542,13 +542,13 @@ class TransactionModal extends Component {
                             {this.state.buyToken === "SYX" ? (
                                 <img
                                     className={classes.icon}
-                                    src={"/SYX2.png"}
+                                    src={"/" + tokensName["syx"] + ".png"}
                                     alt=""
                                 />
                             ) : (
                                 <img
                                     className={classes.icon}
-                                    src={"/" + data.name + ".png"}
+                                    src={"/" + tokensName[data.name.toLowerCase()] + ".png"}
                                     alt=""
                                 />
                             )}
@@ -593,7 +593,7 @@ class TransactionModal extends Component {
                                     <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
-                                            src={"/" + v + ".png"}
+                                            src={"/" + tokensName[v.toLowerCase()] + ".png"}
                                             alt=""
                                         />
                                         {tokensName[v.toLowerCase()]}

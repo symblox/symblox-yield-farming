@@ -512,7 +512,7 @@ class WithdrawRewardsModal extends Component {
                                 <FormattedMessage id="RP_LIST_TITLE" />:
                                 <img
                                     className={classes.icon}
-                                    src={"/" + this.state.pool.name + ".png"}
+                                    src={"/" + tokensName[this.state.pool.name.toLowerCase()] + ".png"}
                                     alt=""
                                 />
                                 {this.state.pool.id}
@@ -630,7 +630,7 @@ class WithdrawRewardsModal extends Component {
                                             <MenuItem value={v} key={i}>
                                                 <img
                                                     className={classes.icon}
-                                                    src={"/" + v + ".png"}
+                                                    src={"/" + tokensName[v.toLowerCase()] + ".png"}
                                                     alt=""
                                                 />
                                                 {tokensName[v.toLowerCase()]}
@@ -672,7 +672,7 @@ class WithdrawRewardsModal extends Component {
                                 <span style={{float: "right"}}>
                                     <img
                                         className={classes.icon}
-                                        src={"/"+this.state.pool.rewardsSymbol+".png"}
+                                        src={"/"+tokensName[this.state.pool.rewardsSymbol.toLowerCase()]+".png"}
                                         alt=""
                                     />{" "}
                                     <NumberFormat value={this.state.pool.rewardsAvailable} defaultValue={'-'} displayType={'text'} thousandSeparator={true} isNumericString={true} suffix={tokensName[this.state.pool.rewardsSymbol.toLowerCase()]} decimalScale={4} fixedDecimalScale={true} />
@@ -682,7 +682,7 @@ class WithdrawRewardsModal extends Component {
                                 <FormattedMessage id="RP_LIST_TITLE" />:
                                 <img
                                     className={classes.icon}
-                                    src={"/" + this.state.pool.name + ".png"}
+                                    src={"/" + tokensName[this.state.pool.name.toLowerCase()] + ".png"}
                                     alt=""
                                 />
                                 {this.state.pool.id}

@@ -399,7 +399,7 @@ class DepositModal extends Component {
                             <FormattedMessage id="RP_LIST_TITLE" />:
                             <img
                                 className={classes.icon}
-                                src={"/" + this.state.pool.name + ".png"}
+                                src={"/" + tokensName[this.state.pool.name.toLowerCase()] + ".png"}
                                 alt=""
                             />
                             {this.state.pool.id}
@@ -544,7 +544,7 @@ class DepositModal extends Component {
                                     <MenuItem value={v} key={i}>
                                         <img
                                             className={classes.icon}
-                                            src={"/" + v + ".png"}
+                                            src={"/" + tokensName[v.toLowerCase()] + ".png"}
                                             alt=""
                                         />
                                         {tokensName[v.toLowerCase()]}

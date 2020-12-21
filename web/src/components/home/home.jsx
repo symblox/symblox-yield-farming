@@ -762,10 +762,10 @@ class Home extends Component {
                                                                         "/" +
                                                                         (
                                                                             (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
-                                                                            pool
-                                                                            .tokens[1] :
-                                                                            pool
-                                                                            .tokens[0]
+                                                                            tokensName[pool
+                                                                            .tokens[1].toLowerCase()] :
+                                                                            tokensName[pool
+                                                                            .tokens[0].toLowerCase()]
                                                                         )
                                                                         +
                                                                         ".png"
@@ -785,10 +785,10 @@ class Home extends Component {
                                                                         "/" +
                                                                         (
                                                                             (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
-                                                                            pool
-                                                                            .tokens[0] :
-                                                                            pool
-                                                                            .tokens[1]
+                                                                            tokensName[pool
+                                                                            .tokens[0].toLowerCase()] :
+                                                                            tokensName[pool
+                                                                            .tokens[1].toLowerCase()]
                                                                         )
                                                                         +
                                                                         ".png"
@@ -976,10 +976,10 @@ class Home extends Component {
                                                                             "/" +
                                                                             (
                                                                                 (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
-                                                                                pool
-                                                                                .tokens[1] :
-                                                                                pool
-                                                                                .tokens[0]
+                                                                                tokensName[pool
+                                                                                .tokens[1].toLowerCase()] :
+                                                                                tokensName[pool
+                                                                                .tokens[0].toLowerCase()]
                                                                             ) +
                                                                             ".png"
                                                                         }
@@ -998,10 +998,10 @@ class Home extends Component {
                                                                             "/" +
                                                                             (
                                                                                 (pool.id == "ETH/VLX" || pool.id == "USDT/VLX") ?
-                                                                                pool
-                                                                                .tokens[0] :
-                                                                                pool
-                                                                                .tokens[1]
+                                                                                tokensName[pool
+                                                                                .tokens[0].toLowerCase()] :
+                                                                                tokensName[pool
+                                                                                .tokens[1].toLowerCase()]
                                                                             ) +
                                                                             ".png"
                                                                         } 

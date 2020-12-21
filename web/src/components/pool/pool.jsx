@@ -153,8 +153,8 @@ export default function Pool(props) {
     const classes = useStyles(props);
     const {data, loading, onDeposit, onJoin} = props;
 
-    const tokenIcon2 = "/" + data.tokens[0] + ".png";
-    const tokenIcon = "/" + (data.tokens[1]?data.tokens[1]:data.name) + ".png";
+    const tokenIcon2 = "/" + tokensName[data.tokens[0].toLowerCase()] + ".png";
+    const tokenIcon = "/" + tokensName[(data.tokens[1]?data.tokens[1]:data.name).toLowerCase()] + ".png";
 
     return (
         <Card className={data.featured ? classes.featuredRoot : classes.root}>

@@ -28,7 +28,8 @@ const useStyles = makeStyles({
 export default function Balance(props) {
     const classes = useStyles(props);
     const {name, balance} = props;
-    const tokenIcon = "/" + name.toLocaleUpperCase() + ".png";
+    const tokenIcon = "/" + tokensName[name.toLowerCase()] + ".png";
+
     return (
         <div className={classes.root}>
             <img src={tokenIcon} alt="" />
