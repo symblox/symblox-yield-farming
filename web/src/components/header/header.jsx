@@ -25,7 +25,8 @@ const useStyles = makeStyles({
     },
     link: {
         color: "white",
-        padding: "0 12px"
+        padding: "0 12px",
+        fontSize: "18px"
     },
     mobileLink: {
         color: "white",
@@ -40,6 +41,9 @@ const useStyles = makeStyles({
             backgroundColor: "white",
             color: "black"
         }
+    },
+    menu: {
+        padding: 0
     },
     drawerPaper: {
         border: "none",
@@ -82,7 +86,7 @@ export const Header = () => {
                     <img
                         src={logo_xswap}
                         alt="logo"
-                        style={{height: "32px", marginTop: "4px"}}
+                        style={{height: "30px", marginTop: "4px"}}
                     />
                     </Link>
                 </div>
@@ -110,6 +114,7 @@ export const Header = () => {
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
+                        className={classes.menu}
                         onClick={handleDrawerToggle}
                     >
                         <Menu />
