@@ -430,7 +430,7 @@ class TransactionModal extends Component {
                             {this.state.token === "SYX" ? (
                                 <img
                                     className={classes.icon}
-                                    src={"/SYX.png"}
+                                    src={"/SYX2.png"}
                                     alt=""
                                 />
                             ) : (
@@ -542,7 +542,7 @@ class TransactionModal extends Component {
                             {this.state.buyToken === "SYX" ? (
                                 <img
                                     className={classes.icon}
-                                    src={"/SYX.png"}
+                                    src={"/SYX2.png"}
                                     alt=""
                                 />
                             ) : (
