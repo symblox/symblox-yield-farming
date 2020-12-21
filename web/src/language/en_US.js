@@ -43,7 +43,7 @@ const en_US = {
     POPUP_LABEL_SWAP_RATE: "1 {tokenFrom} = {rate} {tokenTo}",
     POPUP_ACTION_CONFIRM: "Confirm",
     TOTAL_UNSTAKED_SHARE: "Total Available Shares",
-    MY_STAKING_APR: "My Avgerage APR",
+    MY_STAKING_APR: "My Average APR",
     AVG_STAKING_APR: "Average APR",
     TOTAL_REWARDS: "My Total Rewards",
     WITHDRAWABLE_REWARDS: "Claimable Rewards",
