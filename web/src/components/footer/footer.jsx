@@ -56,8 +56,9 @@ const Footer = ({classes}) => {
                                     src={logo_xswap}
                                     alt="logo"
                                     style={{
-                                        height: "22px",
-                                        marginTop: "28px"
+                                        height: "28px",
+                                        marginTop: "28px",
+                                        marginBottom: "16px"
                                     }}
                                 />
                             </Grid>
