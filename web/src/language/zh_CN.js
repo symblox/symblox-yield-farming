@@ -93,6 +93,7 @@ const zh_CN = {
     DAPP_MINING_NEW: "新版矿池",
     SYX_TOKEN_EXCHANGE: "新 SYX 兑换",
     DAPP_CROSS_CHAIN: "跨链应用",
+    DAPP_PVLX: "pVLX 无损挖矿",
     V1: "V1",
     LANGUAGE: "语言"
 };

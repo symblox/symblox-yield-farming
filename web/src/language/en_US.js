@@ -94,6 +94,7 @@ const en_US = {
     EXCHANGE_WALLET_BALANCE: "Redeemable balance: {amount}",
     DAPP_MINING_OLD: "Yield Farming (V1)",
     DAPP_MINING_NEW: "New Yield Farming",
+    DAPP_PVLX: "pVLX No-Loss Mining",
     SYX_TOKEN_EXCHANGE: "Redeem New SYX",
     DAPP_CROSS_CHAIN: "Cross-Chain",
     V1: "V1",

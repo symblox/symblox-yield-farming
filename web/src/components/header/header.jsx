@@ -107,6 +107,12 @@ export const Header = () => {
                         >
                             <FormattedMessage id="DAPP_CROSS_CHAIN" />
                         </Link>
+                        <Link
+                            href="https://pvlx.symblox.io"
+                            className={classes.link}
+                        >
+                            <FormattedMessage id="DAPP_PVLX" />
+                        </Link>
                     </Hidden>
                 </div>
                 <WalletSelector />
@@ -146,6 +152,12 @@ export const Header = () => {
                             className={classes.mobileLink}
                         >
                             <FormattedMessage id="DAPP_CROSS_CHAIN" />
+                        </Link>
+                        <Link
+                            href="https://pvlx.symblox.io"
+                            className={classes.mobileLink}
+                        >
+                            <FormattedMessage id="DAPP_PVLX" />
                         </Link>
                     </div>
                 </Drawer>
