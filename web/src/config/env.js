@@ -37,8 +37,8 @@ function env() {
             bptConnector: "0xC37673764FEd37EB3c3f3C46D696B41f322123C6", //BptReferralConnector
             rewardPool: "0x9fCdD9eb40CaC90A5C385C9Ef37b48E847B178a3",
             // wvlxConnector: "0xf6182f2924065343947E7F12ec4a989Fd9D2A9Ec",
-            // timelock: "0x19eb08763450504b2bc07a773dff2ac49e4f3bde",
-            // governor: "0xdEdBCBdEc215a32bB75acfc278F57dCEb2fb6da1",
+            timelock: "0x2aCC7A7279394bB9AC0265249E6d78d5B7012465",
+            governor: "0x7DF0c84197D35356b1d4F29912082371f3469fF5",
             devFund: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
             erc20ABI: abis.erc20ABI,
             rewardPoolABI: abis.rewardPoolABI,
