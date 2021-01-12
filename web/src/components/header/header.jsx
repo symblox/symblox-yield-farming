@@ -92,9 +92,9 @@ export const Header = () => {
                 </div>
                 <div className={classes.growFlex}>
                     <Hidden xsDown implementation="css">
-                        <Link href="/exchange" className={classes.link}>
+                        {/* <Link href="/exchange" className={classes.link}>
                             <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
-                        </Link>
+                        </Link> */}
                         <Link
                             href="https://v1.symblox.io"
                             className={classes.link}
@@ -138,9 +138,9 @@ export const Header = () => {
                     onClose={handleDrawerToggle}
                 >
                     <div className={classes.appResponsive}>
-                        <Link href="/exchange" className={classes.mobileLink}>
+                        {/* <Link href="/exchange" className={classes.mobileLink}>
                             <FormattedMessage id="SYX_TOKEN_EXCHANGE" />
-                        </Link>
+                        </Link> */}
                         <Link
                             href="https://v1.symblox.io"
                             className={classes.mobileLink}
