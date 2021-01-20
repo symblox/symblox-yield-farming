@@ -241,10 +241,10 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
                 uint256 srcRepOld = srcRepNum > 0
                     ? checkpoints[srcRep][srcRepNum - 1].votes
                     : 0;
-                uint256 srcRepNew
-                if(amount>srcRepOld){
+                uint256 srcRepNew;
+                if (amount > srcRepOld) {
                     srcRepNew = 0;
-                }else{
+                } else {
                     srcRepNew = srcRepOld.sub(amount);
                 }
                 _writeCheckpoint(srcRep, srcRepNum, srcRepOld, srcRepNew);

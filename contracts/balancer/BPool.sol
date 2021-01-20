@@ -354,30 +354,30 @@ contract BPool is BBronze, BToken, BMath {
             );
     }
 
-    // function joinPool(uint256 poolAmountOut, uint256[] calldata maxAmountsIn)
-    //     external
-    //     _logs_
-    //     _lock_
-    // {
-    //     require(_finalized, "ERR_NOT_FINALIZED");
+    function joinPool(uint256 poolAmountOut, uint256[] calldata maxAmountsIn)
+        external
+        _logs_
+        _lock_
+    {
+        require(_finalized, "ERR_NOT_FINALIZED");
 
-    //     uint256 poolTotal = totalSupply();
-    //     uint256 ratio = bdiv(poolAmountOut, poolTotal);
-    //     require(ratio != 0, "ERR_MATH_APPROX");
+        uint256 poolTotal = totalSupply();
+        uint256 ratio = bdiv(poolAmountOut, poolTotal);
+        require(ratio != 0, "ERR_MATH_APPROX");
 
-    //     for (uint256 i = 0; i < _tokens.length; i++) {
-    //         address t = _tokens[i];
-    //         uint256 bal = _records[t].balance;
-    //         uint256 tokenAmountIn = bmul(ratio, bal);
-    //         require(tokenAmountIn != 0, "ERR_MATH_APPROX");
-    //         require(tokenAmountIn <= maxAmountsIn[i], "ERR_LIMIT_IN");
-    //         _records[t].balance = badd(_records[t].balance, tokenAmountIn);
-    //         emit LOG_JOIN(msg.sender, t, tokenAmountIn);
-    //         _pullUnderlying(t, msg.sender, tokenAmountIn);
-    //     }
-    //     _mintPoolShare(poolAmountOut);
-    //     _pushPoolShare(msg.sender, poolAmountOut);
-    // }
+        for (uint256 i = 0; i < _tokens.length; i++) {
+            address t = _tokens[i];
+            uint256 bal = _records[t].balance;
+            uint256 tokenAmountIn = bmul(ratio, bal);
+            require(tokenAmountIn != 0, "ERR_MATH_APPROX");
+            require(tokenAmountIn <= maxAmountsIn[i], "ERR_LIMIT_IN");
+            _records[t].balance = badd(_records[t].balance, tokenAmountIn);
+            emit LOG_JOIN(msg.sender, t, tokenAmountIn);
+            _pullUnderlying(t, msg.sender, tokenAmountIn);
+        }
+        _mintPoolShare(poolAmountOut);
+        _pushPoolShare(msg.sender, poolAmountOut);
+    }
 
     function exitPool(uint256 poolAmountIn, uint256[] calldata minAmountsOut)
         external
