@@ -110,7 +110,7 @@ contract BptConnector is BaseConnector {
         for (uint256 i = 0; i < tokensIn.length; i++) {
             IERC20 tokenDeposit;
             uint256 maxAmountIn = maxAmountsIn[i];
-            if (tokensIn[i] == address(0)) {
+            if (tokensIn[i] == address(0) || tokensIn[i] == address(wToken)) {
                 require(bpt.isBound(address(wToken)), "ERR_TOKEN_INVALID");
                 require(msg.value >= maxAmountIn, "ERR_AMOUNT");
                 tokenDeposit = IERC20(address(wToken));
@@ -188,7 +188,7 @@ contract BptConnector is BaseConnector {
 
         bpt.exitPool(poolAmountIn, minAmountsOut);
         for (uint256 i = 0; i < tokensOut.length; i++) {
-            if (tokensOut[i] == address(0)) {
+            if (tokensOut[i] == address(0) || tokensOut[i] == address(wToken)) {
                 IERC20 tokenWithdraw = IERC20(address(wToken));
                 wToken.withdraw(tokenWithdraw.balanceOf(address(this)));
                 msg.sender.transfer(address(this).balance);
