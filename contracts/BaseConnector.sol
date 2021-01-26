@@ -18,8 +18,18 @@ contract BaseConnector is syxOwnable {
         address lpToken,
         uint8 poolId
     );
-    event LogDeposit(address indexed dst, address indexed tokenIn, uint256 tokenAmountIn, uint256 poolAmountOut);
-    event LogWithdrawal(address indexed dst, address indexed tokenOut, uint256 tokenAmountOut, uint256 poolAmountIn);
+    event LogDeposit(
+        address indexed dst,
+        address indexed tokenIn,
+        uint256 tokenAmountIn,
+        uint256 poolAmountOut
+    );
+    event LogWithdrawal(
+        address indexed dst,
+        address indexed tokenOut,
+        uint256 tokenAmountOut,
+        uint256 poolAmountIn
+    );
     event LogStake(address indexed dst, uint256 amount);
     event LogUnstake(address indexed src, uint256 amount);
     event LogReward(address indexed src, uint256 amount);
@@ -40,7 +50,6 @@ contract BaseConnector is syxOwnable {
         require(_owner != address(0), "ERR_OWNER_INVALID");
         require(_rewardManager != address(0), "ERR_REWARD_MANAGER");
         require(_lpToken != address(0), "ERR_LP_TOKEN");
-
         syxOwnable.initialize(_owner);
         rewardManager = IRewardManager(_rewardManager);
         lpToken = _lpToken;
@@ -127,6 +136,9 @@ contract BaseConnector is syxOwnable {
 
     function claimTokens(address token) public onlyOwner {
         IERC20 erc20Token = IERC20(token);
-        erc20Token.safeTransfer(msg.sender, erc20Token.balanceOf(address(this)));
+        erc20Token.safeTransfer(
+            msg.sender,
+            erc20Token.balanceOf(address(this))
+        );
     }
 }

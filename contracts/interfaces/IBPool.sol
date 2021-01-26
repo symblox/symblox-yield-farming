@@ -1,6 +1,8 @@
 pragma solidity ^0.5.0;
 
 interface IBPool {
+    function wToken() external view returns (address);
+
     function isPublicSwap() external view returns (bool);
 
     function isFinalized() external view returns (bool);

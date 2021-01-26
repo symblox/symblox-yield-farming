@@ -16,7 +16,7 @@ pragma solidity 0.5.17;
 import "./BToken.sol";
 import "./BMath.sol";
 
-import "./IWrappedToken.sol";
+import "./ISvlx.sol";
 
 contract BPool is BBronze, BToken, BMath {
     struct Record {
@@ -307,9 +307,11 @@ contract BPool is BBronze, BToken, BMath {
     // Absorb any tokens that have been sent to this contract into the pool
     function gulp(address token) external _logs_ _lock_ {
         require(_records[token].bound, "ERR_NOT_BOUND");
+        ISvlx(wToken).claimRewards();
+
         uint256 coinBalance = address(this).balance;
         if (coinBalance > 0) {
-            IWrappedToken(wToken).deposit.value(coinBalance)();
+            ISvlx(wToken).deposit.value(coinBalance)();
         }
         _records[token].balance = IERC20(token).balanceOf(address(this));
     }
@@ -420,7 +422,7 @@ contract BPool is BBronze, BToken, BMath {
         returns (uint256 tokenAmountOut, uint256 spotPriceAfter)
     {
         // Deposit to the wrapped token contract to get erc20 tokens
-        IWrappedToken(wToken).deposit.value(msg.value)();
+        ISvlx(wToken).deposit.value(msg.value)();
 
         (tokenAmountOut, spotPriceAfter) = _swapExactAmountIn(
             wToken,
@@ -476,7 +478,7 @@ contract BPool is BBronze, BToken, BMath {
         );
 
         _pullUnderlying(tokenIn, msg.sender, tokenAmountIn);
-        IWrappedToken(wToken).withdraw(tokenAmountOut);
+        ISvlx(wToken).withdraw(tokenAmountOut);
         msg.sender.transfer(tokenAmountOut);
     }
 
@@ -560,7 +562,7 @@ contract BPool is BBronze, BToken, BMath {
         returns (uint256 poolAmountOut)
     {
         // Deposit to the wrapped token contract to get erc20 tokens
-        IWrappedToken(wToken).deposit.value(msg.value)();
+        ISvlx(wToken).deposit.value(msg.value)();
 
         poolAmountOut = _joinswapExternAmountIn(
             wToken,
@@ -581,44 +583,6 @@ contract BPool is BBronze, BToken, BMath {
         );
         _pullUnderlying(tokenIn, msg.sender, tokenAmountIn);
     }
-
-    // function joinswapPoolAmountOut(
-    //     address tokenIn,
-    //     uint256 poolAmountOut,
-    //     uint256 maxAmountIn
-    // ) external _logs_ _lock_ returns (uint256 tokenAmountIn) {
-    //     require(_finalized, "ERR_NOT_FINALIZED");
-    //     require(_records[tokenIn].bound, "ERR_NOT_BOUND");
-
-    //     Record storage inRecord = _records[tokenIn];
-
-    //     tokenAmountIn = calcSingleInGivenPoolOut(
-    //         inRecord.balance,
-    //         inRecord.denorm,
-    //         _totalSupply,
-    //         _totalWeight,
-    //         poolAmountOut,
-    //         _swapFee
-    //     );
-
-    //     require(tokenAmountIn != 0, "ERR_MATH_APPROX");
-    //     require(tokenAmountIn <= maxAmountIn, "ERR_LIMIT_IN");
-
-    //     require(
-    //         tokenAmountIn <= bmul(_records[tokenIn].balance, MAX_IN_RATIO),
-    //         "ERR_MAX_IN_RATIO"
-    //     );
-
-    //     inRecord.balance = badd(inRecord.balance, tokenAmountIn);
-
-    //     emit LOG_JOIN(msg.sender, tokenIn, tokenAmountIn);
-
-    //     _mintPoolShare(poolAmountOut);
-    //     _pushPoolShare(msg.sender, poolAmountOut);
-    //     _pullUnderlying(tokenIn, msg.sender, tokenAmountIn);
-
-    //     return tokenAmountIn;
-    // }
 
     function exitswapPoolAmountIn(
         address tokenOut,
@@ -643,53 +607,9 @@ contract BPool is BBronze, BToken, BMath {
             poolAmountIn,
             minAmountOut
         );
-        IWrappedToken(wToken).withdraw(tokenAmountOut);
+        ISvlx(wToken).withdraw(tokenAmountOut);
         msg.sender.transfer(tokenAmountOut);
     }
-
-    // function exitswapExternAmountOut(
-    //     address tokenOut,
-    //     uint256 tokenAmountOut,
-    //     uint256 maxPoolAmountIn
-    // ) external _logs_ _lock_ returns (uint256 poolAmountIn) {
-    //     require(_finalized, "ERR_NOT_FINALIZED");
-    //     require(_records[tokenOut].bound, "ERR_NOT_BOUND");
-    //     require(
-    //         tokenAmountOut <= bmul(_records[tokenOut].balance, MAX_OUT_RATIO),
-    //         "ERR_MAX_OUT_RATIO"
-    //     );
-
-    //     Record storage outRecord = _records[tokenOut];
-
-    //     poolAmountIn = calcPoolInGivenSingleOut(
-    //         outRecord.balance,
-    //         outRecord.denorm,
-    //         _totalSupply,
-    //         _totalWeight,
-    //         tokenAmountOut,
-    //         _swapFee
-    //     );
-
-    //     require(poolAmountIn != 0, "ERR_MATH_APPROX");
-    //     require(poolAmountIn <= maxPoolAmountIn, "ERR_LIMIT_IN");
-
-    //     outRecord.balance = bsub(outRecord.balance, tokenAmountOut);
-
-    //     uint256 exitFee = bmul(poolAmountIn, EXIT_FEE);
-
-    //     emit LOG_EXIT(msg.sender, tokenOut, tokenAmountOut);
-
-    //     _pullPoolShare(msg.sender, poolAmountIn);
-    //     _burnPoolShare(bsub(poolAmountIn, exitFee));
-    //     _pushPoolShare(_factory, exitFee);
-    //     _pushUnderlying(tokenOut, msg.sender, tokenAmountOut);
-
-    //     return poolAmountIn;
-    // }
-
-    // ==
-    // 'Underlying' token-manipulation functions make external calls but are NOT locked
-    // You must `_lock_` or otherwise ensure reentry-safety
 
     function _pullUnderlying(
         address erc20,

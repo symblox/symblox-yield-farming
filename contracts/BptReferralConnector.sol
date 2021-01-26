@@ -8,7 +8,21 @@ contract BptReferralConnector is BptConnector {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    event LogDepositWithReferral(address indexed dst, address indexed referral, address indexed tokenIn, uint256 tokenAmountIn, uint256 poolAmountOut);
+    event LogDepositWithReferral(
+        address indexed dst,
+        address indexed referral,
+        address indexed tokenIn,
+        uint256 tokenAmountIn,
+        uint256 poolAmountOut
+    );
+
+    event LogMultiDepositWithReferral(
+        address indexed dst,
+        address indexed referral,
+        address[] tokensIn,
+        uint256[] maxAmountsIn,
+        uint256 poolAmountOut
+    );
 
     /**
      * @dev Deposit first to the liquidity pool and then the reward pool to earn rewards
@@ -47,7 +61,13 @@ contract BptReferralConnector is BptConnector {
         //
         super.stakeLpToken(poolAmountOut);
 
-        emit LogDepositWithReferral(msg.sender, referral, tokenIn, tokenAmountIn, poolAmountOut);
+        emit LogDepositWithReferral(
+            msg.sender,
+            referral,
+            tokenIn,
+            tokenAmountIn,
+            poolAmountOut
+        );
     }
 
     /**
@@ -68,6 +88,29 @@ contract BptReferralConnector is BptConnector {
         //
         super.stakeLpToken(poolAmountOut);
 
-        emit LogDepositWithReferral(msg.sender, referral, address(0), msg.value, poolAmountOut);
+        emit LogDepositWithReferral(
+            msg.sender,
+            referral,
+            address(0),
+            msg.value,
+            poolAmountOut
+        );
+    }
+
+    function multiDeposit(
+        uint256 poolAmountOut,
+        address[] calldata tokensIn,
+        uint256[] calldata maxAmountsIn,
+        address referral
+    ) external payable {
+        super._multiDeposit(poolAmountOut, tokensIn, maxAmountsIn);
+
+        emit LogMultiDepositWithReferral(
+            msg.sender,
+            referral,
+            tokensIn,
+            maxAmountsIn,
+            poolAmountOut
+        );
     }
 }
