@@ -16,7 +16,7 @@ const config = {
     startBlock: "1",
     bonusEndBlock: "1",
     seasonBlocks: "900",
-    initSupply: "1000000000000000000000",//1000 syx
+    initSupply: "1000000000000000000000", //1000 syx
     denorm1: "5000000000000000000", //5
     balance1: "50000000000000000000", //50
     denorm2: "5000000000000000000", //5
@@ -49,7 +49,7 @@ contract("Integration test", ([admin, alice, bob]) => {
         bfactory = await BFactory.new(wToken.address);
         const bpoolTx = await bfactory.newBPool();
         bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
-        symbloxToken = await SymbloxToken.new(constants.ZERO_ADDRESS);
+        symbloxToken = await SymbloxToken.new([]);
         rewardPool = await RewardManager.new(
             symbloxToken.address,
             admin,
@@ -58,7 +58,6 @@ contract("Integration test", ([admin, alice, bob]) => {
             config.initSupply,
             config.seasonBlocks
         );
-
 
         await wToken.deposit({from: admin, value: config.balance1});
         await wToken.approve(bpool.address, config.balance1);

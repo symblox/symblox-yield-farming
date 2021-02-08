@@ -26,14 +26,14 @@ module.exports = {
             host: "localhost",
             port: 8545,
             network_id: "*",
-            gas: 8000000,
+            gas: 10000000,
             gasPrice: 1000000000 // web3.eth.gasPrice
         },
         coverage: {
             host: "localhost",
             port: 8555,
             network_id: "*",
-            gas: 8000000,
+            gas: 10000000,
             gasPrice: 1000000000 // web3.eth.gasPrice
         },
         vlxtest: configVlxNetwok(111),

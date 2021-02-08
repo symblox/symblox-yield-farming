@@ -28,7 +28,7 @@ contract("testRewardDistribution", ([admin, bob]) => {
         bfactory = await BFactory.new(wToken.address);
         const bpoolTx = await bfactory.newBPool();
         bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
-        symbloxToken = await SymbloxToken.new(constants.ZERO_ADDRESS);
+        symbloxToken = await SymbloxToken.new([]);
 
         await wToken.deposit({from: admin, value: config.balance1});
         await wToken.approve(bpool.address, config.balance1);
@@ -44,18 +44,17 @@ contract("testRewardDistribution", ([admin, bob]) => {
             admin,
             curBlock.addn(6),
             curBlock.addn(6),
-            "8000000000000000000",//8
+            "8000000000000000000", //8
             "10"
         );
         startBlock = await rewardPool.startBlock();
         endBlock = await rewardPool.endBlock();
         syxPerBlock = await rewardPool.syxPerBlock();
         initSyxSupply = await symbloxToken.totalSupply();
-        console.log("startBlock:",startBlock.toString());
-        console.log("endBlock:",endBlock.toString());
-        console.log("syxPerBlock:",syxPerBlock.toString());
-        console.log("initSyxSupply:",initSyxSupply.toString());
-        
+        console.log("startBlock:", startBlock.toString());
+        console.log("endBlock:", endBlock.toString());
+        console.log("syxPerBlock:", syxPerBlock.toString());
+        console.log("initSyxSupply:", initSyxSupply.toString());
 
         await symbloxToken.transferOwnership(rewardPool.address);
 
@@ -76,14 +75,11 @@ contract("testRewardDistribution", ([admin, bob]) => {
     });
 
     it("calc reward", async () => {
-        const bobConnectorAddress = await connectorFactory.connectors(
-            bob,
-            "1"
-        );
+        const bobConnectorAddress = await connectorFactory.connectors(bob, "1");
         bobConnector = await BptConnector.at(bobConnectorAddress);
 
         bobBalance = await symbloxToken.balanceOf(bob);
-        console.log("bobBalanceStart: ",bobBalance.toString());
+        console.log("bobBalanceStart: ", bobBalance.toString());
         adminBalance = await symbloxToken.balanceOf(admin);
         console.log("adminBalanceStart: ", adminBalance.toString());
         rewardPoolBalance = await symbloxToken.balanceOf(rewardPool.address);
@@ -93,7 +89,7 @@ contract("testRewardDistribution", ([admin, bob]) => {
         expect(rewardPoolBalance).to.be.bignumber.equals("0");
 
         const bobStartBlock = await time.latestBlock();
-        console.log("bobStartBlock:",bobStartBlock.toString());
+        console.log("bobStartBlock:", bobStartBlock.toString());
         //Reward block from bobStartBlock to endBlock
         await bobConnector.methods["deposit(uint256)"](0, {
             from: bob,
@@ -106,9 +102,9 @@ contract("testRewardDistribution", ([admin, bob]) => {
         });
 
         curBlock = await time.latestBlock();
-        console.log("curBlock:",curBlock.toString());
+        console.log("curBlock:", curBlock.toString());
         bobBalance = await symbloxToken.balanceOf(bob);
-        console.log("bobBalanceEnd: ",bobBalance.toString());
+        console.log("bobBalanceEnd: ", bobBalance.toString());
         adminBalance = await symbloxToken.balanceOf(admin);
         console.log("adminBalanceEnd: ", adminBalance.toString());
         rewardPoolBalance = await symbloxToken.balanceOf(rewardPool.address);
@@ -120,24 +116,31 @@ contract("testRewardDistribution", ([admin, bob]) => {
         const userTotalRewards = syxPerBlock.mul(rewardBlocks);
         const devTotalRewards = syxPerBlock.mul(rewardBlocks).div(new BN(9));
         expect(adminBalance).to.be.bignumber.equals(devTotalRewards);
-        expect(bobBalance.add(rewardPoolBalance)).to.be.bignumber.equals(userTotalRewards);//There will be a small amount of syx caused by calculation errors in the rewardPool
-        expect(syxSupply.sub(initSyxSupply)).to.be.bignumber.equals(userTotalRewards.add(devTotalRewards));//The reward time is less than 10 blocks, so the total is not 8syx
-    
+        expect(bobBalance.add(rewardPoolBalance)).to.be.bignumber.equals(
+            userTotalRewards
+        ); //There will be a small amount of syx caused by calculation errors in the rewardPool
+        expect(syxSupply.sub(initSyxSupply)).to.be.bignumber.equals(
+            userTotalRewards.add(devTotalRewards)
+        ); //The reward time is less than 10 blocks, so the total is not 8syx
+
         //Reward block from startBlock to endBlock
         await rewardPool.startNewSeason();
         curBlock = await time.latestBlock();
-        console.log("curBlock:",curBlock.toString());
+        console.log("curBlock:", curBlock.toString());
         await time.advanceBlockTo(curBlock.addn(10));
         await bobConnector.getReward({
             from: bob
         });
 
         bobBalance2 = await symbloxToken.balanceOf(bob);
-        console.log("bobBalanceSeason2End: ",bobBalance2.toString());
+        console.log("bobBalanceSeason2End: ", bobBalance2.toString());
         adminBalance2 = await symbloxToken.balanceOf(admin);
         console.log("adminBalanceSeason2End: ", adminBalance2.toString());
         rewardPoolBalance2 = await symbloxToken.balanceOf(rewardPool.address);
-        console.log("rewardPoolBalanceSeason2End: ", rewardPoolBalance2.toString());
+        console.log(
+            "rewardPoolBalanceSeason2End: ",
+            rewardPoolBalance2.toString()
+        );
         syxSupply2 = await symbloxToken.totalSupply();
         console.log("syxSeason2Supply: ", syxSupply2.toString());
 
@@ -148,9 +151,20 @@ contract("testRewardDistribution", ([admin, bob]) => {
         const rewardBlocks2 = endBlock.sub(startBlock);
         const userTotalRewards2 = syxPerBlock.mul(rewardBlocks2);
         const devTotalRewards2 = syxPerBlock.mul(rewardBlocks2).div(new BN(9));
-        expect(adminBalance2.sub(adminBalance)).to.be.bignumber.equals(devTotalRewards2);
-        expect(bobBalance2.add(rewardPoolBalance2).sub(bobBalance).sub(rewardPoolBalance)).to.be.bignumber.equals(userTotalRewards2);//There will be a small amount of syx caused by calculation errors in the rewardPool
-        expect(syxSupply2.sub(syxSupply)).to.be.bignumber.equals(userTotalRewards2.add(devTotalRewards2));
-        expect(syxSupply2.sub(syxSupply)).to.be.bignumber.equals("6400000000000000000");//80% of the previous period = 6.4Syx
-    })
+        expect(adminBalance2.sub(adminBalance)).to.be.bignumber.equals(
+            devTotalRewards2
+        );
+        expect(
+            bobBalance2
+                .add(rewardPoolBalance2)
+                .sub(bobBalance)
+                .sub(rewardPoolBalance)
+        ).to.be.bignumber.equals(userTotalRewards2); //There will be a small amount of syx caused by calculation errors in the rewardPool
+        expect(syxSupply2.sub(syxSupply)).to.be.bignumber.equals(
+            userTotalRewards2.add(devTotalRewards2)
+        );
+        expect(syxSupply2.sub(syxSupply)).to.be.bignumber.equals(
+            "6400000000000000000"
+        ); //80% of the previous period = 6.4Syx
+    });
 });

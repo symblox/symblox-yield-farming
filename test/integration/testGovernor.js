@@ -20,7 +20,7 @@ const config = {
     startBlock: "1",
     bonusEndBlock: "1",
     seasonBlocks: "10",
-    initSupply: "8000000000000000000",//8 syx
+    initSupply: "8000000000000000000", //8 syx
     denorm1: "5000000000000000000", //5
     balance1: "5000000000000000000", //5
     denorm2: "5000000000000000000", //5
@@ -29,14 +29,21 @@ const config = {
     swapAllocPoint: "85000000000000000000" //85
 };
 
-let bfactory, bpool, wToken, symbloxToken, rewardPool, connectorFactory, timelock, governor;
+let bfactory,
+    bpool,
+    wToken,
+    symbloxToken,
+    rewardPool,
+    connectorFactory,
+    timelock,
+    governor;
 contract("Governor", ([admin, alice, bob]) => {
     before(async () => {
         wToken = await WVLX.new();
         bfactory = await BFactory.new(wToken.address);
         const bpoolTx = await bfactory.newBPool();
         bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
-        symbloxToken = await SymbloxToken.new(constants.ZERO_ADDRESS);
+        symbloxToken = await SymbloxToken.new([]);
         rewardPool = await RewardManager.new(
             symbloxToken.address,
             admin,
@@ -45,8 +52,12 @@ contract("Governor", ([admin, alice, bob]) => {
             config.initSupply,
             config.seasonBlocks
         );
-        timelock = await Timelock.new(admin, 604800);//1 week
-        governor = await Governor.new(timelock.address, symbloxToken.address, admin);
+        timelock = await Timelock.new(admin, 604800); //1 week
+        governor = await Governor.new(
+            timelock.address,
+            symbloxToken.address,
+            admin
+        );
 
         await wToken.deposit({from: admin, value: config.balance1});
         await wToken.approve(bpool.address, config.balance1);
@@ -56,9 +67,9 @@ contract("Governor", ([admin, alice, bob]) => {
         await bpool.bind(symbloxToken.address, config.balance2, config.denorm2);
         await bpool.finalize();
 
-        await symbloxToken.mint(admin, "100000000000000000000");//100
-        await symbloxToken.mint(alice, "100000000000000000000");//100
-        await symbloxToken.mint(bob, "100000000000000000000");//100
+        await symbloxToken.mint(admin, "100000000000000000000"); //100
+        await symbloxToken.mint(alice, "100000000000000000000"); //100
+        await symbloxToken.mint(bob, "100000000000000000000"); //100
 
         await symbloxToken.transferOwnership(rewardPool.address);
 
@@ -68,7 +79,7 @@ contract("Governor", ([admin, alice, bob]) => {
         await rewardPool.add(config.swapAllocPoint, bpool.address, false);
 
         const wvlxConnector = await WvlxConnector.new();
-        
+
         connectorFactory = await ConnectorFactory.new(rewardPool.address);
         await connectorFactory.setConnectorImpl("0", wvlxConnector.address);
         // let res = await connectorFactory.owner();
@@ -82,18 +93,35 @@ contract("Governor", ([admin, alice, bob]) => {
         //change timelock admin to governor address
         const timestamp = await time.latest();
         const delay = await timelock.delay();
-        const eta = parseFloat(timestamp.toString())+parseFloat(delay.toString()+1);
-        await timelock.queueTransaction(timelock.address,"0","setPendingAdmin(address)","0x"+abi.rawEncode(["address"], [governor.address]).toString('hex'),eta);
+        const eta =
+            parseFloat(timestamp.toString()) + parseFloat(delay.toString() + 1);
+        await timelock.queueTransaction(
+            timelock.address,
+            "0",
+            "setPendingAdmin(address)",
+            "0x" +
+                abi.rawEncode(["address"], [governor.address]).toString("hex"),
+            eta
+        );
         await time.increaseTo(eta);
-        await timelock.executeTransaction(timelock.address,"0","setPendingAdmin(address)","0x"+abi.rawEncode(["address"], [governor.address]).toString('hex'),eta);
+        await timelock.executeTransaction(
+            timelock.address,
+            "0",
+            "setPendingAdmin(address)",
+            "0x" +
+                abi.rawEncode(["address"], [governor.address]).toString("hex"),
+            eta
+        );
         await governor.__acceptAdmin();
     });
 
-    it("cast vote setConnectorImpl", async ()=>{
+    it("cast vote setConnectorImpl", async () => {
         const bptConnector = await BptConnector.new();
 
         await expectRevert(
-            connectorFactory.setConnectorImpl("1", bptConnector.address, {from: alice}),
+            connectorFactory.setConnectorImpl("1", bptConnector.address, {
+                from: alice
+            }),
             "Ownable: caller is not the owner"
         );
 
@@ -105,18 +133,30 @@ contract("Governor", ([admin, alice, bob]) => {
         const targets = [connectorFactory.address];
         const values = ["0"];
         const signatures = ["setConnectorImpl(uint8,address)"];
-        const calldatas = ["0x"+abi.rawEncode(["uint8","address"], ["1", bptConnector.address]).toString('hex')];
+        const calldatas = [
+            "0x" +
+                abi
+                    .rawEncode(
+                        ["uint8", "address"],
+                        ["1", bptConnector.address]
+                    )
+                    .toString("hex")
+        ];
 
         await symbloxToken.delegate(admin);
-        await governor.propose(targets, values, signatures, calldatas, "setConnectorImpl");
+        await governor.propose(
+            targets,
+            values,
+            signatures,
+            calldatas,
+            "setConnectorImpl"
+        );
 
         const proposalId = await governor.latestProposalIds(admin);
-        console.log(`proposalId: ${proposalId}`)
+        console.log(`proposalId: ${proposalId}`);
 
         let state = await governor.state(proposalId);
-        expect(state).to.be.bignumber.equals(
-            "0"
-        );
+        expect(state).to.be.bignumber.equals("0");
 
         const votingDelay = await governor.votingDelay();
         const curBlock = await time.latestBlock();
@@ -128,8 +168,8 @@ contract("Governor", ([admin, alice, bob]) => {
             governor.queue(proposalId),
             "Governor::queue: proposal can only be queued if it is succeeded"
         );
-        await governor.castVote(proposalId, true, {from:alice});
-        await governor.castVote(proposalId, true, {from:bob});
+        await governor.castVote(proposalId, true, {from: alice});
+        await governor.castVote(proposalId, true, {from: bob});
 
         const votingPeriod = await governor.votingPeriod();
         await time.advanceBlockTo(startBlock.addn(votingPeriod.toNumber()));
@@ -137,12 +177,12 @@ contract("Governor", ([admin, alice, bob]) => {
 
         await governor.queue(proposalId);
         const proposal = await governor.proposals(proposalId);
-        await time.increaseTo(parseFloat(proposal.eta)+1);
+        await time.increaseTo(parseFloat(proposal.eta) + 1);
         await governor.execute(proposalId);
 
         bptConnectorAddress = await connectorFactory.connectorImpls("1");
         expect(bptConnectorAddress).to.be.bignumber.not.equals(
             constants.ZERO_ADDRESS
         );
-    })
+    });
 });

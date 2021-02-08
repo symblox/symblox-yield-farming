@@ -399,5 +399,90 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             res = await rewardMgr.poolInfo("0");
             assert.equal(res.allocPoint.toString(), "22");
         });
+
+        it("Get reward when balance not enough for dev", async () => {
+            const startBlock = await time.latestBlock();
+            const rewardPerBlock = 100;
+            this.rewardMgr = await RewardManager.new(
+                this.symblox.address,
+                dev,
+                startBlock,
+                startBlock,
+                "100000",
+                "900",
+                {from: admin}
+            );
+            await this.rewardMgr.add("100", this.lp.address, false, {
+                from: admin
+            });
+            await this.lp.approve(this.rewardMgr.address, "1000", {from: bob});
+
+            const depositTx = await this.rewardMgr.deposit(0, "100", {
+                from: bob
+            });
+
+            await time.advanceBlockTo(startBlock.addn(5));
+            await this.rewardMgr.updatePool(0);
+            const latestBlock = await time.latestBlock();
+
+            assert.equal(
+                (await this.rewardMgr.devPending()).valueOf(),
+                parseInt(
+                    (rewardPerBlock *
+                        (latestBlock - depositTx.receipt.blockNumber)) /
+                        9
+                )
+            );
+
+            this.symblox.transfer(this.rewardMgr.address, "100000", {
+                from: admin
+            });
+
+            await this.rewardMgr.updatePool(0);
+
+            assert.equal((await this.rewardMgr.devPending()).valueOf(), 0);
+        });
+
+        it("Get reward when balance not enough for user", async () => {
+            const startBlock = await time.latestBlock();
+            const rewardPerBlock = 100;
+            this.rewardMgr = await RewardManager.new(
+                this.symblox.address,
+                dev,
+                startBlock,
+                startBlock,
+                "100000",
+                "900",
+                {from: admin}
+            );
+            await this.rewardMgr.add("100", this.lp.address, false, {
+                from: admin
+            });
+            await this.lp.approve(this.rewardMgr.address, "1000", {from: bob});
+
+            const depositTx = await this.rewardMgr.deposit(0, "100", {
+                from: bob
+            });
+
+            await time.advanceBlockTo(startBlock.addn(5));
+            const latestBlock = await time.latestBlock();
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
+                rewardPerBlock * (latestBlock - depositTx.receipt.blockNumber)
+            );
+
+            this.symblox.transfer(this.rewardMgr.address, "100000", {
+                from: admin
+            });
+
+            await this.rewardMgr.getReward(0, {
+                from: bob
+            });
+
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
+                0
+            );
+        });
     });
 });
