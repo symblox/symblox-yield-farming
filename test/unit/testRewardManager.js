@@ -433,12 +433,17 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
                         9
                 )
             );
-
             this.symblox.transfer(this.rewardMgr.address, "100000", {
                 from: admin
             });
 
+            res = await this.symblox.balanceOf(this.rewardMgr.address);
+            console.log("balance before", res.toString());
+
             await this.rewardMgr.updatePool(0);
+
+            res = await this.symblox.balanceOf(this.rewardMgr.address);
+            console.log("balance end", res.toString());
 
             assert.equal((await this.rewardMgr.devPending()).valueOf(), 0);
         });
@@ -475,9 +480,15 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
                 from: admin
             });
 
+            res = await this.symblox.balanceOf(this.rewardMgr.address);
+            console.log("balance before:", res.toString());
+
             await this.rewardMgr.getReward(0, {
                 from: bob
             });
+
+            res = await this.symblox.balanceOf(this.rewardMgr.address);
+            console.log("balance after:", res.toString());
 
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),

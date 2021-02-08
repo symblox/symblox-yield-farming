@@ -20,10 +20,11 @@ contract ConnectorFactory is ProxyFactory, Ownable {
         rewardManager = _rewardManager;
     }
 
-    function createConnector(address lpToken, uint8 rewardPoolId)
-        public
-        returns (address connector)
-    {
+    function createConnector(
+        address wrappedToken,
+        address lpToken,
+        uint8 rewardPoolId
+    ) public returns (address connector) {
         require(
             connectors[msg.sender][rewardPoolId] == address(0),
             "ERR_DUP_REWARD_POOL"
@@ -33,9 +34,10 @@ contract ConnectorFactory is ProxyFactory, Ownable {
             "ERR_IMPL_NOT_FOUND"
         );
         bytes memory _data = abi.encodeWithSignature(
-            "initialize(address,address,address,uint8)",
+            "initialize(address,address,address,address,uint8)",
             msg.sender,
             rewardManager,
+            wrappedToken,
             lpToken,
             rewardPoolId
         );

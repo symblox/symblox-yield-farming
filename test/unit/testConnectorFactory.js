@@ -37,6 +37,7 @@ contract("ConnectorFactory", function () {
             // Create a new connector
             expectEvent(
                 await this.factory.createConnector(
+                    (await MockContract.new()).address,
                     (await MockContract.new()).address, // lpToken
                     0 // pool id
                 ),
@@ -52,6 +53,7 @@ contract("ConnectorFactory", function () {
         });
         it("should fail to create connector when implementation is not set", async function () {
             const createConnErrTx = this.factory.createConnector(
+                (await MockContract.new()).address,
                 (await MockContract.new()).address,
                 0 // pool id
             );
@@ -78,10 +80,12 @@ contract("ConnectorFactory", function () {
             // create the first connector
             await this.factory.createConnector(
                 (await MockContract.new()).address,
+                (await MockContract.new()).address,
                 1 // pool id
             );
             // create the second connector with the same id
             const createConnTx = this.factory.createConnector(
+                (await MockContract.new()).address,
                 (await MockContract.new()).address,
                 1 // pool id
             );

@@ -28,24 +28,41 @@ contract BptConnector is BaseConnector {
         uint256 poolAmountIn
     );
 
-    /**
-     * @dev Deposit first to the liquidity pool and then the reward pool to earn rewards
-     * @param tokenIn ERC20 address to deposit
-     * @param tokenAmountIn deposit amount, in wei
-     */
     function deposit(
         address tokenIn,
         uint256 tokenAmountIn,
         uint256 minPoolAmountOut
-    ) external validBpt(tokenIn) returns (uint256 poolAmountOut) {
-        IERC20 tokenDeposit = IERC20(tokenIn);
-        require(
-            tokenDeposit.allowance(msg.sender, address(this)) >= tokenAmountIn,
-            "ERR_ALLOWANCE"
-        );
-        // transfer the tokens here
-        tokenDeposit.safeTransferFrom(msg.sender, address(this), tokenAmountIn);
+    ) external payable returns (uint256 poolAmountOut) {
+        poolAmountOut = _deposit(tokenIn, tokenAmountIn, minPoolAmountOut);
 
+        emit LogDeposit(msg.sender, tokenIn, tokenAmountIn, poolAmountOut);
+    }
+
+    function _deposit(
+        address tokenIn,
+        uint256 tokenAmountIn,
+        uint256 minPoolAmountOut
+    ) internal returns (uint256 poolAmountOut) {
+        IERC20 tokenDeposit;
+        if (tokenIn == address(0) || tokenIn == wrappedToken) {
+            require(msg.value >= tokenAmountIn, "ERR_ALLOWANCE");
+            IWrappedToken wToken = IWrappedToken(wrappedToken);
+            tokenDeposit = IERC20(wrappedToken);
+            wToken.deposit.value(msg.value)();
+        } else {
+            tokenDeposit = IERC20(tokenIn);
+            require(
+                tokenDeposit.allowance(msg.sender, address(this)) >=
+                    tokenAmountIn,
+                "ERR_ALLOWANCE"
+            );
+            // transfer the tokens here
+            tokenDeposit.safeTransferFrom(
+                msg.sender,
+                address(this),
+                tokenAmountIn
+            );
+        }
         //
         // deposit to the bpool
         //
@@ -53,39 +70,52 @@ contract BptConnector is BaseConnector {
             tokenDeposit.approve(lpToken, tokenAmountIn);
         }
         poolAmountOut = IBPool(lpToken).joinswapExternAmountIn(
-            tokenIn,
+            address(tokenDeposit),
             tokenAmountIn,
             minPoolAmountOut
         );
         require(poolAmountOut > 0, "ERR_BPOOL_DEPOSIT");
 
-        //
-        // stake to RewardManager
-        //
         super.stakeLpToken(poolAmountOut);
-
-        emit LogDeposit(msg.sender, tokenIn, tokenAmountIn, poolAmountOut);
     }
 
-    /**
-     * @dev Deposit first to the liquidity pool and then the reward pool to earn rewards
-     */
-    function deposit(uint256 minPoolAmountOut)
-        external
-        payable
-        returns (uint256 poolAmountOut)
-    {
-        poolAmountOut = IBPool(lpToken).joinswapWTokenIn.value(msg.value)(
-            minPoolAmountOut
+    function withdraw(
+        address tokenOut,
+        uint256 amount,
+        uint256 minAmountOut
+    ) external validBpt(tokenOut) onlyOwner returns (uint256 tokenAmountOut) {
+        tokenAmountOut = _withdraw(tokenOut, amount, minAmountOut);
+        emit LogWithdrawal(msg.sender, tokenOut, tokenAmountOut, amount);
+    }
+
+    function _withdraw(
+        address tokenOut,
+        uint256 amount,
+        uint256 minAmountOut
+    ) internal returns (uint256 tokenAmountOut) {
+        IWrappedToken wToken = IWrappedToken(wrappedToken);
+        IERC20 tokenWithdraw;
+        if (tokenOut == address(0) || tokenOut == wrappedToken) {
+            tokenWithdraw = IERC20(wrappedToken);
+        } else {
+            tokenWithdraw = IERC20(tokenOut);
+        }
+
+        super.unstakeLpToken(amount);
+        tokenAmountOut = IBPool(lpToken).exitswapPoolAmountIn(
+            address(tokenWithdraw),
+            amount,
+            minAmountOut
         );
-        require(poolAmountOut > 0, "ERR_BPOOL_DEPOSIT");
 
-        //
-        // stake to RewardManager
-        //
-        super.stakeLpToken(poolAmountOut);
-
-        emit LogDeposit(msg.sender, address(0), msg.value, poolAmountOut);
+        if (tokenOut == address(0) || tokenOut == wrappedToken) {
+            wToken.withdraw(tokenWithdraw.balanceOf(address(this)));
+            tokenAmountOut = address(this).balance;
+            msg.sender.transfer(tokenAmountOut);
+        } else {
+            tokenAmountOut = tokenWithdraw.balanceOf(address(this));
+            tokenWithdraw.safeTransfer(msg.sender, tokenAmountOut);
+        }
     }
 
     function multiDeposit(
@@ -106,14 +136,14 @@ contract BptConnector is BaseConnector {
         require(poolAmountOut > 0, "ERR_BPOOL_DEPOSIT");
         require(tokensIn.length == maxAmountsIn.length, "ERR_PARAMS_LENGTH");
         IBPool bpt = IBPool(lpToken);
-        IWrappedToken wToken = IWrappedToken(bpt.wToken());
+        IWrappedToken wToken = IWrappedToken(wrappedToken);
         for (uint256 i = 0; i < tokensIn.length; i++) {
             IERC20 tokenDeposit;
             uint256 maxAmountIn = maxAmountsIn[i];
-            if (tokensIn[i] == address(0) || tokensIn[i] == address(wToken)) {
-                require(bpt.isBound(address(wToken)), "ERR_TOKEN_INVALID");
+            if (tokensIn[i] == address(0) || tokensIn[i] == wrappedToken) {
+                require(bpt.isBound(wrappedToken), "ERR_TOKEN_INVALID");
                 require(msg.value >= maxAmountIn, "ERR_AMOUNT");
-                tokenDeposit = IERC20(address(wToken));
+                tokenDeposit = IERC20(wrappedToken);
                 wToken.deposit.value(msg.value)();
             } else {
                 require(bpt.isBound(tokensIn[i]), "ERR_TOKEN_INVALID");
@@ -145,9 +175,7 @@ contract BptConnector is BaseConnector {
 
         for (uint256 i = 0; i < tokensIn.length; i++) {
             if (tokensIn[i] == address(0)) {
-                wToken.withdraw(
-                    IERC20(address(wToken)).balanceOf(address(this))
-                );
+                wToken.withdraw(IERC20(wrappedToken).balanceOf(address(this)));
                 msg.sender.transfer(address(this).balance);
             } else {
                 IERC20 tokenDeposit = IERC20(tokensIn[i]);
@@ -183,13 +211,13 @@ contract BptConnector is BaseConnector {
         require(poolAmountIn > 0, "ERR_BPOOL_DEPOSIT");
         require(tokensOut.length == minAmountsOut.length, "ERR_PARAMS_LENGTH");
         IBPool bpt = IBPool(lpToken);
-        IWrappedToken wToken = IWrappedToken(bpt.wToken());
+        IWrappedToken wToken = IWrappedToken(wrappedToken);
         super.unstakeLpToken(poolAmountIn);
 
         bpt.exitPool(poolAmountIn, minAmountsOut);
         for (uint256 i = 0; i < tokensOut.length; i++) {
-            if (tokensOut[i] == address(0) || tokensOut[i] == address(wToken)) {
-                IERC20 tokenWithdraw = IERC20(address(wToken));
+            if (tokensOut[i] == address(0) || tokensOut[i] == wrappedToken) {
+                IERC20 tokenWithdraw = IERC20(wrappedToken);
                 wToken.withdraw(tokenWithdraw.balanceOf(address(this)));
                 msg.sender.transfer(address(this).balance);
             } else {
@@ -200,63 +228,5 @@ contract BptConnector is BaseConnector {
                 );
             }
         }
-    }
-
-    /**
-     * @dev Unstake from the reward pool, then withdraw from the liquidity pool
-     * @param tokenOut withdraw token address
-     * @param amount withdraw amount, in wei
-     */
-    function withdraw(
-        address tokenOut,
-        uint256 amount,
-        uint256 minAmountOut
-    ) external validBpt(tokenOut) onlyOwner returns (uint256 tokenAmountOut) {
-        //
-        // Withdraw the liquidity pool tokens from RewardManager
-        //
-        super.unstakeLpToken(amount);
-
-        //
-        // Remove liquidity from the bpool
-        //
-        tokenAmountOut = IBPool(lpToken).exitswapPoolAmountIn(
-            tokenOut,
-            amount,
-            minAmountOut
-        );
-        IERC20(tokenOut).safeTransfer(msg.sender, tokenAmountOut);
-
-        emit LogWithdrawal(msg.sender, tokenOut, tokenAmountOut, amount);
-    }
-
-    /**
-     * @dev Unstake from the reward pool, then withdraw from the liquidity pool
-     * @param amount withdraw amount, in wei
-     */
-    function withdraw(uint256 amount, uint256 minAmountOut)
-        external
-        onlyOwner
-        returns (uint256 tokenAmountOut)
-    {
-        //
-        // Withdraw the liquidity pool tokens from RewardManager
-        //
-        super.unstakeLpToken(amount);
-
-        //
-        // Remove liquidity from the bpool
-        //
-        tokenAmountOut = IBPool(lpToken).exitswapPoolAmountInWTokenOut(
-            amount,
-            minAmountOut
-        );
-        require(
-            address(this).balance >= tokenAmountOut,
-            "ERR_BAL_INSUFFICIENT"
-        );
-        msg.sender.transfer(tokenAmountOut);
-
-        emit LogWithdrawal(msg.sender, address(0), tokenAmountOut, amount);
     }
 }

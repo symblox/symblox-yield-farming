@@ -17,11 +17,7 @@ contract WvlxConnector is BaseConnector {
      * @dev Firstly, deposit to the liquidity pool to get the lpToken,
      * then deposit the lpTokens to RewardManager to earn rewards
      */
-    function deposit(uint256)
-        external
-        payable
-        returns (uint256 wvlxAmount)
-    {
+    function deposit(uint256) external payable returns (uint256 wvlxAmount) {
         // Cast lpToken from address to address payable
         address payable recipient = address(uint160(address(lpToken)));
         // Send to wrap VLX contract
@@ -33,7 +29,6 @@ contract WvlxConnector is BaseConnector {
         // Deposit to the RewardManager
         //
         stakeLpToken(wvlxAmount);
-
         emit LogDeposit(msg.sender, address(0), msg.value, wvlxAmount);
     }
 

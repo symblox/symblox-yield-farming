@@ -9,6 +9,7 @@ contract BaseConnector is syxOwnable {
     using SafeERC20 for IERC20;
 
     address public lpToken;
+    address public wrappedToken;
     IRewardManager public rewardManager;
     uint8 public rewardPoolId;
 
@@ -44,6 +45,7 @@ contract BaseConnector is syxOwnable {
     function initialize(
         address _owner,
         address _rewardManager,
+        address _wrappedToken,
         address _lpToken,
         uint8 _rewardPoolId
     ) public initializer {
@@ -52,6 +54,7 @@ contract BaseConnector is syxOwnable {
         require(_lpToken != address(0), "ERR_LP_TOKEN");
         syxOwnable.initialize(_owner);
         rewardManager = IRewardManager(_rewardManager);
+        wrappedToken = _wrappedToken;
         lpToken = _lpToken;
         rewardPoolId = _rewardPoolId;
 

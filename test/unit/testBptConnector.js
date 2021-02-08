@@ -19,6 +19,12 @@ contract("BptConnector", ([alice, bob, carol]) => {
         // RewardManager Mock
         this.rewardManagerMock = await MockContract.new();
         this.syxMock = await MockContract.new();
+        this.wvlxMock = await MockERC20.new(
+            "Wvlx",
+            "WVLX",
+            18,
+            ether("100000")
+        );
         this.rewardMgr = await RewardManager.at(this.rewardManagerMock.address);
         // BPool Mock
         this.bpoolMock = await MockContract.new();
@@ -30,6 +36,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
         await this.bptConn.initialize(
             alice,
             this.rewardManagerMock.address,
+            this.wvlxMock.address,
             this.bpoolMock.address,
             poolId
         );
@@ -43,6 +50,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
         const initTx = await conn.initialize(
             alice,
             rewardManagerMock.address,
+            this.wvlxMock.address,
             lpTokenMock.address,
             poolId
         );
@@ -151,7 +159,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
         const depositAmount = ether("1");
         // Mock function calls
         const joinSwapMethod = this.bpool.contract.methods
-            .joinswapWTokenIn(0)
+            .joinswapExternAmountIn(this.wvlxMock.address, 0, 0)
             .encodeABI();
         await this.bpoolMock.givenMethodReturnUint(
             joinSwapMethod,
@@ -178,7 +186,9 @@ contract("BptConnector", ([alice, bob, carol]) => {
             depositAmount
         );
 
-        const depositTx = await this.bptConn.methods["deposit(uint256)"](0, {
+        const depositTx = await this.bptConn.methods[
+            "deposit(address,uint256,uint256)"
+        ](this.wvlxMock.address, depositAmount, 0, {
             value: depositAmount
         });
 
@@ -225,6 +235,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
     });
     it("should withdraw native token from BptConnector", async () => {
         const amount = ether("1");
+        symbloxMock = await MockERC20.new("Symblox", "SYX", 18, amount);
         // Mock function calls
         const syxMethod = this.rewardMgr.contract.methods.syx().encodeABI();
         await this.rewardManagerMock.givenMethodReturn(
@@ -232,7 +243,7 @@ contract("BptConnector", ([alice, bob, carol]) => {
             abi.rawEncode(["address"], [symbloxMock.address])
         );
         const exitSwapMethod = this.bpool.contract.methods
-            .exitswapPoolAmountInWTokenOut(0, 0)
+            .exitswapExternAmountOut(this.wvlxMock.address, 0, 0)
             .encodeABI();
         await this.bpoolMock.givenMethodReturnUint(exitSwapMethod, amount);
         const userInfoMethod = this.rewardMgr.contract.methods
@@ -254,11 +265,12 @@ contract("BptConnector", ([alice, bob, carol]) => {
             value: amount
         });
 
-        const withdrawTx = await this.bptConn.withdraw(amount, 0);
-        // for (let log of withdrawTx.logs) {
-        //     // console.log({log});
-        //     console.log(`${log.event} -> ${log.args.amount.toString()}`);
-        // }
+        const withdrawTx = await this.bptConn.withdraw(
+            this.wvlxMock.address,
+            amount,
+            0
+        );
+
         expectEvent(withdrawTx, "LogWithdrawal", {
             tokenAmountOut: amount
         });

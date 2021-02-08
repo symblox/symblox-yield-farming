@@ -46,9 +46,10 @@ let bfactory, bpool, wToken, symbloxToken, rewardPool, connectorFactory;
 contract("Integration test", ([admin, alice, bob]) => {
     before(async () => {
         wToken = await WVLX.new();
-        bfactory = await BFactory.new(wToken.address);
-        const bpoolTx = await bfactory.newBPool();
-        bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
+        // bfactory = await BFactory.new();
+        // const bpoolTx = await bfactory.newBPool();
+        // bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
+        bpool = await BPool.new();
         symbloxToken = await SymbloxToken.new([]);
         rewardPool = await RewardManager.new(
             symbloxToken.address,
@@ -58,6 +59,7 @@ contract("Integration test", ([admin, alice, bob]) => {
             config.initSupply,
             config.seasonBlocks
         );
+        await symbloxToken.mint(rewardPool.address, "1000000000000000000000"); //1000
 
         await wToken.deposit({from: admin, value: config.balance1});
         await wToken.approve(bpool.address, config.balance1);
@@ -67,7 +69,7 @@ contract("Integration test", ([admin, alice, bob]) => {
         await bpool.bind(symbloxToken.address, config.balance2, config.denorm2);
         await bpool.finalize();
 
-        await symbloxToken.transferOwnership(rewardPool.address);
+        // await symbloxToken.transferOwnership(rewardPool.address);
 
         //seed pool
         await rewardPool.add(config.seedAllocPoint, wToken.address, false);
@@ -88,13 +90,23 @@ contract("Integration test", ([admin, alice, bob]) => {
             alicePerBlockReward,
             bobPerBlockReward;
         before(async () => {
-            await connectorFactory.createConnector(wToken.address, "0", {
-                from: alice
-            });
+            await connectorFactory.createConnector(
+                wToken.address,
+                wToken.address,
+                "0",
+                {
+                    from: alice
+                }
+            );
 
-            await connectorFactory.createConnector(wToken.address, "0", {
-                from: bob
-            });
+            await connectorFactory.createConnector(
+                wToken.address,
+                wToken.address,
+                "0",
+                {
+                    from: bob
+                }
+            );
 
             const aliceConnectorAddress = await connectorFactory.connectors(
                 alice,
@@ -104,6 +116,7 @@ contract("Integration test", ([admin, alice, bob]) => {
                 bob,
                 "0"
             );
+
             aliceConnector = await WvlxConnector.at(aliceConnectorAddress);
             bobConnector = await WvlxConnector.at(bobConnectorAddress);
 
@@ -209,13 +222,23 @@ contract("Integration test", ([admin, alice, bob]) => {
             alicePerBlockReward,
             bobPerBlockReward;
         before(async () => {
-            await connectorFactory.createConnector(bpool.address, "1", {
-                from: alice
-            });
+            await connectorFactory.createConnector(
+                wToken.address,
+                bpool.address,
+                "1",
+                {
+                    from: alice
+                }
+            );
 
-            await connectorFactory.createConnector(bpool.address, "1", {
-                from: bob
-            });
+            await connectorFactory.createConnector(
+                wToken.address,
+                bpool.address,
+                "1",
+                {
+                    from: bob
+                }
+            );
 
             const aliceConnectorAddress = await connectorFactory.connectors(
                 alice,
@@ -236,10 +259,15 @@ contract("Integration test", ([admin, alice, bob]) => {
             const bobDepositAmount = "5000000000000000000";
 
             //alice deposit 10 vlx
-            await aliceConnector.methods["deposit(uint256)"](0, {
-                from: alice,
-                value: aliceDepositAmount
-            });
+            await aliceConnector.methods["deposit(address,uint256,uint256)"](
+                wToken.address,
+                aliceDepositAmount,
+                0,
+                {
+                    from: alice,
+                    value: aliceDepositAmount
+                }
+            );
             const aliceStartBlock = await time.latestBlock();
             //bob deposit 5 vlx
             await bobConnector.methods["deposit(uint256)"](0, {

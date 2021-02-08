@@ -25,6 +25,7 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
             alice,
             this.rewardManagerMock.address,
             this.wvlx.address,
+            this.wvlx.address,
             poolId
         );
     });
@@ -38,6 +39,7 @@ contract("WvlxConnector", ([alice, bob, carol]) => {
         const initTx = await conn.initialize(
             alice,
             rewardManagerMock.address,
+            this.wvlx.address,
             lpTokenMock.address,
             poolId
         );

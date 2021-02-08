@@ -40,9 +40,10 @@ let bfactory,
 contract("Governor", ([admin, alice, bob]) => {
     before(async () => {
         wToken = await WVLX.new();
-        bfactory = await BFactory.new(wToken.address);
-        const bpoolTx = await bfactory.newBPool();
-        bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
+        // bfactory = await BFactory.new();
+        // const bpoolTx = await bfactory.newBPool();
+        // bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
+        bpool = await BPool.new();
         symbloxToken = await SymbloxToken.new([]);
         rewardPool = await RewardManager.new(
             symbloxToken.address,

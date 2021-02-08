@@ -25,11 +25,9 @@ contract BFactory is BBronze {
     mapping(address => bool) private _isBPool;
 
     address private _blabs;
-    address public wToken; // wrapped native token
 
-    constructor(address token) public {
+    constructor() public {
         _blabs = msg.sender;
-        wToken = token;
     }
 
     function isBPool(address b) external view returns (bool) {
@@ -37,7 +35,7 @@ contract BFactory is BBronze {
     }
 
     function newBPool() external returns (BPool) {
-        BPool bpool = new BPool(wToken);
+        BPool bpool = new BPool();
         _isBPool[address(bpool)] = true;
         emit LOG_NEW_POOL(msg.sender, address(bpool));
         bpool.setController(msg.sender);
