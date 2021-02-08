@@ -43,11 +43,13 @@ contract RewardManager is Ownable {
     }
 
     uint256 public initSupply;
-    uint256 public seasonBlocks;//The length of a mining cycle.
+    uint256 public seasonBlocks; //The length of a mining cycle.
     // The REWARD TOKEN!
     SymbloxToken public syx;
     // Dev address.
     address public devaddr;
+    // Dev pending reward
+    uint256 public devPending;
     // Block number when bonus syX period ends.
     uint256 public bonusEndBlock;
     // syX tokens created per block.
@@ -94,8 +96,7 @@ contract RewardManager is Ownable {
         initSupply = _initSupply;
         seasonBlocks = _seasonBlocks;
         endBlock = _startBlock.add(_seasonBlocks);
-        syxPerBlock = _initSupply.mul(9).div(10).div(_seasonBlocks);//90%, 10% to devaddr
-        
+        syxPerBlock = _initSupply.mul(9).div(10).div(_seasonBlocks); //90%, 10% to devaddr
     }
 
     /**
@@ -173,15 +174,23 @@ contract RewardManager is Ownable {
 
         pool.lastRewardBlock = block.number;
 
-        syx.mint(devaddr, syxReward.div(9));
-        syx.mint(address(this), syxReward);
+        uint256 syxBal = syx.balanceOf(address(this));
+        uint256 devReward = syxReward.div(9).add(devPending);
+        if (devReward > syxBal) {
+            devPending = devReward.sub(syxBal);
+            syx.transfer(devaddr, syxBal);
+        } else {
+            devPending = 0;
+            syx.transfer(devaddr, devReward);
+        }
+
         pool.accSyxPerShare = pool.accSyxPerShare.add(
             syxReward.mul(1e12).div(lpSupply)
         );
     }
 
     function startNewSeason() external onlyOwner {
-        require(endBlock < block.number,"The previous season is not over yet");
+        require(endBlock < block.number, "The previous season is not over yet");
         massUpdatePools();
         startBlock = block.number;
         endBlock = block.number.add(seasonBlocks);
@@ -205,12 +214,19 @@ contract RewardManager is Ownable {
         uint256 prevAmount = user.amount;
         uint256 prevRewardDebt = user.rewardDebt;
         user.amount = user.amount.add(_amount);
-        user.rewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        user.rewardDebt = newRewardDebt;
         if (prevAmount > 0) {
             uint256 pending = prevAmount.mul(pool.accSyxPerShare).div(1e12).sub(
                 prevRewardDebt
             );
-            safeSyxTransfer(msg.sender, pending);
+            uint256 syxBal = syx.balanceOf(address(this));
+            if (pending > syxBal) {
+                user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+                syx.transfer(msg.sender, syxBal);
+            } else {
+                syx.transfer(msg.sender, pending);
+            }
         }
         pool.lpToken.safeTransferFrom(
             address(msg.sender),
@@ -240,8 +256,17 @@ contract RewardManager is Ownable {
             user.rewardDebt
         );
         user.amount = user.amount.sub(_amount);
-        user.rewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
-        safeSyxTransfer(msg.sender, pending);
+
+        uint256 syxBal = syx.balanceOf(address(this));
+        uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        if (pending > syxBal) {
+            user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+            syx.transfer(msg.sender, syxBal);
+        } else {
+            user.rewardDebt = newRewardDebt;
+            syx.transfer(msg.sender, pending);
+        }
+
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
         emit Withdraw(msg.sender, _pid, _amount);
         return user.amount;
@@ -254,8 +279,15 @@ contract RewardManager is Ownable {
         uint256 pending = user.amount.mul(pool.accSyxPerShare).div(1e12).sub(
             user.rewardDebt
         );
-        safeSyxTransfer(msg.sender, pending);
-        user.rewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        uint256 syxBal = syx.balanceOf(address(this));
+        uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
+        if (pending > syxBal) {
+            user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+            syx.transfer(msg.sender, syxBal);
+        } else {
+            user.rewardDebt = newRewardDebt;
+            syx.transfer(msg.sender, pending);
+        }
         return pending;
     }
 
@@ -268,16 +300,6 @@ contract RewardManager is Ownable {
         user.rewardDebt = 0;
         pool.lpToken.safeTransfer(address(msg.sender), amount);
         emit EmergencyWithdraw(msg.sender, _pid, amount);
-    }
-
-    // Safe SYX transfer function, just in case if rounding error causes pool to not have enough SYX.
-    function safeSyxTransfer(address _to, uint256 _amount) internal {
-        uint256 syxBal = syx.balanceOf(address(this));
-        if (_amount > syxBal) {
-            syx.transfer(_to, syxBal);
-        } else {
-            syx.transfer(_to, _amount);
-        }
     }
 
     /**
@@ -354,7 +376,6 @@ contract RewardManager is Ownable {
     /**
      * Internal functions
      */
-
     // Update dev address by the previous dev.
     function dev(address _devaddr) external {
         require(msg.sender == devaddr, "dev: wut?");
