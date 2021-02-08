@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
     using SafeERC20 for ERC20;
 
-    address oldSymbloxToken;
+    address[] oldSymbloxTokens;
 
     // Copied and modified from YAM code:
     // https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernanceStorage.sol
@@ -59,15 +59,28 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         uint256 newBalance
     );
 
-    constructor(address _oldSymbloxToken)
+    modifier isSupportToken(address token) {
+        bool isSupport;
+        for (uint256 i; i < oldSymbloxTokens.length; i++) {
+            if (token == oldSymbloxTokens[i]) {
+                isSupport = true;
+            }
+        }
+        require(isSupport, "token not support");
+        _;
+    }
+
+    constructor(address[] memory _oldSymbloxTokens)
         public
         ERC20Detailed("Symblox V2", "SYX", 18)
     {
-        oldSymbloxToken = _oldSymbloxToken;
+        oldSymbloxTokens = _oldSymbloxTokens;
     }
 
-    function exchangeSyx(uint256 amount) public {
-        require(oldSymbloxToken != address(0), "oldSymbloxToken is zero");
+    function exchangeSyx(address oldSymbloxToken, uint256 amount)
+        public
+        isSupportToken(oldSymbloxToken)
+    {
         require(
             ERC20(oldSymbloxToken).allowance(msg.sender, address(this)) >=
                 amount,

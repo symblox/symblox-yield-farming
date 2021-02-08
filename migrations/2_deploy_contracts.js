@@ -7,28 +7,34 @@ module.exports = async function (deployer, network, accounts) {
     const contractSettings = {
         RewardManager: {
             development: {
-                syx: "0x0000000000000000000000000000000000000000",
+                syx: [],
                 startBlock: "100",
                 bonusEndBlock: "100000",
                 seasonBlocks: "10",
                 initSupply: "8000000000000000000" //8 syx
             },
             coverage: {
-                syx: "0x0000000000000000000000000000000000000000",
+                syx: [],
                 startBlock: "100",
                 bonusEndBlock: "100000",
                 seasonBlocks: "10",
                 initSupply: "8000000000000000000" //8 syx
             },
             vlxtest: {
-                syx: "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
+                syx: [
+                    "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
+                    "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa"
+                ],
                 startBlock: "2177000",
                 bonusEndBlock: "2177900",
                 seasonBlocks: "725760",
                 initSupply: "800000000000000000000000" //800000 syx
             },
             vlxmain: {
-                syx: "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
+                syx: [
+                    "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
+                    "0x01Db6ACFA20562Ba835aE9F5085859580A0b1386"
+                ],
                 startBlock: "4360518",
                 bonusEndBlock: "4360518",
                 seasonBlocks: "725760",

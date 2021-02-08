@@ -28,13 +28,17 @@ const privateKey_bob =
 
 contract("SymbloxToken", ([alice, bob, carol]) => {
     beforeEach(async () => {
-        this.symblox = await SymbloxToken.new(constants.ZERO_ADDRESS);
+        this.symblox = await SymbloxToken.new([]);
+        this.symblox2 = await SymbloxToken.new([this.symblox.address]);
     });
 
     it("exchange new syx", async () => {
-        newSymblox = await SymbloxToken.new(this.symblox.address, {
-            from: alice
-        });
+        newSymblox = await SymbloxToken.new(
+            [this.symblox.address, this.symblox2.address],
+            {
+                from: alice
+            }
+        );
 
         await this.symblox.mint(bob, "1000", {from: alice});
         const bobBal = await this.symblox.balanceOf(bob);
@@ -44,7 +48,14 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
         assert.equal(newBobBal.valueOf(), "0");
 
         await this.symblox.approve(newSymblox.address, "1000", {from: bob});
-        await newSymblox.exchangeSyx("1000", {from: bob});
+        await newSymblox.exchangeSyx(this.symblox.address, "1000", {from: bob});
+
+        await expectRevert(
+            this.symblox.exchangeSyx(newSymblox.address, "1000", {
+                from: alice
+            }),
+            "token not support"
+        );
 
         newBobBal = await newSymblox.balanceOf(bob);
         assert.equal(newBobBal.valueOf(), "1000");
