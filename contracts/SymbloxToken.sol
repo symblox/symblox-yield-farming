@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
     using SafeERC20 for ERC20;
 
+    uint256 public constant MAX_SUPPLY = 100000000 ether;
+
     address[] oldSymbloxTokens;
 
     // Copied and modified from YAM code:
@@ -82,6 +84,10 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         isSupportToken(oldSymbloxToken)
     {
         require(
+            totalSupply().add(amount) < MAX_SUPPLY,
+            "exceed the maximum supply quantity"
+        );
+        require(
             ERC20(oldSymbloxToken).allowance(msg.sender, address(this)) >=
                 amount,
             "ERR_ALLOWANCE"
@@ -97,6 +103,10 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
 
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (RewardManager).
     function mint(address _to, uint256 _amount) public onlyOwner {
+        require(
+            totalSupply().add(_amount) < MAX_SUPPLY,
+            "exceed the maximum supply quantity"
+        );
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
     }

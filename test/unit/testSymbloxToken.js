@@ -32,6 +32,22 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
         this.symblox2 = await SymbloxToken.new([this.symblox.address]);
     });
 
+    it("mint to large", async () => {
+        newSymblox = await SymbloxToken.new(
+            [this.symblox.address, this.symblox2.address],
+            {
+                from: alice
+            }
+        );
+
+        await expectRevert(
+            newSymblox.mint(newSymblox.address, "100000000000000000000000000", {
+                from: alice
+            }),
+            "exceed the maximum supply quantity"
+        );
+    });
+
     it("exchange new syx", async () => {
         newSymblox = await SymbloxToken.new(
             [this.symblox.address, this.symblox2.address],
@@ -46,6 +62,17 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
 
         let newBobBal = await newSymblox.balanceOf(bob);
         assert.equal(newBobBal.valueOf(), "0");
+
+        await expectRevert(
+            newSymblox.exchangeSyx(
+                this.symblox.address,
+                "100000000000000000000000000",
+                {
+                    from: bob
+                }
+            ),
+            "exceed the maximum supply quantity"
+        );
 
         await this.symblox.approve(newSymblox.address, "1000", {from: bob});
         await newSymblox.exchangeSyx(this.symblox.address, "1000", {from: bob});
