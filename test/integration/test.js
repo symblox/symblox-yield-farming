@@ -270,10 +270,15 @@ contract("Integration test", ([admin, alice, bob]) => {
             );
             const aliceStartBlock = await time.latestBlock();
             //bob deposit 5 vlx
-            await bobConnector.methods["deposit(uint256)"](0, {
-                from: bob,
-                value: bobDepositAmount
-            });
+            await bobConnector.methods["deposit(address,uint256,uint256)"](
+                wToken.address,
+                bobDepositAmount,
+                0,
+                {
+                    from: bob,
+                    value: bobDepositAmount
+                }
+            );
             const bobStartBlock = await time.latestBlock();
 
             let aliceAmount = await aliceConnector.balanceOfLpToken();
@@ -353,7 +358,9 @@ contract("Integration test", ([admin, alice, bob]) => {
         it("withdraw vlx", async () => {
             let aliceAmount = await aliceConnector.balanceOfLpToken();
             expect(aliceAmount).to.not.be.bignumber.equal("0");
-            await aliceConnector.withdraw(aliceAmount, "0", {from: alice});
+            await aliceConnector.withdraw(wToken.address, aliceAmount, "0", {
+                from: alice
+            });
             aliceAmount = await aliceConnector.balanceOfLpToken();
             expect(aliceAmount).to.be.bignumber.equal("0");
             let aliceReward = await aliceConnector.earned();
@@ -361,7 +368,9 @@ contract("Integration test", ([admin, alice, bob]) => {
 
             let bobAmount = await bobConnector.balanceOfLpToken();
             expect(bobAmount).to.not.be.bignumber.equal("0");
-            await bobConnector.withdraw(bobAmount, "0", {from: bob});
+            await bobConnector.withdraw(wToken.address, bobAmount, "0", {
+                from: bob
+            });
             bobAmount = await bobConnector.balanceOfLpToken();
             expect(bobAmount).to.be.bignumber.equal("0");
             let bobReward = await bobConnector.earned();
@@ -467,14 +476,17 @@ contract("Integration test", ([admin, alice, bob]) => {
 
         it("buy syx", async () => {
             let balanceStart = await symbloxToken.balanceOf(bob);
-            await bpool.swapWTokenAmountIn(
+            const tokenAmountIn = "5000000000000000000";
+            await wToken.deposit({from: bob, value: tokenAmountIn});
+            await wToken.approve(bpool.address, tokenAmountIn, {from: bob});
+
+            await bpool.swapExactAmountIn(
+                wToken.address,
+                "5000000000000000000",
                 symbloxToken.address,
                 "0",
                 "10000000000000000000",
-                {
-                    value: "5000000000000000000", //5
-                    from: bob
-                }
+                {from: bob}
             );
             balanceEnd = await symbloxToken.balanceOf(bob);
             assert.isAbove(
@@ -485,18 +497,20 @@ contract("Integration test", ([admin, alice, bob]) => {
 
         it("buy vlx", async () => {
             let balanceStart = await symbloxToken.balanceOf(bob);
-            await symbloxToken.approve(bpool.address, "1000000000000000000", {
+            const tokenAmountIn = "1000000000000000000";
+            await symbloxToken.approve(bpool.address, tokenAmountIn, {
                 from: bob
             });
-            await bpool.swapExactAmountInWTokenOut(
+
+            await bpool.swapExactAmountIn(
                 symbloxToken.address,
-                "1000000000000000000", //1
+                tokenAmountIn,
+                wToken.address,
                 "0",
                 "10000000000000000000",
-                {
-                    from: bob
-                }
+                {from: bob}
             );
+            await wToken.withdraw(tokenAmountIn, {from: bob});
             balanceEnd = await symbloxToken.balanceOf(bob);
             assert.isBelow(
                 parseFloat(balanceEnd.toString()),
