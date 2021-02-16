@@ -60,5 +60,5 @@ module.exports = async function (deployer, network, accounts) {
     );
 
     // Transfer Symblox to the RewardManager
-    await syx.transferOwnership(rewardMgr.address);
+    //await syx.transferOwnership(rewardMgr.address);
 };

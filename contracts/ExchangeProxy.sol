@@ -96,8 +96,8 @@ contract ExchangeProxy is Ownable {
         uint256 maxPrice;
     }
 
-    TokenInterface wvlx;
-    RegistryInterface registry;
+    TokenInterface public wvlx;
+    RegistryInterface public registry;
     address private constant VLX_ADDRESS = address(
         0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
     );
@@ -636,8 +636,12 @@ contract ExchangeProxy is Ownable {
         }
     }
 
-    function isVLX(TokenInterface token) internal pure returns (bool) {
-        return (address(token) == VLX_ADDRESS);
+    function isVLX(TokenInterface token) internal view returns (bool) {
+        if (address(token) == VLX_ADDRESS || address(token) == address(wvlx)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function() external payable {}

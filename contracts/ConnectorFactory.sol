@@ -11,20 +11,21 @@ contract ConnectorFactory is ProxyFactory, Ownable {
 
     // use liquidity pool address to find the corresponding reward pool
     address public rewardManager;
+    address public wrappedToken;
 
     event LogCreateConnector(address indexed caller, address connector);
     event LogSetImplementation(uint8 indexed pid, address implementation);
 
-    constructor(address _rewardManager) public {
+    constructor(address _rewardManager, address _wrappedToken) public {
         require(_rewardManager != address(0), "ERR_REWARD_MANAGER");
         rewardManager = _rewardManager;
+        wrappedToken = _wrappedToken;
     }
 
-    function createConnector(
-        address wrappedToken,
-        address lpToken,
-        uint8 rewardPoolId
-    ) public returns (address connector) {
+    function createConnector(address lpToken, uint8 rewardPoolId)
+        public
+        returns (address connector)
+    {
         require(
             connectors[msg.sender][rewardPoolId] == address(0),
             "ERR_DUP_REWARD_POOL"
