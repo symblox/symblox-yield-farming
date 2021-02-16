@@ -222,7 +222,11 @@ contract RewardManager is Ownable {
             );
             uint256 syxBal = syx.balanceOf(address(this));
             if (pending > syxBal) {
-                user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+                if (newRewardDebt < pending.sub(syxBal)) {
+                    user.rewardDebt = 0;
+                } else {
+                    user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+                }
                 syx.transfer(msg.sender, syxBal);
             } else {
                 syx.transfer(msg.sender, pending);
@@ -260,7 +264,11 @@ contract RewardManager is Ownable {
         uint256 syxBal = syx.balanceOf(address(this));
         uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
         if (pending > syxBal) {
-            user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+            if (newRewardDebt < pending.sub(syxBal)) {
+                user.rewardDebt = 0;
+            } else {
+                user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+            }
             syx.transfer(msg.sender, syxBal);
         } else {
             user.rewardDebt = newRewardDebt;
@@ -282,7 +290,11 @@ contract RewardManager is Ownable {
         uint256 syxBal = syx.balanceOf(address(this));
         uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
         if (pending > syxBal) {
-            user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+            if (newRewardDebt < pending.sub(syxBal)) {
+                user.rewardDebt = 0;
+            } else {
+                user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
+            }
             syx.transfer(msg.sender, syxBal);
         } else {
             user.rewardDebt = newRewardDebt;
