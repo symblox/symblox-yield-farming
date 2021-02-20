@@ -73,7 +73,8 @@ module.exports = async function (deployer, network, accounts) {
 
     const connFactory = await deployer.deploy(
         ConnectorFactory,
-        rewardMgr.address
+        rewardMgr.address,
+        contractAddresses[network]["WVLX"]
     );
     console.log(`ConnectorFactory: ${connFactory.address}`);
 

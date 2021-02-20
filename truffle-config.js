@@ -4,6 +4,8 @@ const privateKey = process.env.PRIVATE_KEY;
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const VLX_MAIN_RPC = "https://rpc.symblox.net:8080/";
 const VLX_TEST_RPC = "https://explorer.testnet.veladev.net/rpc";
+const BSC_MAIN_RPC = "https://bsc-dataseed.binance.org/";
+const BSC_TEST_RPC = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 
 const configVlxNetwok = (networkId, gasPrice = 22000, gas = 3000000) => ({
     provider: () =>
@@ -14,6 +16,20 @@ const configVlxNetwok = (networkId, gasPrice = 22000, gas = 3000000) => ({
             : mnemonic
             ? new HDWalletProvider(mnemonic, VLX_TEST_RPC, 0)
             : new HDWalletProvider(privateKey, VLX_TEST_RPC, 0),
+    network_id: networkId,
+    gas,
+    gasPrice
+});
+
+const configBscNetwok = (networkId, gasPrice = 22000, gas = 3000000) => ({
+    provider: () =>
+        networkId == 56
+            ? mnemonic
+                ? new HDWalletProvider(mnemonic, BSC_MAIN_RPC, 0)
+                : new HDWalletProvider(privateKey, BSC_MAIN_RPC, 0)
+            : mnemonic
+            ? new HDWalletProvider(mnemonic, BSC_TEST_RPC, 0)
+            : new HDWalletProvider(privateKey, BSC_TEST_RPC, 0),
     network_id: networkId,
     gas,
     gasPrice
@@ -37,7 +53,9 @@ module.exports = {
             gasPrice: 1000000000 // web3.eth.gasPrice
         },
         vlxtest: configVlxNetwok(111),
-        vlxmain: configVlxNetwok(106)
+        vlxmain: configVlxNetwok(106),
+        bsctest: configBscNetwok(97),
+        bscmain: configBscNetwok(56)
     },
     compilers: {
         solc: {

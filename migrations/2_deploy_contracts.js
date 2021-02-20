@@ -37,21 +37,39 @@ module.exports = async function (deployer, network, accounts) {
                 ],
                 startBlock: "4360518",
                 bonusEndBlock: "4360518",
-                seasonBlocks: "725760",
+                seasonBlocks: "725760", //42day 5sec per block
                 initSupply: "800000000000000000000000" //800000 syx
+            },
+            bsctest: {
+                syx: "",
+                startBlock: "6424440",
+                bonusEndBlock: "6424440",
+                seasonBlocks: "1209600", //42day 3sec per block
+                initSupply: "800000000000000000000000" //800000 syx
+            },
+            bscmain: {
+                syx: ""
             }
         }
     };
 
-    await deployer.deploy(
-        Symblox,
-        contractSettings["RewardManager"][network]["syx"]
-    );
-    const syx = await Symblox.deployed();
+    let syxAddress;
+    if (network == "bsctest" || network == "bscmain") {
+        syxAddress = contractSettings["RewardManager"][network]["syx"];
+    } else {
+        await deployer.deploy(
+            Symblox,
+            "Symblox V3",
+            "SYX",
+            18,
+            contractSettings["RewardManager"][network]["syx"]
+        );
+        syxAddress = (await Symblox.deployed()).address;
+    }
 
     const rewardMgr = await deployer.deploy(
         RewardManager,
-        syx.address, // reward token
+        syxAddress, // reward token
         "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d", // dev address
         contractSettings["RewardManager"][network]["startBlock"],
         contractSettings["RewardManager"][network]["bonusEndBlock"],

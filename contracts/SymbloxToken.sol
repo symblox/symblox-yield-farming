@@ -72,10 +72,12 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         _;
     }
 
-    constructor(address[] memory _oldSymbloxTokens)
-        public
-        ERC20Detailed("Symblox V2", "SYX", 18)
-    {
+    constructor(
+        string memory name,
+        string memory symbol,
+        uint8 decimals,
+        address[] memory _oldSymbloxTokens
+    ) public ERC20Detailed(name, symbol, decimals) {
         oldSymbloxTokens = _oldSymbloxTokens;
     }
 
