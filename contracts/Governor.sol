@@ -19,9 +19,7 @@ contract Governor {
     } // 12 block
 
     /// @notice The duration of voting on a proposal, in blocks
-    function votingPeriod() public pure returns (uint256) {
-        return 34560;
-    } //~2 day in blocks (assuming 5s blocks)
+    uint256 public votingPeriod;
 
     /// @notice The address of the Symblox Protocol Timelock
     TimelockInterface public timelock;
@@ -147,11 +145,13 @@ contract Governor {
     constructor(
         address timelock_,
         address syx_,
-        address guardian_
+        address guardian_,
+        uint256 votingPeriod_
     ) public {
         timelock = TimelockInterface(timelock_);
         syx = SyxInterface(syx_);
         guardian = guardian_;
+        votingPeriod = votingPeriod_;
     }
 
     function propose(
@@ -194,7 +194,7 @@ contract Governor {
         }
 
         uint256 startBlock = add256(block.number, votingDelay());
-        uint256 endBlock = add256(startBlock, votingPeriod());
+        uint256 endBlock = add256(startBlock, votingPeriod);
 
         proposalCount++;
         Proposal memory newProposal = Proposal({

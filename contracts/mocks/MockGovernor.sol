@@ -6,10 +6,6 @@ import "../Governor.sol";
 contract MockGovernor is Governor {
     function votingDelay() public pure returns (uint256) {
         return 1;
-    } 
-   
-    function votingPeriod() public pure returns (uint256) {
-        return 10;
     }
 
     function quorumVotes() public view returns (uint256) {
@@ -23,8 +19,9 @@ contract MockGovernor is Governor {
     constructor(
         address timelock_,
         address syx_,
-        address guardian_
-    ) public Governor(timelock_, syx_, guardian_){
-    
+        address guardian_,
+        uint256 votingPeriod_
+    ) public Governor(timelock_, syx_, guardian_, votingPeriod_) {
+        votingPeriod = votingPeriod_;
     }
 }
