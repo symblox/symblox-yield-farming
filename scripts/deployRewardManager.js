@@ -22,10 +22,10 @@ const contractSettings = {
             seasonBlocks: "725760"
         },
         bsctest: {
-            syx: "",
+            syx: "0xd2f83494cd97e61f117015ba79cbf8f42fd13634",
             devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
-            startBlock: "",
-            bonusEndBlock: "",
+            startBlock: "6447650",
+            bonusEndBlock: "6447650",
             initSupply: "800000000000000000000000",
             seasonBlocks: "1209600" //42day 3sec per block
         },

@@ -5,7 +5,7 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 const VLX_MAIN_RPC = "https://rpc.symblox.net:8080/";
 const VLX_TEST_RPC = "https://explorer.testnet.veladev.net/rpc";
 const BSC_MAIN_RPC = "https://bsc-dataseed.binance.org/";
-const BSC_TEST_RPC = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+const BSC_TEST_RPC = "https://data-seed-prebsc-2-s1.binance.org:8545/";
 
 const configVlxNetwok = (networkId, gasPrice = 22000, gas = 8000000) => ({
     provider: () =>
@@ -21,7 +21,7 @@ const configVlxNetwok = (networkId, gasPrice = 22000, gas = 8000000) => ({
     gasPrice
 });
 
-const configBscNetwok = (networkId, gasPrice = 22000, gas = 8000000) => ({
+const configBscNetwok = (networkId, gasPrice = 2e10, gas = 8000000) => ({
     provider: () =>
         networkId == 56
             ? mnemonic

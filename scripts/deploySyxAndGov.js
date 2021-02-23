@@ -69,6 +69,8 @@ async function main() {
             contractSettings["governor"][network]["votingPeriod"]
         );
         console.log(`governor address is ${governorContract.address}`);
+
+        await syxContract.transferOwnership(timelockContract.address);
     }
 }
 
