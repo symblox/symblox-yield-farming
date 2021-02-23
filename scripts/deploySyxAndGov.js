@@ -26,11 +26,11 @@ const contractSettings = {
     },
     governor: {
         vlxtest: {
-            guardian: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
-            votingPeriod: "17280" //~1 day in blocks (assuming 5s blocks)
+            guardian: "0x0E97a61Eca9048bFABFe663727fb759474264277", //admin
+            votingPeriod: "8640" //~1 day in blocks (assuming 10s blocks)
         },
         vlxmain: {
-            guardian: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
+            guardian: "", //admin
             votingPeriod: "34560" //~2 day in blocks (assuming 5s blocks)
         }
     }
@@ -71,6 +71,8 @@ async function main() {
         console.log(`governor address is ${governorContract.address}`);
 
         await syxContract.transferOwnership(timelockContract.address);
+
+        //TODO: set timelock admin to governor address
     }
 }
 
