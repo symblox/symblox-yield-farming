@@ -44,7 +44,7 @@ contract("Governor", ([admin, alice, bob]) => {
         // const bpoolTx = await bfactory.newBPool();
         // bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
         bpool = await BPool.new();
-        symbloxToken = await SymbloxToken.new([]);
+        symbloxToken = await SymbloxToken.new("Symblox", "SYX", 18, []);
         rewardPool = await RewardManager.new(
             symbloxToken.address,
             admin,
@@ -57,7 +57,8 @@ contract("Governor", ([admin, alice, bob]) => {
         governor = await Governor.new(
             timelock.address,
             symbloxToken.address,
-            admin
+            admin,
+            100
         );
 
         await wToken.deposit({from: admin, value: config.balance1});
@@ -81,7 +82,10 @@ contract("Governor", ([admin, alice, bob]) => {
 
         const wvlxConnector = await WvlxConnector.new();
 
-        connectorFactory = await ConnectorFactory.new(rewardPool.address);
+        connectorFactory = await ConnectorFactory.new(
+            rewardPool.address,
+            wToken.address
+        );
         await connectorFactory.setConnectorImpl("0", wvlxConnector.address);
         // let res = await connectorFactory.owner();
         // console.log(res.toString())

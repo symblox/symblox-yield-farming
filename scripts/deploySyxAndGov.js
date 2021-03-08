@@ -5,19 +5,29 @@ const Governor = artifacts.require("Governor");
 
 const contractSettings = {
     syx: {
-        vlxtest: [
-            "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
-            "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa"
-        ],
-        vlxmain: [
-            "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
-            "0x01Db6ACFA20562Ba835aE9F5085859580A0b1386"
-        ]
+        vlxtest: {
+            symbol: "SYX",
+            name: "Symblox",
+            decimals: 18,
+            oldSyxs: [
+                "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
+                "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa"
+            ]
+        },
+        vlxmain: {
+            symbol: "SYX",
+            name: "Symblox",
+            decimals: 18,
+            oldSyxs: [
+                "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
+                "0x01Db6ACFA20562Ba835aE9F5085859580A0b1386"
+            ]
+        }
     },
     timelock: {
         vlxtest: {
             admin: "0x0E97a61Eca9048bFABFe663727fb759474264277",
-            delay: "1800"
+            delay: "30"
         },
         vlxmain: {
             admin: "",
@@ -27,7 +37,7 @@ const contractSettings = {
     governor: {
         vlxtest: {
             guardian: "0x0E97a61Eca9048bFABFe663727fb759474264277", //admin
-            votingPeriod: "8640" //~1 day in blocks (assuming 10s blocks)
+            votingPeriod: "30" //~1 day in blocks (assuming 10s blocks)
         },
         vlxmain: {
             guardian: "", //admin
@@ -47,33 +57,30 @@ async function main() {
     }
     console.log(`Running script with the ${network} network...`);
 
-    if (network !== "bsctest" && network !== "bscmain") {
-        const syxContract = await Symblox.new(
-            "Symblox V3",
-            "SYX",
-            18,
-            contractSettings["syx"][network]
-        );
-        console.log(`syx address is ${syxContract.address}`);
+    const syxContract = await Symblox.new(
+        contractSettings["syx"][network]["name"],
+        contractSettings["syx"][network]["symbol"],
+        contractSettings["syx"][network]["decimals"],
+        contractSettings["syx"][network]["oldSyxs"]
+    );
+    console.log(`syx address is ${syxContract.address}`);
 
-        const timelockContract = await Timelock.new(
-            contractSettings["timelock"][network]["admin"],
-            contractSettings["timelock"][network]["delay"]
-        );
-        console.log(`timelock address is ${timelockContract.address}`);
+    const timelockContract = await Timelock.new(
+        contractSettings["timelock"][network]["admin"],
+        contractSettings["timelock"][network]["delay"]
+    );
+    console.log(`timelock address is ${timelockContract.address}`);
 
-        const governorContract = await Governor.new(
-            timelockContract.address,
-            syxContract.address,
-            contractSettings["governor"][network]["guardian"],
-            contractSettings["governor"][network]["votingPeriod"]
-        );
-        console.log(`governor address is ${governorContract.address}`);
+    const governorContract = await Governor.new(
+        timelockContract.address,
+        syxContract.address,
+        contractSettings["governor"][network]["guardian"],
+        contractSettings["governor"][network]["votingPeriod"]
+    );
+    console.log(`governor address is ${governorContract.address}`);
 
-        await syxContract.transferOwnership(timelockContract.address);
-
-        //TODO: set timelock admin to governor address
-    }
+    //await syxContract.transferOwnership(timelockContract.address);
+    //TODO: set timelock admin to governor address
 }
 
 // Required by `truffle exec`.

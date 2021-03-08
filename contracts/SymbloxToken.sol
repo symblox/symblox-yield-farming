@@ -11,7 +11,7 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
 
     uint256 public constant MAX_SUPPLY = 100000000 ether;
 
-    address[] oldSymbloxTokens;
+    address[] public oldSymbloxTokens;
 
     // Copied and modified from YAM code:
     // https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernanceStorage.sol
@@ -34,6 +34,8 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
     /// @notice The number of checkpoints for each account
     mapping(address => uint32) public numCheckpoints;
 
+    bytes32 public DOMAIN_SEPARATOR;
+
     /// @notice The EIP-712 typehash for the contract's domain
     bytes32 public constant DOMAIN_TYPEHASH = keccak256(
         "EIP712Domain(string name,uint256 chainId,address verifyingContract)"
@@ -42,6 +44,10 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
     /// @notice The EIP-712 typehash for the delegation struct used by the contract
     bytes32 public constant DELEGATION_TYPEHASH = keccak256(
         "Delegation(address delegatee,uint256 nonce,uint256 expiry)"
+    );
+
+    bytes32 public constant PERMIT_TYPEHASH = keccak256(
+        "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
     );
 
     /// @notice A record of states for signing / validating signatures
@@ -66,6 +72,7 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         for (uint256 i; i < oldSymbloxTokens.length; i++) {
             if (token == oldSymbloxTokens[i]) {
                 isSupport = true;
+                break;
             }
         }
         require(isSupport, "token not support");
@@ -79,6 +86,57 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         address[] memory _oldSymbloxTokens
     ) public ERC20Detailed(name, symbol, decimals) {
         oldSymbloxTokens = _oldSymbloxTokens;
+
+        DOMAIN_SEPARATOR = keccak256(
+            abi.encode(
+                keccak256(
+                    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+                ),
+                keccak256(bytes(name)),
+                keccak256(bytes("1")),
+                getChainId(),
+                address(this)
+            )
+        );
+    }
+
+    function addSupportToken(address token) external onlyOwner {
+        oldSymbloxTokens.push(token);
+    }
+
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external {
+        require(deadline >= block.timestamp, "UnionToken: EXPIRED");
+
+        bytes32 digest = keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                DOMAIN_SEPARATOR,
+                keccak256(
+                    abi.encode(
+                        PERMIT_TYPEHASH,
+                        owner,
+                        spender,
+                        value,
+                        nonces[owner]++,
+                        deadline
+                    )
+                )
+            )
+        );
+        address recoveredAddress = ecrecover(digest, v, r, s);
+        require(
+            recoveredAddress != address(0) && recoveredAddress == owner,
+            "UnionToken: INVALID_SIGNATURE"
+        );
+        _approve(owner, spender, value);
     }
 
     function exchangeSyx(address oldSymbloxToken, uint256 amount)

@@ -8,12 +8,16 @@ contract("ConnectorFactory", function () {
     describe("ConnectorFactory", async function () {
         beforeEach(async function () {
             this.factory = await ConnectorFactory.new(
-                (await MockContract.new()).address // reward manager
+                (await MockContract.new()).address, // reward manager
+                constants.ZERO_ADDRESS
             );
         });
         it("constructor error when reward manager address is zero", async () => {
             await expectRevert(
-                ConnectorFactory.new(constants.ZERO_ADDRESS),
+                ConnectorFactory.new(
+                    constants.ZERO_ADDRESS,
+                    constants.ZERO_ADDRESS
+                ),
                 "ERR_REWARD_MANAGER"
             );
         });
@@ -37,7 +41,6 @@ contract("ConnectorFactory", function () {
             // Create a new connector
             expectEvent(
                 await this.factory.createConnector(
-                    (await MockContract.new()).address,
                     (await MockContract.new()).address, // lpToken
                     0 // pool id
                 ),
@@ -53,7 +56,6 @@ contract("ConnectorFactory", function () {
         });
         it("should fail to create connector when implementation is not set", async function () {
             const createConnErrTx = this.factory.createConnector(
-                (await MockContract.new()).address,
                 (await MockContract.new()).address,
                 0 // pool id
             );
@@ -80,12 +82,10 @@ contract("ConnectorFactory", function () {
             // create the first connector
             await this.factory.createConnector(
                 (await MockContract.new()).address,
-                (await MockContract.new()).address,
                 1 // pool id
             );
             // create the second connector with the same id
             const createConnTx = this.factory.createConnector(
-                (await MockContract.new()).address,
                 (await MockContract.new()).address,
                 1 // pool id
             );

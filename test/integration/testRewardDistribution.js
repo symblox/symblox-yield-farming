@@ -29,7 +29,7 @@ contract("testRewardDistribution", ([admin, bob]) => {
         // const bpoolTx = await bfactory.newBPool();
         // bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
         bpool = await BPool.new();
-        symbloxToken = await SymbloxToken.new([]);
+        symbloxToken = await SymbloxToken.new("Symblox", "SYX", 18, []);
         await wToken.deposit({from: admin, value: config.balance1});
         await wToken.approve(bpool.address, config.balance1);
         await bpool.bind(wToken.address, config.balance1, config.denorm1);
@@ -50,7 +50,7 @@ contract("testRewardDistribution", ([admin, bob]) => {
         await symbloxToken.mint(rewardPool.address, "1000000000000000000000"); //1000
         startBlock = await rewardPool.startBlock();
         endBlock = await rewardPool.endBlock();
-        syxPerBlock = await rewardPool.syxPerBlock();
+        syxPerBlock = await rewardPool.calcSyxPerBlock();
         initSyxSupply = await symbloxToken.totalSupply();
         console.log("startBlock:", startBlock.toString());
         console.log("endBlock:", endBlock.toString());
@@ -66,18 +66,16 @@ contract("testRewardDistribution", ([admin, bob]) => {
 
         const wvlxConnector = await WvlxConnector.new();
         const bptConnector = await BptConnector.new();
-        connectorFactory = await ConnectorFactory.new(rewardPool.address);
+        connectorFactory = await ConnectorFactory.new(
+            rewardPool.address,
+            wToken.address
+        );
         await connectorFactory.setConnectorImpl("0", wvlxConnector.address);
         await connectorFactory.setConnectorImpl("1", bptConnector.address);
 
-        await connectorFactory.createConnector(
-            wToken.address,
-            bpool.address,
-            "1",
-            {
-                from: bob
-            }
-        );
+        await connectorFactory.createConnector(bpool.address, "1", {
+            from: bob
+        });
     });
 
     it("calc reward", async () => {

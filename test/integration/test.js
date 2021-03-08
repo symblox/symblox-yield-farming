@@ -50,7 +50,7 @@ contract("Integration test", ([admin, alice, bob]) => {
         // const bpoolTx = await bfactory.newBPool();
         // bpool = await BPool.at(bpoolTx.receipt.logs[0].args.pool);
         bpool = await BPool.new();
-        symbloxToken = await SymbloxToken.new([]);
+        symbloxToken = await SymbloxToken.new("Symblox", "SYX", 18, []);
         rewardPool = await RewardManager.new(
             symbloxToken.address,
             admin,
@@ -78,7 +78,10 @@ contract("Integration test", ([admin, alice, bob]) => {
 
         const wvlxConnector = await WvlxConnector.new();
         const bptConnector = await BptConnector.new();
-        connectorFactory = await ConnectorFactory.new(rewardPool.address);
+        connectorFactory = await ConnectorFactory.new(
+            rewardPool.address,
+            wToken.address
+        );
         await connectorFactory.setConnectorImpl("0", wvlxConnector.address);
         await connectorFactory.setConnectorImpl("1", bptConnector.address);
     });
@@ -90,23 +93,13 @@ contract("Integration test", ([admin, alice, bob]) => {
             alicePerBlockReward,
             bobPerBlockReward;
         before(async () => {
-            await connectorFactory.createConnector(
-                wToken.address,
-                wToken.address,
-                "0",
-                {
-                    from: alice
-                }
-            );
+            await connectorFactory.createConnector(wToken.address, "0", {
+                from: alice
+            });
 
-            await connectorFactory.createConnector(
-                wToken.address,
-                wToken.address,
-                "0",
-                {
-                    from: bob
-                }
-            );
+            await connectorFactory.createConnector(wToken.address, "0", {
+                from: bob
+            });
 
             const aliceConnectorAddress = await connectorFactory.connectors(
                 alice,
@@ -222,23 +215,13 @@ contract("Integration test", ([admin, alice, bob]) => {
             alicePerBlockReward,
             bobPerBlockReward;
         before(async () => {
-            await connectorFactory.createConnector(
-                wToken.address,
-                bpool.address,
-                "1",
-                {
-                    from: alice
-                }
-            );
+            await connectorFactory.createConnector(bpool.address, "1", {
+                from: alice
+            });
 
-            await connectorFactory.createConnector(
-                wToken.address,
-                bpool.address,
-                "1",
-                {
-                    from: bob
-                }
-            );
+            await connectorFactory.createConnector(bpool.address, "1", {
+                from: bob
+            });
 
             const aliceConnectorAddress = await connectorFactory.connectors(
                 alice,

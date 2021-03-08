@@ -7,11 +7,11 @@ const {
 } = require("@openzeppelin/test-helpers");
 const {expect} = require("chai");
 const SymbloxToken = artifacts.require("SymbloxToken");
-
+const {signERC2612Permit} = require("eth-permit");
 const EIP712 = require("../../scripts/EIP712.js");
 
 const Domain = contract => ({
-    name: "Symblox V2",
+    name: "Symblox",
     chainId: 1,
     verifyingContract: contract.address
 });
@@ -28,12 +28,17 @@ const privateKey_bob =
 
 contract("SymbloxToken", ([alice, bob, carol]) => {
     beforeEach(async () => {
-        this.symblox = await SymbloxToken.new([]);
-        this.symblox2 = await SymbloxToken.new([this.symblox.address]);
+        this.symblox = await SymbloxToken.new("Symblox", "SYX", 18, []);
+        this.symblox2 = await SymbloxToken.new("Symblox", "SYX", 18, [
+            this.symblox.address
+        ]);
     });
 
     it("mint to large", async () => {
         newSymblox = await SymbloxToken.new(
+            "Symblox",
+            "SYX",
+            18,
             [this.symblox.address, this.symblox2.address],
             {
                 from: alice
@@ -50,6 +55,9 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
 
     it("exchange new syx", async () => {
         newSymblox = await SymbloxToken.new(
+            "Symblox",
+            "SYX",
+            18,
             [this.symblox.address, this.symblox2.address],
             {
                 from: alice
@@ -92,7 +100,7 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
         const name = await this.symblox.name();
         const symbol = await this.symblox.symbol();
         const decimals = await this.symblox.decimals();
-        assert.equal(name.valueOf(), "Symblox V2");
+        assert.equal(name.valueOf(), "Symblox");
         assert.equal(symbol.valueOf(), "SYX");
         assert.equal(decimals.valueOf(), "18");
     });
@@ -377,5 +385,37 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
 
         res = await this.symblox.getCurrentVotes(bob);
         expect(res).to.be.bignumber.equals(aliceBalance);
+    });
+
+    it("permit", async () => {
+        const TEST_AMOUNT = ether("10");
+        const provider = web3.currentProvider;
+        const deadline = constants.MAX_UINT256;
+        allowance = await this.symblox.allowance(bob, alice);
+        expect(allowance).to.be.bignumber.equals(ether("0"));
+
+        const result = await signERC2612Permit(
+            provider,
+            this.symblox.address,
+            bob,
+            alice,
+            TEST_AMOUNT.toString()
+        );
+
+        await this.symblox.permit(
+            bob,
+            alice,
+            TEST_AMOUNT,
+            deadline,
+            result.v,
+            result.r,
+            result.s,
+            {from: bob}
+        );
+
+        allowance = await this.symblox.allowance(bob, alice);
+        expect(allowance).to.be.bignumber.equals(TEST_AMOUNT);
+        const nonces = await this.symblox.nonces(bob);
+        nonces.toString().should.eq("1");
     });
 });
