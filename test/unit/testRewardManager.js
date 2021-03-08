@@ -9,17 +9,21 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
         this.symblox = await SymbloxToken.new("Symblox", "SYX", 18, [], {
             from: admin
         });
-        await this.symblox.mint(admin, "10000000000", {
+        await this.symblox.mint(admin, "100000000", {
             from: admin
         });
     });
 
     it("should set correct state variables", async () => {
-        this.rewardMgr = await RewardManager.new(this.symblox.address, dev, {
-            from: admin
-        });
-        const startBlock = await time.latestBlock();
-        this.rewardMgr.startNewSeason(startBlock, startBlock.addn(1000), 0, 0);
+        this.rewardMgr = await RewardManager.new(
+            this.symblox.address,
+            dev,
+            "1000",
+            "2000",
+            "0",
+            "1000",
+            {from: admin}
+        );
         const syx = await this.rewardMgr.syx();
         const devaddr = await this.rewardMgr.devaddr();
         assert.equal(syx.valueOf(), this.symblox.address);
@@ -27,11 +31,15 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
     });
 
     it("should allow dev and only dev to update dev", async () => {
-        this.rewardMgr = await RewardManager.new(this.symblox.address, dev, {
-            from: admin
-        });
-        const startBlock = await time.latestBlock();
-        this.rewardMgr.startNewSeason(startBlock, startBlock.addn(1000), 0, 0);
+        this.rewardMgr = await RewardManager.new(
+            this.symblox.address,
+            dev,
+            "1000",
+            "2000",
+            "0",
+            "1000",
+            {from: admin}
+        );
         assert.equal((await this.rewardMgr.devaddr()).valueOf(), dev);
         await expectRevert(this.rewardMgr.dev(bob, {from: bob}), "dev: wut?");
         await this.rewardMgr.dev(bob, {from: dev});
@@ -71,25 +79,16 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
 
         it("should stop giving out rewards after the deadline", async () => {
             const rewardPerBlock = 300;
-            const seasonBlocks = 30;
+            const startBlock = await time.latestBlock();
+            const bonusEndBlock = 30;
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
-                {from: admin}
-            );
-            await this.symblox.transfer(
-                this.rewardMgr.address,
-                (seasonBlocks * rewardPerBlock) / 0.9,
-                {
-                    from: admin
-                }
-            );
-            const startBlock = await time.latestBlock();
-            this.rewardMgr.startNewSeason(
                 startBlock,
-                startBlock.addn(seasonBlocks),
-                0,
-                (seasonBlocks * rewardPerBlock) / 0.9
+                startBlock.addn(bonusEndBlock),
+                "0",
+                "10000",
+                {from: admin}
             );
             await this.rewardMgr.add("100", this.lp.address, false, {
                 from: admin
@@ -111,12 +110,6 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
                 rewardPerBlock *
                     ((await time.latestBlock()) - depositTx.receipt.blockNumber)
             );
-
-            assert.equal(
-                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
-                rewardPerBlock *
-                    ((await time.latestBlock()) - depositTx.receipt.blockNumber)
-            );
         });
 
         it("should allow emergency withdraw", async () => {
@@ -124,9 +117,12 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
+                "100",
+                "200",
+                "900",
+                "1000000000000000000000",
                 {from: admin}
             );
-            this.rewardMgr.startNewSeason(1, 100, 100, 0);
             await this.rewardMgr.add("100", this.lp.address, true);
             await this.lp.approve(this.rewardMgr.address, "1000", {from: bob});
             await this.rewardMgr.deposit(0, "100", {from: bob});
@@ -136,17 +132,20 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
         });
 
         it("should give out Symblox only after farming time", async () => {
-            let currBlock = await time.latestBlock();
+            const currBlock = await time.latestBlock();
             // 100 per block farming rate starting at block 100 with bonus until block 1000
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
+                currBlock.addn(100),
+                currBlock.addn(1000),
+                "900",
+                "100000",
                 {from: admin}
             );
             this.symblox.transfer(this.rewardMgr.address, "100000", {
                 from: admin
             });
-
             await this.rewardMgr.add("100", this.lp.address, true);
             await this.lp.approve(this.rewardMgr.address, "1000", {from: bob});
             await this.rewardMgr.deposit(0, "100", {from: bob});
@@ -160,16 +159,9 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             await this.rewardMgr.deposit(0, "0", {from: bob}); // block 100
             assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "0");
             await time.advanceBlockTo(currBlock.addn(100));
-            currBlock = await time.latestBlock();
-            this.rewardMgr.startNewSeason(
-                currBlock.addn(0),
-                currBlock.addn(900),
-                currBlock.addn(900),
-                100000
-            );
             await this.rewardMgr.deposit(0, "0", {from: bob}); // block 101
             assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "300");
-            await time.advanceBlockTo(currBlock.addn(5));
+            await time.advanceBlockTo(currBlock.addn(104));
             await this.rewardMgr.deposit(0, "0", {from: bob}); // block 105
             assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "1500");
             assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "166");
@@ -181,17 +173,15 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
+                currBlock.addn(200),
+                currBlock.addn(1400),
+                "0",
+                "400000",
                 {from: admin}
             );
             this.symblox.transfer(this.rewardMgr.address, "100000", {
                 from: admin
             });
-            this.rewardMgr.startNewSeason(
-                currBlock,
-                currBlock.addn(900),
-                currBlock.addn(900),
-                100000
-            );
             await this.rewardMgr.add("100", this.lp.address, true);
             await this.lp.approve(this.rewardMgr.address, "1000", {from: bob});
             await time.advanceBlockTo(currBlock.addn(209));
@@ -201,9 +191,7 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             assert.equal((await this.lp.balanceOf(bob)).valueOf(), "990");
             await time.advanceBlockTo(currBlock.addn(219));
             await this.rewardMgr.withdraw(0, "10", {from: bob}); // block 220
-
-            res = await this.symblox.balanceOf(bob);
-
+            res = await this.rewardMgr.syxPerBlock();
             assert.equal((await this.symblox.balanceOf(bob)).valueOf(), "3000");
             assert.equal((await this.symblox.balanceOf(dev)).valueOf(), "333");
             assert.equal((await this.lp.balanceOf(bob)).valueOf(), "1000");
@@ -222,17 +210,15 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
+                currBlock.addn(300),
+                currBlock.addn(1200),
+                currBlock.addn(400),
+                "100000",
                 {from: admin}
             );
             this.symblox.transfer(this.rewardMgr.address, "100000", {
                 from: admin
             });
-            this.rewardMgr.startNewSeason(
-                currBlock,
-                currBlock.addn(900),
-                currBlock.addn(700),
-                100000
-            );
             await this.rewardMgr.add("100", this.lp.address, true);
             await this.lp.approve(this.rewardMgr.address, "1000", {
                 from: alice
@@ -254,7 +240,7 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             // Alice should have: 4*300 + 4*1/3*300 + 2*1/6*300 = 1700
             await time.advanceBlockTo(currBlock.addn(319));
             await this.rewardMgr.deposit(0, "10", {from: alice});
-
+            res = await this.rewardMgr.syxPerBlock();
             assert.equal(
                 (await this.symblox.balanceOf(alice)).valueOf(),
                 "1700"
@@ -307,16 +293,11 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
+                currBlock.addn(400),
+                currBlock.addn(1300),
+                currBlock.addn(500),
+                "100000",
                 {from: admin}
-            );
-            this.symblox.transfer(this.rewardMgr.address, "100000", {
-                from: admin
-            });
-            this.rewardMgr.startNewSeason(
-                currBlock,
-                currBlock.addn(900),
-                currBlock.addn(600),
-                100000
             );
             await this.lp.approve(this.rewardMgr.address, "1000", {
                 from: alice
@@ -361,20 +342,15 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
+                currBlock.addn(500),
+                currBlock.addn(1400),
+                currBlock.addn(600),
+                "100000",
                 {from: admin}
             );
             this.symblox.transfer(this.rewardMgr.address, "100000", {
                 from: admin
             });
-            console.log(
-                (await this.symblox.balanceOf(this.rewardMgr.address)).toString
-            );
-            this.rewardMgr.startNewSeason(
-                currBlock,
-                currBlock.addn(900),
-                currBlock.addn(600),
-                100000
-            );
             await this.lp.approve(this.rewardMgr.address, "1000", {
                 from: alice
             });
@@ -384,7 +360,6 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             await this.rewardMgr.deposit(0, "10", {from: alice});
             // At block 605, she should have 1000*3 + 100*5 = 3500 pending.
             await time.advanceBlockTo(currBlock.addn(605));
-            console.log((await this.rewardMgr.pendingSyx(0, alice)).toString());
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, alice)).valueOf(),
                 "3500"
@@ -406,9 +381,12 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             const rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
+                "0",
+                "1000",
+                "900",
+                "1000000000000000000000",
                 {from: admin}
             );
-            this.rewardMgr.startNewSeason(1, 900, 900, 0);
             await rewardMgr.add("11", this.lp.address, false);
             res = await rewardMgr.poolInfo("0");
             assert.equal(res.allocPoint.toString(), "11");
@@ -419,23 +397,16 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
         });
 
         it("Get reward when balance not enough for dev", async () => {
-            let startBlock = await time.latestBlock();
+            const startBlock = await time.latestBlock();
             const rewardPerBlock = 100;
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
-                {from: admin}
-            );
-
-            this.symblox.transfer(this.rewardMgr.address, "100000", {
-                from: admin
-            });
-
-            this.rewardMgr.startNewSeason(
                 startBlock,
                 startBlock.addn(900),
-                startBlock,
-                100000
+                "0",
+                "100000",
+                {from: admin}
             );
             await this.rewardMgr.add("100", this.lp.address, false, {
                 from: admin
@@ -445,8 +416,8 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             const depositTx = await this.rewardMgr.deposit(0, "100", {
                 from: bob
             });
-            startBlock = await time.latestBlock();
-            await time.advanceBlockTo(startBlock.addn(6));
+
+            await time.advanceBlockTo(startBlock.addn(5));
             await this.rewardMgr.updatePool(0);
             const latestBlock = await time.latestBlock();
 
@@ -458,6 +429,9 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
                         9
                 )
             );
+            this.symblox.transfer(this.rewardMgr.address, "100000", {
+                from: admin
+            });
 
             res = await this.symblox.balanceOf(this.rewardMgr.address);
             console.log("balance before", res.toString());
@@ -471,21 +445,16 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
         });
 
         it("Get reward when balance not enough for user", async () => {
-            let startBlock = await time.latestBlock();
+            const startBlock = await time.latestBlock();
             const rewardPerBlock = 100;
             this.rewardMgr = await RewardManager.new(
                 this.symblox.address,
                 dev,
-                {from: admin}
-            );
-            this.symblox.transfer(this.rewardMgr.address, "100000", {
-                from: admin
-            });
-            this.rewardMgr.startNewSeason(
                 startBlock,
                 startBlock.addn(900),
-                startBlock,
-                100000
+                startBlock.addn(0),
+                "100000",
+                {from: admin}
             );
             await this.rewardMgr.add("100", this.lp.address, false, {
                 from: admin
@@ -495,13 +464,17 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             const depositTx = await this.rewardMgr.deposit(0, "100", {
                 from: bob
             });
-            startBlock = await time.latestBlock();
+
             await time.advanceBlockTo(startBlock.addn(5));
             const latestBlock = await time.latestBlock();
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
                 rewardPerBlock * (latestBlock - depositTx.receipt.blockNumber)
             );
+
+            this.symblox.transfer(this.rewardMgr.address, "100000", {
+                from: admin
+            });
 
             res = await this.symblox.balanceOf(this.rewardMgr.address);
             console.log("balance before:", res.toString());

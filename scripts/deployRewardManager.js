@@ -5,9 +5,11 @@ const contractSettings = {
     rewardManager: {
         vlxtest: {
             syx: "0xa94BFDE008232f03A7C34b7B994CcAA07a28283D",
-            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d"
-            // startBlock: "2177000",
-            // bonusEndBlock: "2177000",
+            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
+            startBlock: "2948800",
+            endBlock: "3674560",
+            bonusEndBlock: "2948800",
+            initSupply: "8000000000000000000000000" //8000000
             // seasonBlocks: "725760" //42day 5sec per block
         },
         vlxmain: {
@@ -47,7 +49,11 @@ async function main() {
 
     const rewardManagerContract = await RewardManager.new(
         contractSettings["rewardManager"][network]["syx"],
-        contractSettings["rewardManager"][network]["devaddr"]
+        contractSettings["rewardManager"][network]["devaddr"],
+        contractSettings["rewardManager"][network]["startBlock"],
+        contractSettings["rewardManager"][network]["endBlock"],
+        contractSettings["rewardManager"][network]["bonusEndBlock"],
+        contractSettings["rewardManager"][network]["initSupply"]
     );
     console.log(`rewardManager address is ${rewardManagerContract.address}`);
 }

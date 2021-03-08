@@ -78,9 +78,21 @@ contract RewardManager is Ownable {
         _;
     }
 
-    constructor(address _syx, address _devaddr) public {
+    constructor(
+        address _syx,
+        address _devaddr,
+        uint256 _startBlock,
+        uint256 _endBlock,
+        uint256 _bonusEndBlock,
+        uint256 _initSupply
+    ) public {
         syx = SymbloxToken(_syx);
         devaddr = _devaddr;
+        startBlock = _startBlock;
+        endBlock = _endBlock;
+        bonusEndBlock = _bonusEndBlock;
+        uint256 seasonBlocks = _endBlock.sub(_startBlock);
+        syxPerBlock = _initSupply.mul(9).div(10).div(seasonBlocks); //90%, 10% to devaddr
     }
 
     /**
@@ -170,29 +182,6 @@ contract RewardManager is Ownable {
         pool.accSyxPerShare = pool.accSyxPerShare.add(
             syxReward.mul(1e12).div(lpSupply)
         );
-    }
-
-    function startNewSeason(
-        uint256 _startBlock,
-        uint256 _endBlock,
-        uint256 _bonusEndBlock,
-        uint256 totalReward
-    ) external onlyOwner {
-        require(endBlock < _startBlock, "The previous season is not over yet");
-        require(
-            _startBlock < _endBlock,
-            "The start height must be less than the end height"
-        );
-        uint256 syxBal = syx.balanceOf(address(this));
-        require(totalReward <= syxBal, "Insufficient balance");
-        massUpdatePools();
-        startBlock = _startBlock;
-        endBlock = _endBlock;
-        uint256 seasonBlocks = endBlock.sub(startBlock);
-        bonusEndBlock = _bonusEndBlock;
-
-        uint256 rewardSyxBal = totalReward.mul(9).div(10); //90%, 10% to devaddr
-        syxPerBlock = rewardSyxBal.div(seasonBlocks);
     }
 
     /**

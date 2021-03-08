@@ -34,6 +34,7 @@
         "coverage": "scripts/coverage.sh",
         "web:build": "cd web && npm run build",
         "deploySyxAndGov": "truffle compile && truffle exec scripts/deploySyxAndGov.js --network",
-        "deployRewardManager": "truffle compile && truffle exec scripts/deployRewardManager.js --network"
+        "deployRewardManager": "truffle compile && truffle exec scripts/deployRewardManager.js --network",
+        "deployConnectorAndFactory": "truffle compile && truffle exec scripts/deployConnectorAndFactory.js --network"
     }
 }

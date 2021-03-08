@@ -43,18 +43,19 @@ contract("testRewardDistribution", ([admin, bob]) => {
             symbloxToken.address,
             admin,
             curBlock.addn(6),
+            curBlock.addn(15),
             curBlock.addn(6),
-            "8000000000000000000", //8
-            "10"
+            "10000"
         );
-        await symbloxToken.mint(rewardPool.address, "1000000000000000000000"); //1000
+        await symbloxToken.mint(rewardPool.address, "10000");
         startBlock = await rewardPool.startBlock();
         endBlock = await rewardPool.endBlock();
-        syxPerBlock = await rewardPool.calcSyxPerBlock();
+        syxPerBlock = await rewardPool.syxPerBlock();
         initSyxSupply = await symbloxToken.totalSupply();
         console.log("startBlock:", startBlock.toString());
         console.log("endBlock:", endBlock.toString());
         console.log("syxPerBlock:", syxPerBlock.toString());
+        expect(syxPerBlock).to.be.bignumber.equals("1000");
         console.log("initSyxSupply:", initSyxSupply.toString());
 
         // await symbloxToken.transferOwnership(rewardPool.address);
@@ -96,11 +97,11 @@ contract("testRewardDistribution", ([admin, bob]) => {
         //Reward block from bobStartBlock to endBlock
         await bobConnector.methods["deposit(address,uint256,uint256)"](
             wToken.address,
-            "1000000000000000000",
+            "100",
             0,
             {
                 from: bob,
-                value: "1000000000000000000"
+                value: "100"
             }
         );
 
@@ -124,37 +125,6 @@ contract("testRewardDistribution", ([admin, bob]) => {
         const userTotalRewards = syxPerBlock.mul(rewardBlocks);
         const devTotalRewards = syxPerBlock.mul(rewardBlocks).div(new BN(9));
         expect(adminBalance).to.be.bignumber.equals(devTotalRewards);
-
-        //Reward block from startBlock to endBlock
-        await rewardPool.startNewSeason();
-        curBlock = await time.latestBlock();
-        console.log("curBlock:", curBlock.toString());
-        await time.advanceBlockTo(curBlock.addn(10));
-        await bobConnector.getReward({
-            from: bob
-        });
-
-        bobBalance2 = await symbloxToken.balanceOf(bob);
-        console.log("bobBalanceSeason2End: ", bobBalance2.toString());
-        adminBalance2 = await symbloxToken.balanceOf(admin);
-        console.log("adminBalanceSeason2End: ", adminBalance2.toString());
-        rewardPoolBalance2 = await symbloxToken.balanceOf(rewardPool.address);
-        console.log(
-            "rewardPoolBalanceSeason2End: ",
-            rewardPoolBalance2.toString()
-        );
-        syxSupply2 = await symbloxToken.totalSupply();
-        console.log("syxSeason2Supply: ", syxSupply2.toString());
-
-        startBlock = await rewardPool.startBlock();
-        endBlock = await rewardPool.endBlock();
-        syxPerBlock = await rewardPool.syxPerBlock();
-
-        const rewardBlocks2 = endBlock.sub(startBlock);
-        const userTotalRewards2 = syxPerBlock.mul(rewardBlocks2);
-        const devTotalRewards2 = syxPerBlock.mul(rewardBlocks2).div(new BN(9));
-        expect(adminBalance2.sub(adminBalance)).to.be.bignumber.equals(
-            devTotalRewards2
-        );
+        expect(bobBalance).to.be.bignumber.equals(userTotalRewards);
     });
 });

@@ -27,7 +27,7 @@ const contractSettings = {
     timelock: {
         vlxtest: {
             admin: "0x0E97a61Eca9048bFABFe663727fb759474264277",
-            delay: "30"
+            delay: "600"
         },
         vlxmain: {
             admin: "",
@@ -79,7 +79,6 @@ async function main() {
     );
     console.log(`governor address is ${governorContract.address}`);
 
-    //await syxContract.transferOwnership(timelockContract.address);
     //TODO: set timelock admin to governor address
 }
 

@@ -19,7 +19,7 @@ const config = {
     syxPerBlock: "1000000000000000000", //1
     startBlock: "1",
     bonusEndBlock: "1",
-    seasonBlocks: "10",
+    endBlock: "11",
     initSupply: "8000000000000000000", //8 syx
     denorm1: "5000000000000000000", //5
     balance1: "5000000000000000000", //5
@@ -49,9 +49,9 @@ contract("Governor", ([admin, alice, bob]) => {
             symbloxToken.address,
             admin,
             config.startBlock,
+            config.endBlock,
             config.bonusEndBlock,
-            config.initSupply,
-            config.seasonBlocks
+            config.initSupply
         );
         timelock = await Timelock.new(admin, 604800); //1 week
         governor = await Governor.new(
@@ -72,8 +72,6 @@ contract("Governor", ([admin, alice, bob]) => {
         await symbloxToken.mint(admin, "100000000000000000000"); //100
         await symbloxToken.mint(alice, "100000000000000000000"); //100
         await symbloxToken.mint(bob, "100000000000000000000"); //100
-
-        await symbloxToken.transferOwnership(rewardPool.address);
 
         //seed pool
         await rewardPool.add(config.seedAllocPoint, wToken.address, false);

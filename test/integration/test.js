@@ -14,8 +14,8 @@ const SymbloxToken = artifacts.require("SymbloxToken");
 const config = {
     syxPerBlock: "1000000000000000000", //1
     startBlock: "1",
+    endBlock: "901",
     bonusEndBlock: "1",
-    seasonBlocks: "900",
     initSupply: "1000000000000000000000", //1000 syx
     denorm1: "5000000000000000000", //5
     balance1: "50000000000000000000", //50
@@ -55,9 +55,9 @@ contract("Integration test", ([admin, alice, bob]) => {
             symbloxToken.address,
             admin,
             config.startBlock,
+            config.endBlock,
             config.bonusEndBlock,
-            config.initSupply,
-            config.seasonBlocks
+            config.initSupply
         );
         await symbloxToken.mint(rewardPool.address, "1000000000000000000000"); //1000
 
