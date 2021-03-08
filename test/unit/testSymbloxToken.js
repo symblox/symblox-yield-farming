@@ -105,12 +105,12 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
         assert.equal(decimals.valueOf(), "18");
     });
 
-    it("should only allow owner to mint token", async () => {
+    it("should only allow minter to mint token", async () => {
         await this.symblox.mint(alice, "100", {from: alice});
         await this.symblox.mint(bob, "1000", {from: alice});
         await expectRevert(
             this.symblox.mint(carol, "1000", {from: bob}),
-            "Ownable: caller is not the owner"
+            "MinterRole: caller does not have the Minter role"
         );
         const totalSupply = await this.symblox.totalSupply();
         const aliceBal = await this.symblox.balanceOf(alice);

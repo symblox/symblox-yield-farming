@@ -3,10 +3,10 @@ pragma solidity 0.5.17;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts/access/roles/MinterRole.sol";
 
 // SymbloxToken with Governance.
-contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
+contract SymbloxToken is ERC20, ERC20Detailed, MinterRole {
     using SafeERC20 for ERC20;
 
     uint256 public constant MAX_SUPPLY = 100000000 ether;
@@ -100,7 +100,7 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
         );
     }
 
-    function addSupportToken(address token) external onlyOwner {
+    function addSupportToken(address token) external onlyMinter {
         oldSymbloxTokens.push(token);
     }
 
@@ -162,7 +162,7 @@ contract SymbloxToken is ERC20, ERC20Detailed, Ownable {
     }
 
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (RewardManager).
-    function mint(address _to, uint256 _amount) public onlyOwner {
+    function mint(address _to, uint256 _amount) public onlyMinter {
         require(
             totalSupply().add(_amount) < MAX_SUPPLY,
             "exceed the maximum supply quantity"
