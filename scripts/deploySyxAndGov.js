@@ -37,7 +37,7 @@ const contractSettings = {
     governor: {
         vlxtest: {
             guardian: "0x0E97a61Eca9048bFABFe663727fb759474264277", //admin
-            votingPeriod: "60" //~1 day in blocks (assuming 10s blocks)
+            votingPeriod: "6480" //~18 hours in blocks (assuming 10s blocks)
         },
         vlxmain: {
             guardian: "", //admin
