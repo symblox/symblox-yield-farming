@@ -113,7 +113,7 @@ contract SymbloxToken is ERC20, ERC20Detailed, MinterRole {
         bytes32 r,
         bytes32 s
     ) external {
-        require(deadline >= block.timestamp, "UnionToken: EXPIRED");
+        require(deadline >= block.timestamp, "EXPIRED");
 
         bytes32 digest = keccak256(
             abi.encodePacked(
@@ -134,7 +134,7 @@ contract SymbloxToken is ERC20, ERC20Detailed, MinterRole {
         address recoveredAddress = ecrecover(digest, v, r, s);
         require(
             recoveredAddress != address(0) && recoveredAddress == owner,
-            "UnionToken: INVALID_SIGNATURE"
+            "INVALID_SIGNATURE"
         );
         _approve(owner, spender, value);
     }
