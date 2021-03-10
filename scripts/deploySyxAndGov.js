@@ -27,7 +27,7 @@ const contractSettings = {
     timelock: {
         vlxtest: {
             admin: "0x0E97a61Eca9048bFABFe663727fb759474264277",
-            delay: "600"
+            delay: "300"
         },
         vlxmain: {
             admin: "",
@@ -37,7 +37,7 @@ const contractSettings = {
     governor: {
         vlxtest: {
             guardian: "0x0E97a61Eca9048bFABFe663727fb759474264277", //admin
-            votingPeriod: "30" //~1 day in blocks (assuming 10s blocks)
+            votingPeriod: "60" //~1 day in blocks (assuming 10s blocks)
         },
         vlxmain: {
             guardian: "", //admin
@@ -78,6 +78,9 @@ async function main() {
         contractSettings["governor"][network]["votingPeriod"]
     );
     console.log(`governor address is ${governorContract.address}`);
+
+    await syxContract.addMinter(timelockContract.address);
+    console.log(`add syx minter address is ${timelockContract.address}`);
 
     //TODO: set timelock admin to governor address
 }
