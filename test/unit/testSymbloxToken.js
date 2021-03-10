@@ -416,6 +416,6 @@ contract("SymbloxToken", ([alice, bob, carol]) => {
         allowance = await this.symblox.allowance(bob, alice);
         expect(allowance).to.be.bignumber.equals(TEST_AMOUNT);
         const nonces = await this.symblox.nonces(bob);
-        nonces.toString().should.eq("1");
+        expect(nonces).to.be.bignumber.equals("1");
     });
 });
