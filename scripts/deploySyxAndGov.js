@@ -27,11 +27,11 @@ const contractSettings = {
     timelock: {
         vlxtest: {
             admin: "0x0E97a61Eca9048bFABFe663727fb759474264277",
-            delay: "300"
+            delay: "300" // in seconds
         },
         vlxmain: {
-            admin: "",
-            delay: ""
+            admin: "0x561a0898ab6Ea2A2EFa740FDed2f9b208b5D1455",
+            delay: "86400"
         }
     },
     governor: {
@@ -40,7 +40,7 @@ const contractSettings = {
             votingPeriod: "6480" //~18 hours in blocks (assuming 10s blocks)
         },
         vlxmain: {
-            guardian: "", //admin
+            guardian: "0x561a0898ab6Ea2A2EFa740FDed2f9b208b5D1455", //admin
             votingPeriod: "34560" //~2 day in blocks (assuming 5s blocks)
         }
     }
