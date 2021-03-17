@@ -13,11 +13,12 @@ const contractSettings = {
             // seasonBlocks: "725760" //42day 5sec per block
         },
         vlxmain: {
-            syx: "",
-            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d"
-            // startBlock: "",
-            // bonusEndBlock: "",
-            // seasonBlocks: "725760"
+            syx: "0xD0CB9244844F3E11061fb3Ea136Aab3a6ACAC017",
+            devaddr: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
+            startBlock: "5903198",
+            endBlock: "6628958",
+            bonusEndBlock: "5903198",
+            initSupply: "512000000000000000000000" //8000000
         },
         bsctest: {
             syx: "0xd2f83494cd97e61f117015ba79cbf8f42fd13634",

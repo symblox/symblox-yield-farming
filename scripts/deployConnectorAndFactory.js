@@ -6,9 +6,12 @@ const contractSettings = {
     connectorFactory: {
         vlxtest: {
             rewardManager: "0x5EddDA6482029E466F296AeD75cFcc624245bB80",
-            wrappedToken: "0x78f18612775a2c54efc74c2911542aa034fe8d3f"
+            wvlx: "0x78f18612775a2c54efc74c2911542aa034fe8d3f"
         },
-        vlxmain: {},
+        vlxmain: {
+            rewardManager: "0x44DDf8BDcF16667f0E9F452D3E3733Dddf438da0",
+            wvlx: "0x2b1aBEb48f875465bf0D3A262a2080ab1C7A3E39"
+        },
         bsctest: {},
         bscmain: {}
     }
@@ -27,7 +30,7 @@ async function main() {
 
     const connectorFactoryContract = await ConnectorFactory.new(
         contractSettings["connectorFactory"][network]["rewardManager"],
-        contractSettings["connectorFactory"][network]["wrappedToken"]
+        contractSettings["connectorFactory"][network]["wvlx"]
     );
     console.log(
         `connectorFactory address is ${connectorFactoryContract.address}`
