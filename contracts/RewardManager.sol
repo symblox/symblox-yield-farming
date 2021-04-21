@@ -215,7 +215,9 @@ contract RewardManager is Ownable {
                     int256(syxBal);
                 syx.transfer(msg.sender, syxBal);
             } else {
-                syx.transfer(msg.sender, uint256(pending));
+                if (pending > 0) {
+                    syx.transfer(msg.sender, uint256(pending));
+                }
             }
         }
         pool.lpToken.safeTransferFrom(
@@ -254,7 +256,9 @@ contract RewardManager is Ownable {
             syx.transfer(msg.sender, syxBal);
         } else {
             user.rewardDebt = int256(newRewardDebt);
-            syx.transfer(msg.sender, uint256(pending));
+            if (pending > 0) {
+                syx.transfer(msg.sender, uint256(pending));
+            }
         }
 
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
@@ -276,9 +280,15 @@ contract RewardManager is Ownable {
             syx.transfer(msg.sender, syxBal);
         } else {
             user.rewardDebt = int256(newRewardDebt);
-            syx.transfer(msg.sender, uint256(pending));
+            if (pending > 0) {
+                syx.transfer(msg.sender, uint256(pending));
+            }
         }
-        return uint256(pending);
+        if (pending > 0) {
+            return uint256(pending);
+        } else {
+            return 0;
+        }
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
@@ -290,6 +300,17 @@ contract RewardManager is Ownable {
         user.rewardDebt = 0;
         pool.lpToken.safeTransfer(address(msg.sender), amount);
         emit EmergencyWithdraw(msg.sender, _pid, amount);
+    }
+
+    function emergencyWithdrawOverall(IERC20 token, address to)
+        external
+        onlyOwner
+    {
+        if (address(token) == address(0)) {
+            to.transfer(address(this).balance);
+        } else {
+            token.safeTransfer(to, token.balanceOf(address(this)));
+        }
     }
 
     /**
@@ -359,11 +380,17 @@ contract RewardManager is Ownable {
                 syxReward.mul(1e12).div(lpSupply)
             );
         }
-        return
-            uint256(
-                int256(user.amount.mul(accSyxPerShare).div(1e12)) -
-                    user.rewardDebt
-            );
+        if (
+            int256(user.amount.mul(accSyxPerShare).div(1e12)) > user.rewardDebt
+        ) {
+            return
+                uint256(
+                    int256(user.amount.mul(accSyxPerShare).div(1e12)) -
+                        user.rewardDebt
+                );
+        } else {
+            return 0;
+        }
     }
 
     /**
