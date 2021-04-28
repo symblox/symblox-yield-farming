@@ -9,27 +9,31 @@ const contractSettings = {
             startBlock: "2948800",
             endBlock: "3674560",
             bonusEndBlock: "2948800",
-            initSupply: "800000000000000000000000" //800000
+            initSupply: "800000000000000000000000", //800000
+            rewardEscrow: "0x0000000000000000000000000000000000000000"
             // seasonBlocks: "725760" //42day 5sec per block
         },
         vlxmain: {
             syx: "",
-            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d"
+            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
+            rewardEscrow: "0x0000000000000000000000000000000000000000"
             // startBlock: "",
             // bonusEndBlock: "",
             // seasonBlocks: "725760"
         },
         bsctest: {
-            syx: "0xd31216D08002f88c7aFE99F58245F05C8b59B046",
+            syx: "0x909cE73d92a7e89D31Ac23E401BE65C538bD4355",
             devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
-            startBlock: "7620000",
-            endBlock: "8829600",
-            bonusEndBlock: "7620000",
-            initSupply: "520000000000000000000000" //520000
+            startBlock: "8370500",
+            endBlock: "9580100",
+            bonusEndBlock: "8370500",
+            initSupply: "520000000000000000000000", //520000
+            rewardEscrow: "0xd793E6bA9b30E237374dEb1975bae19e689AeaC8"
         },
         bscmain: {
             syx: "",
-            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d"
+            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
+            rewardEscrow: "0x0000000000000000000000000000000000000000"
             // startBlock: "",
             // bonusEndBlock: "",
             // seasonBlocks: "1209600" //42day 3sec per block
@@ -54,7 +58,8 @@ async function main() {
         contractSettings["rewardManager"][network]["startBlock"],
         contractSettings["rewardManager"][network]["endBlock"],
         contractSettings["rewardManager"][network]["bonusEndBlock"],
-        contractSettings["rewardManager"][network]["initSupply"]
+        contractSettings["rewardManager"][network]["initSupply"],
+        contractSettings["rewardManager"][network]["rewardEscrow"]
     );
     console.log(`rewardManager address is ${rewardManagerContract.address}`);
 }
