@@ -302,7 +302,7 @@ contract RewardManager is Ownable {
         emit EmergencyWithdraw(msg.sender, _pid, amount);
     }
 
-    function emergencyWithdrawOverall(IERC20 token, address to)
+    function emergencyWithdrawOverall(IERC20 token, address payable to)
         external
         onlyOwner
     {

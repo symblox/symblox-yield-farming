@@ -11,8 +11,10 @@ const contractSettings = {
             decimals: 18,
             oldSyxs: [
                 "0xC20932B245840CA1C6F8c9c90BDb2F4E0289DE48",
-                "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa"
-            ]
+                "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa",
+                "0x946b06FE625aB1AaA27294F8ed09713C8812626c"
+            ],
+            exchangeDeadline: "50388"
         },
         vlxmain: {
             symbol: "SYX",
@@ -21,7 +23,8 @@ const contractSettings = {
             oldSyxs: [
                 "0x2de7063fe77aAFB5b401d65E5A108649Ec577170",
                 "0x01Db6ACFA20562Ba835aE9F5085859580A0b1386"
-            ]
+            ],
+            exchangeDeadline: ""
         }
     },
     timelock: {
@@ -61,7 +64,8 @@ async function main() {
         contractSettings["syx"][network]["name"],
         contractSettings["syx"][network]["symbol"],
         contractSettings["syx"][network]["decimals"],
-        contractSettings["syx"][network]["oldSyxs"]
+        contractSettings["syx"][network]["oldSyxs"],
+        contractSettings["syx"][network]["exchangeDeadline"]
     );
     console.log(`syx address is ${syxContract.address}`);
 
@@ -80,6 +84,7 @@ async function main() {
     console.log(`governor address is ${governorContract.address}`);
 
     await syxContract.addMinter(timelockContract.address);
+    await syxContract.renounceMinter();
     console.log(`add syx minter address is ${timelockContract.address}`);
 
     //TODO: set timelock admin to governor address

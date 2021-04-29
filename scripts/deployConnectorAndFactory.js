@@ -5,7 +5,7 @@ const BptReferralConnector = artifacts.require("BptReferralConnector");
 const contractSettings = {
     connectorFactory: {
         vlxtest: {
-            rewardManager: "0x5EddDA6482029E466F296AeD75cFcc624245bB80",
+            rewardManager: "0x7D031D64a58812091b7147818314ebd60FF69B83",
             wrappedToken: "0x78f18612775a2c54efc74c2911542aa034fe8d3f"
         },
         vlxmain: {},

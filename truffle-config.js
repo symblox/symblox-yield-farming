@@ -2,7 +2,7 @@ require("dotenv").config();
 const mnemonic = process.env.MNEMONIC;
 const privateKey = process.env.PRIVATE_KEY;
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const VLX_MAIN_RPC = "https://rpc.symblox.net:8080/";
+const VLX_MAIN_RPC = "https://explorer.velas.com/rpc";
 const VLX_TEST_RPC = "https://explorer.testnet.veladev.net/rpc";
 const BSC_MAIN_RPC = "https://bsc-dataseed.binance.org/";
 const BSC_TEST_RPC = "https://data-seed-prebsc-2-s1.binance.org:8545/";

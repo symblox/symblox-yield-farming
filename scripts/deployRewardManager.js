@@ -4,12 +4,12 @@ const RewardManager = artifacts.require("RewardManager");
 const contractSettings = {
     rewardManager: {
         vlxtest: {
-            syx: "0xa94BFDE008232f03A7C34b7B994CcAA07a28283D",
+            syx: "0x0711FA8e32a4548eb8Fec327275C2b5CD6f4F331",
             devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
-            startBlock: "2948800",
-            endBlock: "3674560",
-            bonusEndBlock: "2948800",
-            initSupply: "800000000000000000000000" //800000
+            startBlock: "16500",
+            endBlock: "379380",
+            bonusEndBlock: "16500",
+            initSupply: "520000000000000000000000" //520000
             // seasonBlocks: "725760" //42day 5sec per block
         },
         vlxmain: {

@@ -53,6 +53,8 @@ contract SymbloxToken is ERC20, ERC20Detailed, MinterRole {
     /// @notice A record of states for signing / validating signatures
     mapping(address => uint256) public nonces;
 
+    uint256 public exchangeDeadline; //exchange deadline block number, this value should be unchangeable
+
     /// @notice An event thats emitted when an account changes its delegate
     event DelegateChanged(
         address indexed delegator,
@@ -83,7 +85,8 @@ contract SymbloxToken is ERC20, ERC20Detailed, MinterRole {
         string memory name,
         string memory symbol,
         uint8 decimals,
-        address[] memory _oldSymbloxTokens
+        address[] memory _oldSymbloxTokens,
+        uint256 _exchangeDeadline
     ) public ERC20Detailed(name, symbol, decimals) {
         oldSymbloxTokens = _oldSymbloxTokens;
 
@@ -98,6 +101,8 @@ contract SymbloxToken is ERC20, ERC20Detailed, MinterRole {
                 address(this)
             )
         );
+
+        exchangeDeadline = _exchangeDeadline;
     }
 
     function addSupportToken(address token) external onlyMinter {
@@ -143,6 +148,7 @@ contract SymbloxToken is ERC20, ERC20Detailed, MinterRole {
         public
         isSupportToken(oldSymbloxToken)
     {
+        require(block.number < exchangeDeadline, "exchange has ended");
         require(
             totalSupply().add(amount) < MAX_SUPPLY,
             "exceed the maximum supply quantity"
