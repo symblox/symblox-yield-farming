@@ -22,13 +22,13 @@ const contractSettings = {
             // seasonBlocks: "725760"
         },
         bsctest: {
-            syx: "0x909cE73d92a7e89D31Ac23E401BE65C538bD4355",
+            syx: "0x47c11E73FaeA96F981c44c8B068a328f3a83d8e9",
             devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
-            startBlock: "8370500",
-            endBlock: "9580100",
-            bonusEndBlock: "8370500",
+            startBlock: "8398000",
+            endBlock: "9604900",
+            bonusEndBlock: "8395000",
             initSupply: "520000000000000000000000", //520000
-            rewardEscrow: "0xd793E6bA9b30E237374dEb1975bae19e689AeaC8"
+            rewardEscrow: "0xaC16eF7BB6232a957Ec72770fcD65B0d4edb81dE"
         },
         bscmain: {
             syx: "",
