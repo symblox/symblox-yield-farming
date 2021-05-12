@@ -14,7 +14,7 @@ const contractSettings = {
                 "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa",
                 "0x946b06FE625aB1AaA27294F8ed09713C8812626c"
             ],
-            exchangeDeadline: "50388"
+            exchangeDeadline: "153640" //from block 101800 ~6 days in blocks (assuming 10s blocks)
         },
         vlxmain: {
             symbol: "SYX",
@@ -29,18 +29,16 @@ const contractSettings = {
     },
     timelock: {
         vlxtest: {
-            admin: "0x0E97a61Eca9048bFABFe663727fb759474264277",
             delay: "300" // in seconds
         },
         vlxmain: {
-            admin: "0x561a0898ab6Ea2A2EFa740FDed2f9b208b5D1455",
             delay: "86400"
         }
     },
     governor: {
         vlxtest: {
             guardian: "0x0E97a61Eca9048bFABFe663727fb759474264277", //admin
-            votingPeriod: "6480" //~18 hours in blocks (assuming 10s blocks)
+            votingPeriod: "8640" //~24 hours in blocks (assuming 10s blocks)
         },
         vlxmain: {
             guardian: "0x561a0898ab6Ea2A2EFa740FDed2f9b208b5D1455", //admin
@@ -69,25 +67,28 @@ async function main() {
     );
     console.log(`syx address is ${syxContract.address}`);
 
-    const timelockContract = await Timelock.new(
-        contractSettings["timelock"][network]["admin"],
-        contractSettings["timelock"][network]["delay"]
-    );
-    console.log(`timelock address is ${timelockContract.address}`);
-
     const governorContract = await Governor.new(
-        timelockContract.address,
         syxContract.address,
         contractSettings["governor"][network]["guardian"],
         contractSettings["governor"][network]["votingPeriod"]
     );
     console.log(`governor address is ${governorContract.address}`);
 
-    await syxContract.addMinter(timelockContract.address);
-    await syxContract.renounceMinter();
-    console.log(`add syx minter address is ${timelockContract.address}`);
+    const timelockContract = await Timelock.new(
+        governorContract.address,
+        contractSettings["timelock"][network]["delay"]
+    );
+    console.log(`timelock address is ${timelockContract.address}`);
 
-    //TODO: set timelock admin to governor address
+    await governorContract.initTimelock(timelockContract.address);
+    await syxContract.addMinter(timelockContract.address);
+    console.log(`add syx minter address is ${timelockContract.address}`);
+    //Annotate first for the convenience of testing
+    if (network == "vlxmain") {
+        await syxContract.renounceMinter();
+    } else {
+        //await syxContract.renounceMinter();
+    }
 }
 
 // Required by `truffle exec`.

@@ -143,15 +143,27 @@ contract Governor {
     event ProposalExecuted(uint256 id);
 
     constructor(
-        address timelock_,
         address syx_,
         address guardian_,
         uint256 votingPeriod_
     ) public {
-        timelock = TimelockInterface(timelock_);
         syx = SyxInterface(syx_);
         guardian = guardian_;
         votingPeriod = votingPeriod_;
+    }
+
+    function initTimelock(address timelock_) public {
+        require(
+            msg.sender == guardian,
+            "Governor::initTimelock: sender must be gov guardian"
+        );
+
+        require(
+            address(timelock) == address(0),
+            "Governor::initTimelock: timelock already set"
+        );
+
+        timelock = TimelockInterface(timelock_);
     }
 
     function propose(

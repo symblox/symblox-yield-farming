@@ -10,7 +10,6 @@ const contractSettings = {
             endBlock: "379380",
             bonusEndBlock: "16500",
             initSupply: "520000000000000000000000" //520000
-            // seasonBlocks: "725760" //42day 5sec per block
         },
         vlxmain: {
             syx: "",
