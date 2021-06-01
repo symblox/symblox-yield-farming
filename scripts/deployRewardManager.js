@@ -1,14 +1,14 @@
-const TruffleConfig = require("@truffle/config");
-const RewardManager = artifacts.require("RewardManager");
+const {ethers} = require("hardhat");
+const {getNetworkInfo} = require("./utils");
 
 const contractSettings = {
     rewardManager: {
         vlxtest: {
-            syx: "0x0711FA8e32a4548eb8Fec327275C2b5CD6f4F331",
+            syx: "0xC119b1d91b44012Db8d0ac5537f04c7FD7629c84",
             devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
-            startBlock: "16500",
-            endBlock: "379380",
-            bonusEndBlock: "16500",
+            startBlock: "244400",
+            endBlock: "607280",
+            bonusEndBlock: "244400",
             initSupply: "520000000000000000000000" //520000
         },
         vlxmain: {
@@ -37,39 +37,29 @@ const contractSettings = {
 };
 
 async function main() {
-    const networkName = process.argv[process.argv.length - 1];
-    let truffleConfig = TruffleConfig.detect({network: networkName});
-    const network = truffleConfig.networks[networkName]
-        ? networkName
-        : "development";
-    if (!truffleConfig.networks[networkName]) {
-        truffleConfig = TruffleConfig.detect({network});
-    }
-    console.log(`Running script with the ${network} network...`);
+    const [deployer] = await ethers.getSigners();
 
-    const rewardManagerContract = await RewardManager.new(
-        contractSettings["rewardManager"][network]["syx"],
-        contractSettings["rewardManager"][network]["devaddr"],
-        contractSettings["rewardManager"][network]["startBlock"],
-        contractSettings["rewardManager"][network]["endBlock"],
-        contractSettings["rewardManager"][network]["bonusEndBlock"],
-        contractSettings["rewardManager"][network]["initSupply"]
+    const [networkId, networkName] = await getNetworkInfo();
+    console.log({id: networkId, name: networkName});
+
+    const RewardManager = await ethers.getContractFactory(
+        "RewardManager",
+        deployer
+    );
+    const rewardManagerContract = await RewardManager.deploy(
+        contractSettings["rewardManager"][networkName]["syx"],
+        contractSettings["rewardManager"][networkName]["devaddr"],
+        contractSettings["rewardManager"][networkName]["startBlock"],
+        contractSettings["rewardManager"][networkName]["endBlock"],
+        contractSettings["rewardManager"][networkName]["bonusEndBlock"],
+        contractSettings["rewardManager"][networkName]["initSupply"]
     );
     console.log(`rewardManager address is ${rewardManagerContract.address}`);
 }
 
-// Required by `truffle exec`.
-module.exports = function (done) {
-    return new Promise((resolve, reject) => {
-        main()
-            .then(value => {
-                resolve(value);
-                done();
-            })
-            .catch(err => {
-                console.log(`Error:`, err);
-                reject(err);
-                done(err);
-            });
+main()
+    .then(() => process.exit(0))
+    .catch(error => {
+        console.error(error);
+        process.exit(1);
     });
-};

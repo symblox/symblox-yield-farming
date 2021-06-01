@@ -1,7 +1,5 @@
-const TruffleConfig = require("@truffle/config");
-const Symblox = artifacts.require("SymbloxToken");
-const Timelock = artifacts.require("Timelock");
-const Governor = artifacts.require("Governor");
+const {ethers} = require("hardhat");
+const {getNetworkInfo} = require("./utils");
 
 const contractSettings = {
     syx: {
@@ -14,7 +12,7 @@ const contractSettings = {
                 "0x28a6312D786e9d7a78637dD137AbeF5332F3b2Aa",
                 "0x946b06FE625aB1AaA27294F8ed09713C8812626c"
             ],
-            exchangeDeadline: "153640" //from block 101800 ~6 days in blocks (assuming 10s blocks)
+            exchangeDeadline: "296240" //from block 244400 ~6 days in blocks (assuming 10s blocks)
         },
         vlxmain: {
             symbol: "SYX",
@@ -48,61 +46,53 @@ const contractSettings = {
 };
 
 async function main() {
-    const networkName = process.argv[process.argv.length - 1];
-    let truffleConfig = TruffleConfig.detect({network: networkName});
-    const network = truffleConfig.networks[networkName]
-        ? networkName
-        : "development";
-    if (!truffleConfig.networks[networkName]) {
-        truffleConfig = TruffleConfig.detect({network});
-    }
-    console.log(`Running script with the ${network} network...`);
+    const [deployer] = await ethers.getSigners();
 
-    const syxContract = await Symblox.new(
-        contractSettings["syx"][network]["name"],
-        contractSettings["syx"][network]["symbol"],
-        contractSettings["syx"][network]["decimals"],
-        contractSettings["syx"][network]["oldSyxs"],
-        contractSettings["syx"][network]["exchangeDeadline"]
+    const [networkId, networkName] = await getNetworkInfo();
+    console.log({id: networkId, name: networkName});
+
+    const SymbloxToken = await ethers.getContractFactory(
+        "SymbloxToken",
+        deployer
+    );
+    const syxContract = await SymbloxToken.deploy(
+        contractSettings["syx"][networkName]["name"],
+        contractSettings["syx"][networkName]["symbol"],
+        contractSettings["syx"][networkName]["decimals"],
+        contractSettings["syx"][networkName]["oldSyxs"],
+        contractSettings["syx"][networkName]["exchangeDeadline"]
     );
     console.log(`syx address is ${syxContract.address}`);
 
-    const governorContract = await Governor.new(
+    const Governor = await ethers.getContractFactory("Governor", deployer);
+    const governorContract = await Governor.deploy(
         syxContract.address,
-        contractSettings["governor"][network]["guardian"],
-        contractSettings["governor"][network]["votingPeriod"]
+        contractSettings["governor"][networkName]["guardian"],
+        contractSettings["governor"][networkName]["votingPeriod"]
     );
     console.log(`governor address is ${governorContract.address}`);
 
-    const timelockContract = await Timelock.new(
+    const Timelock = await ethers.getContractFactory("Timelock", deployer);
+    const timelockContract = await Timelock.deploy(
         governorContract.address,
-        contractSettings["timelock"][network]["delay"]
+        contractSettings["timelock"][networkName]["delay"]
     );
     console.log(`timelock address is ${timelockContract.address}`);
 
     await governorContract.initTimelock(timelockContract.address);
     await syxContract.addMinter(timelockContract.address);
     console.log(`add syx minter address is ${timelockContract.address}`);
-    //Annotate first for the convenience of testing
-    if (network == "vlxmain") {
+    if (networkName == "vlxmain") {
         await syxContract.renounceMinter();
     } else {
+        //Annotate first for the convenience of testing
         //await syxContract.renounceMinter();
     }
 }
 
-// Required by `truffle exec`.
-module.exports = function (done) {
-    return new Promise((resolve, reject) => {
-        main()
-            .then(value => {
-                resolve(value);
-                done();
-            })
-            .catch(err => {
-                console.log(`Error:`, err);
-                reject(err);
-                done(err);
-            });
+main()
+    .then(() => process.exit(0))
+    .catch(error => {
+        console.error(error);
+        process.exit(1);
     });
-};
