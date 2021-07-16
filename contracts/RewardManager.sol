@@ -6,6 +6,10 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./SymbloxToken.sol";
 
+interface IRewardEscrow {
+    function deposit(address user, uint256 amount) external;
+}
+
 // Copied and modified from SUSHI code:
 // https://github.com/sushiswap/sushiswap/blob/master/contracts/MasterChef.sol
 //
@@ -65,6 +69,8 @@ contract RewardManager is Ownable {
     // Reward deadline block
     uint256 public endBlock = 0;
 
+    address public rewardEscrow;
+
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(
@@ -84,7 +90,8 @@ contract RewardManager is Ownable {
         uint256 _startBlock,
         uint256 _endBlock,
         uint256 _bonusEndBlock,
-        uint256 _initSupply
+        uint256 _initSupply,
+        address _rewardEscrow
     ) public {
         syx = SymbloxToken(_syx);
         devaddr = _devaddr;
@@ -93,6 +100,11 @@ contract RewardManager is Ownable {
         bonusEndBlock = _bonusEndBlock;
         uint256 seasonBlocks = _endBlock.sub(_startBlock);
         syxPerBlock = _initSupply.mul(9).div(10).div(seasonBlocks); //90%, 10% to devaddr
+        rewardEscrow = _rewardEscrow;
+    }
+
+    function setRewardEscrow(address _rewardEscrow) public onlyOwner {
+        rewardEscrow = _rewardEscrow;
     }
 
     /**
@@ -184,6 +196,15 @@ contract RewardManager is Ownable {
         );
     }
 
+    function _transferReward(address to, uint256 amount) private {
+        if (rewardEscrow != address(0)) {
+            syx.approve(rewardEscrow, amount);
+            IRewardEscrow(rewardEscrow).deposit(to, amount);
+        } else {
+            syx.transfer(to, amount);
+        }
+    }
+
     /**
      * Deposit LP tokens to RewardManager for Symblox allocation.
      * @param _pid Reward pool Id
@@ -213,10 +234,10 @@ contract RewardManager is Ownable {
                     int256(newRewardDebt) -
                     pending +
                     int256(syxBal);
-                syx.transfer(msg.sender, syxBal);
+                _transferReward(msg.sender, syxBal);
             } else {
                 if (pending > 0) {
-                    syx.transfer(msg.sender, uint256(pending));
+                    _transferReward(msg.sender, uint256(pending));
                 }
             }
         }
@@ -253,15 +274,15 @@ contract RewardManager is Ownable {
         uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
         if (pending > int256(syxBal)) {
             user.rewardDebt = int256(newRewardDebt) - pending + int256(syxBal);
-            syx.transfer(msg.sender, syxBal);
+            _transferReward(msg.sender, syxBal);
         } else {
             user.rewardDebt = int256(newRewardDebt);
             if (pending > 0) {
-                syx.transfer(msg.sender, uint256(pending));
+                _transferReward(msg.sender, uint256(pending));
             }
         }
 
-        pool.lpToken.safeTransfer(address(msg.sender), _amount);
+        pool.lpToken.transfer(address(msg.sender), _amount);
         emit Withdraw(msg.sender, _pid, _amount);
         return user.amount;
     }
@@ -277,11 +298,11 @@ contract RewardManager is Ownable {
         uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
         if (pending > int256(syxBal)) {
             user.rewardDebt = int256(newRewardDebt) - pending + int256(syxBal);
-            syx.transfer(msg.sender, syxBal);
+            _transferReward(msg.sender, syxBal);
         } else {
             user.rewardDebt = int256(newRewardDebt);
             if (pending > 0) {
-                syx.transfer(msg.sender, uint256(pending));
+                _transferReward(msg.sender, uint256(pending));
             }
         }
         if (pending > 0) {
@@ -298,7 +319,7 @@ contract RewardManager is Ownable {
         uint256 amount = user.amount;
         user.amount = 0;
         user.rewardDebt = 0;
-        pool.lpToken.safeTransfer(address(msg.sender), amount);
+        pool.lpToken.transfer(address(msg.sender), amount);
         emit EmergencyWithdraw(msg.sender, _pid, amount);
     }
 
@@ -309,7 +330,7 @@ contract RewardManager is Ownable {
         if (address(token) == address(0)) {
             to.transfer(address(this).balance);
         } else {
-            token.safeTransfer(to, token.balanceOf(address(this)));
+            token.transfer(to, token.balanceOf(address(this)));
         }
     }
 
