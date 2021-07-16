@@ -444,7 +444,7 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
             assert.equal((await this.rewardMgr.devPending()).valueOf(), 0);
         });
 
-        it("Get reward when balance not enough for user", async () => {
+        it.only("Get reward when balance not enough for user", async () => {
             const startBlock = await time.latestBlock();
             const rewardPerBlock = 100;
             this.rewardMgr = await RewardManager.new(
@@ -471,20 +471,47 @@ contract("RewardManager", ([admin, alice, bob, carol, dev, minter]) => {
                 (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
                 rewardPerBlock * (latestBlock - depositTx.receipt.blockNumber)
             );
+            const syxPerBlock = await this.rewardMgr.syxPerBlock();
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).toString(),
+                syxPerBlock.toString()
+            );
 
-            this.symblox.transfer(this.rewardMgr.address, "100000", {
+            await this.rewardMgr.withdraw(0, "100", {
+                from: bob
+            });
+
+            assert.equal(
+                (await this.rewardMgr.userInfo(0, bob)).amount.valueOf(),
+                0
+            );
+
+            assert.equal(
+                (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),
+                syxPerBlock * 2
+            );
+
+            await this.symblox.transfer(this.rewardMgr.address, "100000", {
                 from: admin
             });
 
-            res = await this.symblox.balanceOf(this.rewardMgr.address);
-            console.log("balance before:", res.toString());
+            assert.equal(
+                (
+                    await this.symblox.balanceOf(this.rewardMgr.address)
+                ).valueOf(),
+                100000
+            );
 
             await this.rewardMgr.getReward(0, {
                 from: bob
             });
 
-            res = await this.symblox.balanceOf(this.rewardMgr.address);
-            console.log("balance after:", res.toString());
+            assert.equal(
+                (
+                    await this.symblox.balanceOf(this.rewardMgr.address)
+                ).valueOf(),
+                100000 - syxPerBlock * 2
+            );
 
             assert.equal(
                 (await this.rewardMgr.pendingSyx(0, bob)).valueOf(),

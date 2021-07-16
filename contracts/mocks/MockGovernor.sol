@@ -17,11 +17,10 @@ contract MockGovernor is Governor {
     } // 0.01% of syx
 
     constructor(
-        address timelock_,
         address syx_,
         address guardian_,
         uint256 votingPeriod_
-    ) public Governor(timelock_, syx_, guardian_, votingPeriod_) {
+    ) public Governor(syx_, guardian_, votingPeriod_) {
         votingPeriod = votingPeriod_;
     }
 }

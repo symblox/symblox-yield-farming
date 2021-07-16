@@ -54,12 +54,8 @@ contract("Governor", ([admin, alice, bob]) => {
             config.initSupply
         );
         timelock = await Timelock.new(admin, 604800); //1 week
-        governor = await Governor.new(
-            timelock.address,
-            symbloxToken.address,
-            admin,
-            100
-        );
+        governor = await Governor.new(symbloxToken.address, admin, 100);
+        await governor.initTimelock(governor.address);
 
         await wToken.deposit({from: admin, value: config.balance1});
         await wToken.approve(bpool.address, config.balance1);

@@ -6,6 +6,10 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./SymbloxToken.sol";
 
+interface IRewardEscrow {
+    function deposit(address user, uint256 amount) external;
+}
+
 // Copied and modified from SUSHI code:
 // https://github.com/sushiswap/sushiswap/blob/master/contracts/MasterChef.sol
 //
@@ -20,7 +24,7 @@ contract RewardManager is Ownable {
     // Info of each user.
     struct UserInfo {
         uint256 amount; // How many LP tokens the user has provided.
-        uint256 rewardDebt; // Reward debt. See explanation below.
+        int256 rewardDebt; // Reward debt. See explanation below.
         //
         // We do some fancy math here. Basically, any point in time, the amount of Symblox
         // entitled to a user but is pending to be distributed is:
@@ -65,6 +69,8 @@ contract RewardManager is Ownable {
     // Reward deadline block
     uint256 public endBlock = 0;
 
+    address public rewardEscrow;
+
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(
@@ -84,7 +90,8 @@ contract RewardManager is Ownable {
         uint256 _startBlock,
         uint256 _endBlock,
         uint256 _bonusEndBlock,
-        uint256 _initSupply
+        uint256 _initSupply,
+        address _rewardEscrow
     ) public {
         syx = SymbloxToken(_syx);
         devaddr = _devaddr;
@@ -93,6 +100,11 @@ contract RewardManager is Ownable {
         bonusEndBlock = _bonusEndBlock;
         uint256 seasonBlocks = _endBlock.sub(_startBlock);
         syxPerBlock = _initSupply.mul(9).div(10).div(seasonBlocks); //90%, 10% to devaddr
+        rewardEscrow = _rewardEscrow;
+    }
+
+    function setRewardEscrow(address _rewardEscrow) public onlyOwner {
+        rewardEscrow = _rewardEscrow;
     }
 
     /**
@@ -184,6 +196,15 @@ contract RewardManager is Ownable {
         );
     }
 
+    function _transferReward(address to, uint256 amount) private {
+        if (rewardEscrow != address(0)) {
+            syx.approve(rewardEscrow, amount);
+            IRewardEscrow(rewardEscrow).deposit(to, amount);
+        } else {
+            syx.transfer(to, amount);
+        }
+    }
+
     /**
      * Deposit LP tokens to RewardManager for Symblox allocation.
      * @param _pid Reward pool Id
@@ -199,24 +220,25 @@ contract RewardManager is Ownable {
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
         uint256 prevAmount = user.amount;
-        uint256 prevRewardDebt = user.rewardDebt;
+        int256 prevRewardDebt = user.rewardDebt;
         user.amount = user.amount.add(_amount);
         uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
-        user.rewardDebt = newRewardDebt;
+        user.rewardDebt = int256(newRewardDebt);
         if (prevAmount > 0) {
-            uint256 pending = prevAmount.mul(pool.accSyxPerShare).div(1e12).sub(
-                prevRewardDebt
-            );
+            int256 pending = int256(
+                prevAmount.mul(pool.accSyxPerShare).div(1e12)
+            ) - prevRewardDebt;
             uint256 syxBal = syx.balanceOf(address(this));
-            if (pending > syxBal) {
-                if (newRewardDebt < pending.sub(syxBal)) {
-                    user.rewardDebt = 0;
-                } else {
-                    user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
-                }
-                syx.transfer(msg.sender, syxBal);
+            if (pending > int256(syxBal)) {
+                user.rewardDebt =
+                    int256(newRewardDebt) -
+                    pending +
+                    int256(syxBal);
+                _transferReward(msg.sender, syxBal);
             } else {
-                syx.transfer(msg.sender, pending);
+                if (pending > 0) {
+                    _transferReward(msg.sender, uint256(pending));
+                }
             }
         }
         pool.lpToken.safeTransferFrom(
@@ -243,26 +265,24 @@ contract RewardManager is Ownable {
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
         updatePool(_pid);
-        uint256 pending = user.amount.mul(pool.accSyxPerShare).div(1e12).sub(
-            user.rewardDebt
-        );
+        int256 pending = int256(
+            user.amount.mul(pool.accSyxPerShare).div(1e12)
+        ) - user.rewardDebt;
         user.amount = user.amount.sub(_amount);
 
         uint256 syxBal = syx.balanceOf(address(this));
         uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
-        if (pending > syxBal) {
-            if (newRewardDebt < pending.sub(syxBal)) {
-                user.rewardDebt = 0;
-            } else {
-                user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
-            }
-            syx.transfer(msg.sender, syxBal);
+        if (pending > int256(syxBal)) {
+            user.rewardDebt = int256(newRewardDebt) - pending + int256(syxBal);
+            _transferReward(msg.sender, syxBal);
         } else {
-            user.rewardDebt = newRewardDebt;
-            syx.transfer(msg.sender, pending);
+            user.rewardDebt = int256(newRewardDebt);
+            if (pending > 0) {
+                _transferReward(msg.sender, uint256(pending));
+            }
         }
 
-        pool.lpToken.safeTransfer(address(msg.sender), _amount);
+        pool.lpToken.transfer(address(msg.sender), _amount);
         emit Withdraw(msg.sender, _pid, _amount);
         return user.amount;
     }
@@ -271,23 +291,25 @@ contract RewardManager is Ownable {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
-        uint256 pending = user.amount.mul(pool.accSyxPerShare).div(1e12).sub(
-            user.rewardDebt
-        );
+        int256 pending = int256(
+            user.amount.mul(pool.accSyxPerShare).div(1e12)
+        ) - user.rewardDebt;
         uint256 syxBal = syx.balanceOf(address(this));
         uint256 newRewardDebt = user.amount.mul(pool.accSyxPerShare).div(1e12);
-        if (pending > syxBal) {
-            if (newRewardDebt < pending.sub(syxBal)) {
-                user.rewardDebt = 0;
-            } else {
-                user.rewardDebt = newRewardDebt.sub(pending.sub(syxBal));
-            }
-            syx.transfer(msg.sender, syxBal);
+        if (pending > int256(syxBal)) {
+            user.rewardDebt = int256(newRewardDebt) - pending + int256(syxBal);
+            _transferReward(msg.sender, syxBal);
         } else {
-            user.rewardDebt = newRewardDebt;
-            syx.transfer(msg.sender, pending);
+            user.rewardDebt = int256(newRewardDebt);
+            if (pending > 0) {
+                _transferReward(msg.sender, uint256(pending));
+            }
         }
-        return pending;
+        if (pending > 0) {
+            return uint256(pending);
+        } else {
+            return 0;
+        }
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
@@ -297,8 +319,19 @@ contract RewardManager is Ownable {
         uint256 amount = user.amount;
         user.amount = 0;
         user.rewardDebt = 0;
-        pool.lpToken.safeTransfer(address(msg.sender), amount);
+        pool.lpToken.transfer(address(msg.sender), amount);
         emit EmergencyWithdraw(msg.sender, _pid, amount);
+    }
+
+    function emergencyWithdrawOverall(IERC20 token, address payable to)
+        external
+        onlyOwner
+    {
+        if (address(token) == address(0)) {
+            to.transfer(address(this).balance);
+        } else {
+            token.transfer(to, token.balanceOf(address(this)));
+        }
     }
 
     /**
@@ -368,7 +401,17 @@ contract RewardManager is Ownable {
                 syxReward.mul(1e12).div(lpSupply)
             );
         }
-        return user.amount.mul(accSyxPerShare).div(1e12).sub(user.rewardDebt);
+        if (
+            int256(user.amount.mul(accSyxPerShare).div(1e12)) > user.rewardDebt
+        ) {
+            return
+                uint256(
+                    int256(user.amount.mul(accSyxPerShare).div(1e12)) -
+                        user.rewardDebt
+                );
+        } else {
+            return 0;
+        }
     }
 
     /**

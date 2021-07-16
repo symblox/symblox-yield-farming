@@ -1,35 +1,35 @@
-const TruffleConfig = require("@truffle/config");
-const RewardManager = artifacts.require("RewardManager");
+const {ethers} = require("hardhat");
+const {getNetworkInfo} = require("./utils");
 
 const contractSettings = {
     rewardManager: {
         vlxtest: {
-            syx: "0xa94BFDE008232f03A7C34b7B994CcAA07a28283D",
+            syx: "0xC119b1d91b44012Db8d0ac5537f04c7FD7629c84",
             devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
-            startBlock: "2948800",
-            endBlock: "3674560",
-            bonusEndBlock: "2948800",
-            initSupply: "8000000000000000000000000" //8000000
-            // seasonBlocks: "725760" //42day 5sec per block
+            startBlock: "244400",
+            endBlock: "607280",
+            bonusEndBlock: "244400",
+            initSupply: "520000000000000000000000", //520000
+            rewardEscrow: "0x0000000000000000000000000000000000000000"
         },
         vlxmain: {
-            syx: "0xD0CB9244844F3E11061fb3Ea136Aab3a6ACAC017",
-            devaddr: "0x17d8A87BF9F3f8ca7469D576d958bE345c1D9D5D",
-            startBlock: "5903198",
-            endBlock: "6628958",
-            bonusEndBlock: "5903198",
-            initSupply: "512000000000000000000000" //8000000
+            syx: "",
+            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
+            rewardEscrow: "0x0000000000000000000000000000000000000000"
         },
         bsctest: {
-            syx: "0xd2f83494cd97e61f117015ba79cbf8f42fd13634",
-            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d"
-            // startBlock: "6447650",
-            // bonusEndBlock: "6447650",
-            // seasonBlocks: "1209600" //42day 3sec per block
+            syx: "0x47c11E73FaeA96F981c44c8B068a328f3a83d8e9",
+            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
+            startBlock: "8398000",
+            endBlock: "9604900",
+            bonusEndBlock: "8395000",
+            initSupply: "520000000000000000000000", //520000
+            rewardEscrow: "0xaC16eF7BB6232a957Ec72770fcD65B0d4edb81dE"
         },
         bscmain: {
             syx: "",
-            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d"
+            devaddr: "0x17d8a87bf9f3f8ca7469d576d958be345c1d9d5d",
+            rewardEscrow: "0x0000000000000000000000000000000000000000"
             // startBlock: "",
             // bonusEndBlock: "",
             // seasonBlocks: "1209600" //42day 3sec per block
@@ -38,39 +38,30 @@ const contractSettings = {
 };
 
 async function main() {
-    const networkName = process.argv[process.argv.length - 1];
-    let truffleConfig = TruffleConfig.detect({network: networkName});
-    const network = truffleConfig.networks[networkName]
-        ? networkName
-        : "development";
-    if (!truffleConfig.networks[networkName]) {
-        truffleConfig = TruffleConfig.detect({network});
-    }
-    console.log(`Running script with the ${network} network...`);
+    const [deployer] = await ethers.getSigners();
 
+    const [networkId, networkName] = await getNetworkInfo();
+    console.log({id: networkId, name: networkName});
+
+    const RewardManager = await ethers.getContractFactory(
+        "RewardManager",
+        deployer
+    );
     const rewardManagerContract = await RewardManager.new(
         contractSettings["rewardManager"][network]["syx"],
         contractSettings["rewardManager"][network]["devaddr"],
         contractSettings["rewardManager"][network]["startBlock"],
         contractSettings["rewardManager"][network]["endBlock"],
         contractSettings["rewardManager"][network]["bonusEndBlock"],
-        contractSettings["rewardManager"][network]["initSupply"]
+        contractSettings["rewardManager"][network]["initSupply"],
+        contractSettings["rewardManager"][network]["rewardEscrow"]
     );
     console.log(`rewardManager address is ${rewardManagerContract.address}`);
 }
 
-// Required by `truffle exec`.
-module.exports = function (done) {
-    return new Promise((resolve, reject) => {
-        main()
-            .then(value => {
-                resolve(value);
-                done();
-            })
-            .catch(err => {
-                console.log(`Error:`, err);
-                reject(err);
-                done(err);
-            });
+main()
+    .then(() => process.exit(0))
+    .catch(error => {
+        console.error(error);
+        process.exit(1);
     });
-};
